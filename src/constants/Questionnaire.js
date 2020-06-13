@@ -1,0 +1,1 @@
+export const LEVEL = ['BEGINNER', 'JUNIOR', 'INTERMEDIATE', 'SENIOR', 'EXPERT'];

@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "Tech Quiz",
+    "slug": "tech-quiz",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "version": "1.0.5",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "techquiz",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sureshkumarmukhiya.techquiz"
+    },
+    "android": {
+      "versionCode": 2,
+      "package": "com.sureshkumarmukhiya.techquiz"
+    },
+    "description": "Tech Quiz is a free app created for beginners to advanced IT students, developers, designers, and another computer scientist. You can create a free account and start learning.\n\nTech Quiz is the entertainment trivia game where you get unlimited questions that can’t be found anywhere else.\n\nInstall Tech Quiz and answer trivia questions, read interesting explanations, educate yourself!\n\nJust your brain and our quizzes. No need to wait for other players' replies!\n\nJoin the league of top players and collect achievements of all kinds.\n\nTech Quiz is:\n-  Free trivia game to test your IQ and general knowledge\n- Source of valuable and little-known information\n- Entertaining questions for all categories of interest\n- Delightful learning experience whether you know the answers or not\n- Detailed explanation for every question\n\nTech Quiz makes learning easy and fun!",
+    "githubUrl": "https://github.com/hunghkit/quiz-mobile.git"
+  }
+}
