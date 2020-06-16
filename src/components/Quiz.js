@@ -86,20 +86,19 @@ export const Quiz = ({
               questions: questions.map((question) => ({
                 id: question.id,
                 title: question.title,
-                answered: answerObject[answersSubmit[question.id]],
+                answered: {
+                  id: answerObject[answersSubmit[question.id]].id,
+                  type: answerObject[answersSubmit[question.id]].type,
+                  title: answerObject[answersSubmit[question.id]].title,
+                  score: answerObject[answersSubmit[question.id]].score,
+                },
               })),
             };
             if (!preview) {
-              navigation.navigate(Routes.QuizResult, params);
-
-              // onSubmit &&
-              //   onSubmit(params).then(() =>
-              //     navigation.navigate(Routes.QuizResult, {
-              //       questions,
-              //       answersList,
-              //       answers: answersSubmit,
-              //     })
-              //   );
+              onSubmit &&
+                onSubmit(params).then(() =>
+                  navigation.navigate(Routes.QuizResult, params)
+                );
             } else {
               onSubmit(params);
             }

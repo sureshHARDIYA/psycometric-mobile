@@ -15,7 +15,6 @@ export const useSubmit = () => {
         setTimeout(() => { submiting = false }, 5000);
         return data;
       } catch (e) {
-        console.log('E:', e, e.toString())
         throw e;
       } finally {
         submiting = false;

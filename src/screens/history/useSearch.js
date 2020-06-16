@@ -9,9 +9,6 @@ export const useSearch = (kind) => {
     orderBy: null,
     limit: 10,
     offset: 0,
-    filter: {
-      kind
-    }
   };
 
   const [variables, setOption] = useState(defaultVariables);
@@ -52,6 +49,7 @@ export const useSearch = (kind) => {
     max,
     count,
     loading,
+    setOption,
     handleLoadMore,
     onRefresh: refetch,
     error: error ? (Array.isArray(error) ? error : [error]).join(', ') : null,

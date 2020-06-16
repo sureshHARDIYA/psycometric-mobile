@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSubmit } from './useSubmit';
 import { Quiz as TakQuiz } from '../../components';
-import moment from 'moment';
 import shuffle from 'lodash/shuffle';
 
 export const Quiz = ({

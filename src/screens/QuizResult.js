@@ -1,11 +1,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import {
-  useNavigation,
-  CommonActions,
-  useRoute,
-  useNavigationState,
-} from '@react-navigation/native';
-import React, { useCallback, useState } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { TouchableOpacity, ScrollView } from 'react-native-gesture-handler';
 // import Markdown from 'react-native-markdown-display';
@@ -19,18 +14,7 @@ export const QuizResult = () => {
   const navigation = useNavigation();
   const { params } = useRoute();
   const [visible, setVisible] = useState(false);
-  const routes = useNavigationState((state) => state.routes);
   const { questions, total } = params;
-  console.log('params:', params);
-
-  const onReplay = useCallback(() => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 1,
-        routes: routes.slice(0, 2),
-      })
-    );
-  }, []);
 
   const { score } = questions.reduce(
     (obj, question) => {
@@ -55,11 +39,8 @@ export const QuizResult = () => {
               </View>
             </View>
             <View style={[styles.resultCaption]}>
-              <Text>
-                10- 15: are taken as the cut-off points for mild, moderate and
-                severe anxiety, respectively. When used as a screening tool,
-                further evaluation is recommended when the score is 10 or
-                greater
+              <Text style={{ textAlign: 'center' }}>
+                Show text rule on message in here
               </Text>
             </View>
             <View style={styles.buttons}>
@@ -72,11 +53,13 @@ export const QuizResult = () => {
                   color={Color.textColor}
                 />
               </Button>
-              <Button type="warning" style={styles.btnNext} onPress={onReplay}>
-                <Text style={styles.btnNextText}>Try again</Text>
+              <Button
+                type="warning"
+                style={styles.btnNext}
+                onPress={() => setVisible(true)}>
+                <Text style={styles.btnNextText}>View Summary</Text>
               </Button>
             </View>
-            <Button onPress={() => setVisible(true)}>View Summary</Button>
           </View>
         </ScrollView>
         <Summary
@@ -163,7 +146,7 @@ const styles = StyleSheet.create({
   btnNext: {
     margin: 10,
     height: 50,
-    width: 150,
+    width: 180,
     borderWidth: 2,
     borderRadius: 40,
     alignItems: 'center',

@@ -8,11 +8,8 @@ export const HISTORY_QUERY = gql `
       rows {
         id
         title
-        kind
         score
-        passed
-        randomizeQuestion
-        randomizeOptions
+        total
         questionnaire
         createdAt
       }

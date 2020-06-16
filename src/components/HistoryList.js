@@ -31,7 +31,9 @@ export const Item = ({ item, index, max }) => {
         <Text style={styles.itemTitle}>{item.title}</Text>
         <View style={styles.row}>
           <View style={[styles.captionAddon]}>
-            <Text style={styles.caption}>Score: 11</Text>
+            <Text style={styles.caption}>
+              Score: {item.score} / {item.total}
+            </Text>
           </View>
         </View>
       </View>
@@ -39,13 +41,7 @@ export const Item = ({ item, index, max }) => {
   );
 };
 
-export const HistoryList = ({
-  list,
-  max,
-  onRefresh,
-  loading,
-  handleLoadMore,
-}) => {
+export const HistoryList = ({ list, onRefresh, loading, handleLoadMore }) => {
   const navigation = useNavigation();
 
   return (
