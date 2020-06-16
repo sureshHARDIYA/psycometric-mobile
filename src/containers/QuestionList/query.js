@@ -18,18 +18,15 @@ export const QUESTIONNAIRE_DETAIL = gql `
         firstName
         lastName
       }
+      answers {
+        id
+        title
+        score
+        type
+      }
       questions {
         id
         title
-        explainAnswer
-        questionType
-        answers {
-          id
-          title
-          score
-          isCorrect
-          answerType
-        }
       }
       createdAt
       updatedAt

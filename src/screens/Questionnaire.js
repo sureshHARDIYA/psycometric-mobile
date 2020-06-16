@@ -1,69 +1,15 @@
-import { Modal } from '@ant-design/react-native';
-import {
-  Ionicons,
-  MaterialCommunityIcons,
-  Foundation,
-  AntDesign,
-} from '@expo/vector-icons';
+import { Ionicons, Foundation } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import _get from 'lodash/get';
-import sampleSize from 'lodash/sampleSize';
 import React, { useState, useMemo } from 'react';
 import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
 import { PlaceholderLine, Placeholder } from 'rn-placeholder';
 
-import { Tag } from '../components';
-import { Color, Questionnaire as Constant } from '../constants';
+import { Color } from '../constants';
 import { useSearch } from '../containers/QuestionList/useSearch';
 import { useFavourite } from '../containers/QuestionnaireList/useFavourite';
 import { Routes } from '../navigation';
-import { Text, Button, Container, Input } from '../themes';
-
-const Confirm = ({
-  visible,
-  questions,
-  defaultValue,
-  setVisible,
-  navigation,
-  id,
-}) => {
-  const [number, setNumber] = useState(defaultValue);
-
-  return (
-    <Modal
-      transparent
-      visible={visible}
-      title="Practice Question"
-      footer={[
-        { text: 'Cancel', onPress: () => false },
-        {
-          text: 'Ok',
-          onPress: () => {
-            const size = Math.abs(number);
-            if (size > 0 && size <= questions.length) {
-              navigation.navigate(Routes.QuizPractice, {
-                questions: sampleSize(questions, size),
-                id,
-              });
-            } else {
-              return Promise.reject(new Error(`${size} invalid number`));
-            }
-          },
-        },
-      ]}
-      onClose={() => setVisible(false)}>
-      <Text style={styles.subtitle}>
-        How many questions do you want to practice?(maximum: {questions.length})
-      </Text>
-      <Input
-        value={`${number}`}
-        style={styles.input}
-        keyboardType="number-pad"
-        onChangeText={(text) => setNumber(text)}
-      />
-    </Modal>
-  );
-};
+import { Text, Button, Container } from '../themes';
 
 export const Questionnaire = () => {
   const { params } = useRoute();
@@ -71,13 +17,13 @@ export const Questionnaire = () => {
   const navigation = useNavigation();
   const { questionnaire, loading } = useSearch(params.id);
   const [more, setMore] = useState(false);
-  const [visible, setVisible] = useState(false);
 
-  const { description, name, level, questions, favourited, id } = useMemo(
+  const { description, name, questions, favourited, answers, id } = useMemo(
     () => ({
       id: _get(questionnaire, 'id'),
       name: _get(questionnaire, 'name', ''),
       level: _get(questionnaire, 'level', ''),
+      answers: _get(questionnaire, 'answers', []),
       questions: _get(questionnaire, 'questions', []),
       favourited: _get(questionnaire, 'favourited', false),
       description: _get(questionnaire, 'description') || '',
@@ -85,11 +31,8 @@ export const Questionnaire = () => {
     [questionnaire]
   );
 
-  const number = Constant.LEVEL.indexOf(level) + 1;
   const notReady = !questionnaire || loading;
-  const disabled = notReady || !questions.length;
-  const defaultValue =
-    questions.length > 15 ? 15 : Math.ceil(questions.length / 2);
+  const disabled = notReady || !questions.length || !answers.length;
 
   return (
     <Container>
@@ -111,61 +54,21 @@ export const Questionnaire = () => {
               <PlaceholderLine />
             </Placeholder>
           ) : (
-            <Text style={styles.title}>{name}</Text>
-          )}
-          <View style={[styles.meta, styles.row]}>
-            <View style={{ flex: 1 }}>
-              {notReady ? (
-                <PlaceholderLine width={40} />
-              ) : (
-                <View style={styles.row}>
-                  <Tag
-                    title={level}
-                    type={number}
-                    onPress={() =>
-                      navigation.push(Routes.QuestionnaireLevel, { level })
-                    }
-                  />
-                  {!!questionnaire.author && (
-                    <TouchableOpacity
-                      style={styles.author}
-                      onPress={() =>
-                        navigation.push(Routes.Author, {
-                          id: questionnaire.author.id,
-                        })
-                      }>
-                      <AntDesign
-                        name="user"
-                        style={styles.favourite}
-                        color={Color.textColor}
-                      />
-                      <Text style={styles.authorText}>
-                        {questionnaire.author.firstName}
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                  {!!questionnaire.category && (
-                    <Tag
-                      title={questionnaire.category.name}
-                      type={6}
-                      onPress={() =>
-                        navigation.push(Routes.Category, questionnaire.category)
-                      }
-                    />
-                  )}
-                </View>
-              )}
+            <View style={[styles.meta, styles.row]}>
+              <View style={{ flexGrow: 1, justifyContent: 'center' }}>
+                <Text style={styles.title}>{name}</Text>
+              </View>
+              <Button
+                disabled={disabled}
+                style={[styles.favourite, favourited && styles.favourited]}
+                onPress={() => onFavourte(id)}>
+                <Ionicons
+                  name="ios-heart"
+                  color={favourited ? Color.danger : Color.gray}
+                />
+              </Button>
             </View>
-            <Button
-              disabled={disabled}
-              style={[styles.favourite, favourited && styles.favourited]}
-              onPress={() => onFavourte(id)}>
-              <Ionicons
-                name="ios-heart"
-                color={favourited ? Color.danger : Color.gray}
-              />
-            </Button>
-          </View>
+          )}
           {notReady ? (
             <>
               <PlaceholderLine width={50} />
@@ -197,36 +100,13 @@ export const Questionnaire = () => {
           disabled={disabled}
           style={styles.btnFooter}
           textStyle={{ fontWeight: '600' }}
-          onPress={() => setVisible(true)}>
-          <MaterialCommunityIcons
-            size={20}
-            name="incognito"
-            color={Color.white}
-          />
-          {`  Practice`}
-        </Button>
-        <Button
-          type="danger"
-          disabled={disabled}
-          style={styles.btnFooter}
-          textStyle={{ fontWeight: '600' }}
           onPress={() =>
-            navigation.navigate(Routes.QuizTest, { questions, id })
+            navigation.navigate(Routes.QuizTest, { questions, answers, id })
           }>
           <Foundation size={20} name="clipboard-pencil" color={Color.white} />
           {`  Take a test`}
         </Button>
       </View>
-      {defaultValue > 0 && (
-        <Confirm
-          id={id}
-          visible={visible}
-          questions={questions}
-          navigation={navigation}
-          setVisible={setVisible}
-          defaultValue={defaultValue}
-        />
-      )}
     </Container>
   );
 };
@@ -253,7 +133,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    marginTop: 20,
     fontWeight: '600',
   },
   meta: {

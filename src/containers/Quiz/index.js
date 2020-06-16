@@ -6,6 +6,7 @@ import shuffle from 'lodash/shuffle';
 
 export const Quiz = ({
   practice = false,
+  answers,
   questions: _questions = [],
   id,
 }) => {
@@ -18,6 +19,7 @@ export const Quiz = ({
   return (
     <TakQuiz
       id={id}
+      answers={answers}
       submiting={loading}
       onSubmit={onSubmit}
       practice={practice}

@@ -4,8 +4,8 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { TabBarIcon } from '../components/TabBar';
 import { Color } from '../constants';
 
-export const TabBar = ({ state, descriptors, navigation }) => (
-  <View style={styles.container}>
+export const TabBar = ({ state, descriptors, navigation, insets }) => (
+  <View style={[styles.container, { paddingBottom: insets.bottom - 10 }]}>
     {state.routes.map((route, index) => {
       const { options } = descriptors[route.key];
       const isFocused = state.index === index;

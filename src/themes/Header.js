@@ -43,7 +43,7 @@ export const HeaderMain = ({ left, right, children }) => (
       left
     ) : (
       <Text style={styles.logo}>
-        Q<Text style={styles.subtitle}>uizApp</Text>
+        P<Text style={styles.subtitle}>sychometric</Text>
       </Text>
     )}
     {children}
@@ -61,6 +61,19 @@ Header.Back = ({ navigation }) => (
     />
   </TouchableOpacity>
 );
+
+Header.Menu = () => {
+  return (
+    <TouchableOpacity>
+      <Ionicons
+        size={30}
+        name="ios-arrow-dropleft"
+        color={Color.black}
+        style={styles.icon}
+      />
+    </TouchableOpacity>
+  );
+};
 
 Header.Title = ({ children }) => <Text style={styles.title}>{children}</Text>;
 

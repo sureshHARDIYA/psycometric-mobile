@@ -2,7 +2,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 
 import * as Screens from '../screens';
-import BottomTabNavigator from './BottomTabNavigator';
 import { Routes } from './Routes';
 
 const Stack = createStackNavigator();
@@ -11,7 +10,7 @@ export const AuthNavigator = () => (
   <Stack.Navigator>
     <Stack.Screen
       name={Routes.Home}
-      component={BottomTabNavigator}
+      component={Screens.Home}
       options={{ header: () => null }}
     />
     <Stack.Screen

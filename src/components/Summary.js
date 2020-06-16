@@ -10,61 +10,37 @@ import {
   Platform,
 } from 'react-native';
 import Markdown from 'react-native-markdown-display';
+import { useSafeArea } from 'react-native-safe-area-context';
 
 import { Color, Layout, Size } from '../constants';
 import { Text, Header } from '../themes';
 
-export const Item = ({ item, correct, incorrect, practice }) => {
-  return (
-    <View
-      style={[
-        styles.item,
-        styles.shadow,
-        correct && styles.correct,
-        incorrect && styles.incorrect,
-      ]}>
-      <View style={styles.addon} />
-      <View style={[styles.itemLeft]}>
-        <Markdown style={{ body: styles.itemTitle }}>{item.title}</Markdown>
-      </View>
-      {practice && (
-        <View style={styles.answerList}>
-          <Text>Correct Answer(s):</Text>
-          {item.answers.map(
-            (answer) =>
-              answer.isCorrect && (
-                <View style={styles.answerItem} key={answer.id}>
-                  {['PICTURE'].includes(answer.answerType) ? (
-                    <Image
-                      style={{ width: 100, height: 100 }}
-                      source={{ uri: answer.title }}
-                    />
-                  ) : (
-                    <>
-                      <Markdown style={{ body: styles.answerText }}>
-                        {answer.title}
-                      </Markdown>
-                    </>
-                  )}
-                </View>
-              )
-          )}
-        </View>
-      )}
+export const Item = ({ item }) => (
+  <View style={[styles.item, styles.shadow]}>
+    <View style={styles.addon} />
+    <View style={[styles.itemLeft]}>
+      <Markdown style={{ body: styles.itemTitle }}>{item.title}</Markdown>
     </View>
-  );
-};
+    <View style={styles.answerList}>
+      <View style={styles.answerItem} key={item.answered.id}>
+        {['PICTURE'].includes(item.answered.type) ? (
+          <Image
+            style={{ width: 100, height: 100 }}
+            source={{ uri: item.answered.title }}
+          />
+        ) : (
+          <Markdown style={{ body: styles.answerText }}>
+            {item.answered.title}
+          </Markdown>
+        )}
+      </View>
+    </View>
+  </View>
+);
 
-export const Summary = ({
-  title,
-  setVisible,
-  questions,
-  none,
-  practice,
-  correct,
-  incorrect,
-  ...props
-}) => {
+export const Summary = ({ title, setVisible, questions, ...props }) => {
+  const insets = useSafeArea();
+
   return (
     <Modal
       closable
@@ -91,17 +67,12 @@ export const Summary = ({
         <FlatList
           style={styles.container}
           data={questions}
-          ListFooterComponent={() => <View style={styles.footer} />}
-          renderItem={({ item, index }) => (
-            <Item
-              item={item}
-              index={index}
-              practice={practice}
-              none={none.includes(item.id)}
-              correct={correct.includes(item.id)}
-              incorrect={incorrect.includes(item.id)}
+          ListFooterComponent={() => (
+            <View
+              style={[styles.footer, { paddingBottom: insets.bottom + 30 }]}
             />
           )}
+          renderItem={({ item, index }) => <Item item={item} index={index} />}
         />
       </>
     </Modal>
@@ -131,10 +102,6 @@ const styles = StyleSheet.create({
   answerText: {
     fontSize: 14,
     color: Color.textColor,
-  },
-  answerList: {
-    marginTop: 10,
-    paddingTop: 10,
   },
   answerItem: {
     // paddingBottom: 5,
@@ -193,7 +160,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   footer: {
-    marginBottom: 40,
+    marginBottom: 50,
   },
   correct: {
     borderWidth: 1,

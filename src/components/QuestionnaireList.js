@@ -1,4 +1,4 @@
-import { Entypo, Ionicons, AntDesign } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import {
@@ -10,70 +10,22 @@ import {
 } from 'react-native';
 import { PlaceholderLine, Placeholder } from 'rn-placeholder';
 
-import { Color, Layout, Questionnaire as Constant } from '../constants';
+import { Color, Layout } from '../constants';
 import { Routes } from '../navigation';
 import { Text } from '../themes';
-import { Tag } from './Tag';
 
-export const Item = ({ hide, item, navigation }) => {
-  const author = item.createdBy || {};
-  const number = Constant.LEVEL.indexOf(item.level) + 1;
-
+export const Item = ({ item, navigation }) => {
   return (
-    <View style={[styles.item, styles.shadow]}>
-      <View style={[styles.itemLeft]}>
-        <Text style={styles.itemTitle}>{item.name}</Text>
-        <View style={[styles.row, { flexWrap: 'wrap' }]}>
-          <Ionicons
-            name="ios-heart"
-            style={styles.favourite}
-            color={item.favourited ? Color.danger : Color.gray}
-          />
-          {hide !== 'level' && (
-            <Tag
-              title={item.level}
-              type={number}
-              onPress={() =>
-                navigation.push(Routes.QuestionnaireLevel, {
-                  level: item.level,
-                })
-              }
-            />
-          )}
-          {hide !== 'author' && author.firstName && (
-            <TouchableOpacity
-              style={styles.author}
-              onPress={() =>
-                navigation.push(Routes.Author, {
-                  id: author.id,
-                })
-              }>
-              <AntDesign
-                name="user"
-                style={styles.favourite}
-                color={Color.textColor}
-              />
-              <Text style={styles.authorText}>{author.firstName}</Text>
-            </TouchableOpacity>
-          )}
-          {hide !== 'category' && !!item.category && (
-            <Tag
-              title={item.category.name}
-              type={6}
-              onPress={() => navigation.push(Routes.Category, item.category)}
-            />
-          )}
-        </View>
-      </View>
-      <TouchableOpacity
-        type="transparent"
-        style={styles.btnRight}
-        onPress={() => navigation.push(Routes.Questionnaire, { id: item.id })}>
-        <View style={styles.rightIcon}>
-          <Entypo size={20} color={Color.primary} name="chevron-right" />
-        </View>
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity
+      style={[styles.item, styles.shadow]}
+      onPress={() => navigation.push(Routes.Questionnaire, { id: item.id })}>
+      <Ionicons
+        name="ios-heart"
+        style={styles.favourite}
+        color={item.favourited ? Color.danger : Color.gray}
+      />
+      <Text style={styles.itemTitle}>{item.name}</Text>
+    </TouchableOpacity>
   );
 };
 
@@ -136,7 +88,7 @@ const styles = StyleSheet.create({
   item: {
     flex: 1,
     margin: 2,
-    padding: 15,
+    padding: 20,
     marginBottom: 20,
     borderRadius: 6,
     flexDirection: Layout.row,
@@ -147,6 +99,7 @@ const styles = StyleSheet.create({
     flexDirection: Layout.row,
   },
   favourite: {
+    marginRight: 10,
     alignSelf: Layout.center,
   },
   shadow: {
@@ -179,6 +132,7 @@ const styles = StyleSheet.create({
   itemLeft: {
     flex: 1,
     paddingRight: 20,
+    flexDirection: 'row',
   },
   itemTitle: {
     fontSize: 16,

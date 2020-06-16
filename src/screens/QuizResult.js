@@ -1,82 +1,27 @@
-import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {
   useNavigation,
   CommonActions,
   useRoute,
   useNavigationState,
 } from '@react-navigation/native';
-import _difference from 'lodash/difference';
-import _get from 'lodash/get';
 import React, { useCallback, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity, ScrollView } from 'react-native-gesture-handler';
+// import Markdown from 'react-native-markdown-display';
 
 import { Summary } from '../components/Summary';
 import { Color, Size } from '../constants';
 import { Routes } from '../navigation';
 import { Text, Button, Container } from '../themes';
 
-const scoreMessage = (percent) => {
-  if (percent >= 90) {
-    return `Congratulation\nYou passed with Distinction`;
-  }
-  if (percent >= 80) {
-    return `Congratulation\nYou passed with First Divison`;
-  }
-  if (percent >= 65) {
-    return `Congratulation\nYou passed with Second Divison`;
-  }
-  if (percent >= 55) {
-    return `Congratulation\nYou passed with Third Divison`;
-  }
-  if (percent >= 45) {
-    return `Congratulation\nYou passed the test`;
-  }
-
-  return `Sorry\nYou failed the test\nYou must work hard`;
-};
-
 export const QuizResult = () => {
   const navigation = useNavigation();
   const { params } = useRoute();
   const [visible, setVisible] = useState(false);
   const routes = useNavigationState((state) => state.routes);
-  const { answers, questions, practice = true } = params;
-
-  const { score, correct, incorrect, none, total } = questions.reduce(
-    (preObj, question) => {
-      const obj = { ...preObj };
-      const questionId = question.id;
-      const answeredList = Object.entries(_get(answers, `${questionId}`, {}))
-        .filter(([_, value]) => value)
-        .map(([id]) => id);
-
-      const { correctList, score } = question.answers.reduce(
-        (rs, item) => {
-          if (item.isCorrect) {
-            return {
-              score: rs.score + item.score,
-              correctList: [...rs.correctList, item.id],
-            };
-          }
-
-          return rs;
-        },
-        { correctList: [], score: 0 }
-      );
-      obj.total += score;
-
-      if (!_difference(correctList, answeredList).length) {
-        obj.correct.push(questionId);
-        obj.score += score;
-      } else {
-        obj.incorrect.push(questionId);
-      }
-
-      return obj;
-    },
-    { score: 0, correct: [], incorrect: [], none: [], total: 0 }
-  );
+  const { questions, total } = params;
+  console.log('params:', params);
 
   const onReplay = useCallback(() => {
     navigation.dispatch(
@@ -87,68 +32,56 @@ export const QuizResult = () => {
     );
   }, []);
 
-  const percent = Math.ceil((score * 100) / total);
+  const { score } = questions.reduce(
+    (obj, question) => {
+      obj.score += question.answered.score;
+
+      return obj;
+    },
+    { score: 0 }
+  );
 
   return (
     <Container>
       <View style={styles.content}>
-        <View style={[styles.result, styles.shadow]}>
-          <Text
-            style={[styles.scoreCaption, percent >= 45 && styles.scorePassed]}>
-            {scoreMessage(percent)}
-          </Text>
-          <View style={styles.score}>
-            <Text style={styles.scoreText}>{percent}%</Text>
-            <View style={styles.summary}>
-              {correct.length > 0 && (
-                <View style={styles.summaryItem}>
-                  <Text style={styles.summaryText}>{correct.length}</Text>
-                  <FontAwesome5
-                    size={16}
-                    name="smile-wink"
-                    style={styles.emoji}
-                    color={Color.success}
-                  />
-                </View>
-              )}
-              {incorrect.length > 0 && (
-                <View style={styles.summaryItem}>
-                  <Text style={styles.summaryText}>{incorrect.length}</Text>
-                  <FontAwesome5
-                    size={16}
-                    name="sad-tear"
-                    style={styles.emoji}
-                    color={Color.error}
-                  />
-                </View>
-              )}
+        <ScrollView style={{ flex: 1, padding: 20, width: '100%' }}>
+          <View style={styles.content}>
+            <View style={[styles.result]}>
+              <View style={styles.score}>
+                <Text style={[styles.scoreCaption]}>Your score</Text>
+                <Text style={styles.scoreText}>
+                  {score + 1} / {total}
+                </Text>
+              </View>
             </View>
+            <View style={[styles.resultCaption]}>
+              <Text>
+                10- 15: are taken as the cut-off points for mild, moderate and
+                severe anxiety, respectively. When used as a screening tool,
+                further evaluation is recommended when the score is 10 or
+                greater
+              </Text>
+            </View>
+            <View style={styles.buttons}>
+              <Button
+                style={styles.btnClose}
+                onPress={() => navigation.navigate(Routes.Home)}>
+                <MaterialCommunityIcons
+                  size={30}
+                  name="window-close"
+                  color={Color.textColor}
+                />
+              </Button>
+              <Button type="warning" style={styles.btnNext} onPress={onReplay}>
+                <Text style={styles.btnNextText}>Try again</Text>
+              </Button>
+            </View>
+            <Button onPress={() => setVisible(true)}>View Summary</Button>
           </View>
-        </View>
-        <View style={styles.buttons}>
-          <Button
-            style={styles.btnClose}
-            onPress={() => navigation.navigate(Routes.Home)}>
-            <MaterialCommunityIcons
-              size={30}
-              name="window-close"
-              color={Color.textColor}
-            />
-          </Button>
-          <Button type="warning" style={styles.btnNext} onPress={onReplay}>
-            <Text style={styles.btnNextText}>Try again</Text>
-          </Button>
-        </View>
-        <Button onPress={() => setVisible(true)}>View Summary</Button>
+        </ScrollView>
         <Summary
-          practice={practice}
           visible={visible}
           setVisible={setVisible}
-          none={none}
-          score={score}
-          correct={correct}
-          answers={answers}
-          incorrect={incorrect}
           questions={questions}
           title="Summary"
         />
@@ -172,7 +105,6 @@ const styles = StyleSheet.create({
   },
   score: {
     flex: 1,
-    marginTop: 40,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -182,8 +114,9 @@ const styles = StyleSheet.create({
     color: Color.primary,
   },
   scoreCaption: {
-    fontSize: 20,
-    color: Color.danger,
+    fontSize: 28,
+    marginBottom: 20,
+    color: Color.success,
     textAlign: 'center',
   },
   scorePassed: {
@@ -192,11 +125,13 @@ const styles = StyleSheet.create({
   result: {
     padding: 30,
     maxWidth: 320,
-    // maxHeight: 300,
     width: Size.deviceWidth * 0.7,
-    height: Size.deviceWidth * 0.7,
     borderRadius: 10,
     backgroundColor: Color.white,
+  },
+  resultCaption: {
+    paddingTop: 30,
+    width: Size.deviceWidth * 0.7,
   },
   shadow: {
     shadowColor: '#000',
@@ -268,5 +203,10 @@ const styles = StyleSheet.create({
   },
   highlight: {
     color: Color.primary,
+  },
+  caption: {
+    margin: 20,
+    width: '100%',
+    maxWidth: 300,
   },
 });

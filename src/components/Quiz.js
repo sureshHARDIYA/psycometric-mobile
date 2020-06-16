@@ -1,10 +1,8 @@
 import { Modal } from '@ant-design/react-native';
-import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import _difference from 'lodash/difference';
 import _get from 'lodash/get';
-import _isEqual from 'lodash/isEqual';
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useMemo } from 'react';
 import {
   StyleSheet,
   View,
@@ -21,7 +19,7 @@ import { Routes } from '../navigation';
 import { Text, Button, Container } from '../themes';
 
 export const Quiz = ({
-  practice = false,
+  answers: answersList = [],
   questions = [],
   id: questionnaireId,
   onSubmit,
@@ -33,11 +31,25 @@ export const Quiz = ({
 }) => {
   const [current, setCurrent] = useState(0);
   const [answers, setAnswer] = useState({});
-  const [explans, setExplan] = useState({});
 
   const carouselRef = useRef(null);
   const navigation = useNavigation();
   const total = questions.length;
+
+  const { answerObject, maxScore } = useMemo(
+    () =>
+      answersList.reduce(
+        (obj, item) => ({
+          answerObject: {
+            ...obj.answerObject,
+            [item.id]: item,
+          },
+          maxScore: item.score > obj.maxScore ? item.score : obj.maxScore,
+        }),
+        { answerObject: {}, maxScore: 0 }
+      ),
+    [answersList]
+  );
 
   const onSnapToItem = (index) => setCurrent(index);
 
@@ -52,206 +64,142 @@ export const Quiz = ({
   const goBack = () =>
     preview
       ? onSkip()
-      : Modal.alert(
-          'Confirm',
-          `Sure to abort this ${practice ? 'Practice' : 'Test'}?`,
-          [
-            { text: 'No', onPress: () => false },
-            { text: 'Yes', onPress: () => navigation.goBack() },
-          ]
-        );
+      : Modal.alert('Confirm', `Sure to abort this Test?`, [
+          { text: 'No', onPress: () => false },
+          { text: 'Yes', onPress: () => navigation.goBack() },
+        ]);
 
   const goSubmit = useCallback(
     (answersSubmit) => {
       const duration = Math.ceil((Date.now() - startTime) / 1000);
 
-      Modal.alert(
-        'Confirm',
-        `Sure to submit this ${practice ? 'Practice' : 'Test'}?`,
-        [
-          { text: 'No', onPress: () => false },
-          {
-            text: 'Yes',
-            onPress: () => {
-              const params = {
-                duration,
-                randomizeQuestion: true,
-                questionnaire: questionnaireId,
-                kind: practice ? 'PRACTICE' : 'TEST',
-                questions: questions.map((question) => ({
-                  question: question.id,
-                  answers: Object.entries(
-                    answersSubmit[question.id] || {}
-                  ).reduce(
-                    (obj, [answerId, selected]) =>
-                      selected ? [...obj, answerId] : obj,
-                    []
-                  ),
-                })),
-              };
-              if (!preview) {
-                onSubmit &&
-                  onSubmit(params).then(() =>
-                    navigation.navigate(Routes.QuizResult, {
-                      practice,
-                      questions,
-                      answers: answersSubmit,
-                    })
-                  );
-              } else {
-                onSubmit(params);
-              }
-            },
+      Modal.alert('Confirm', `Sure to submit this This`, [
+        { text: 'No', onPress: () => false },
+        {
+          text: 'Yes',
+          onPress: () => {
+            const params = {
+              duration,
+              total: maxScore * questions.length,
+              randomizeQuestion: true,
+              questionnaire: questionnaireId,
+              questions: questions.map((question) => ({
+                id: question.id,
+                title: question.title,
+                answered: answerObject[answersSubmit[question.id]],
+              })),
+            };
+            if (!preview) {
+              navigation.navigate(Routes.QuizResult, params);
+
+              // onSubmit &&
+              //   onSubmit(params).then(() =>
+              //     navigation.navigate(Routes.QuizResult, {
+              //       questions,
+              //       answersList,
+              //       answers: answersSubmit,
+              //     })
+              //   );
+            } else {
+              onSubmit(params);
+            }
           },
-        ]
-      );
+        },
+      ]);
     },
-    [questionnaireId]
+    [questionnaireId, answersList, questions]
   );
 
-  const renderItem = ({ item }) => {
-    const questionId = item.id;
-    const answersList = item.answers || [];
-    const isSingle = item.questionType === 'SINGLE';
-    const correctList = answersList.reduce(
-      (rs, item) => (item.isCorrect ? [...rs, item.id] : rs),
-      []
-    );
-    const answeredList = Object.entries(_get(answers, `${questionId}`, {}))
-      .filter(([_, value]) => value)
-      .map(([id]) => id);
-    const answeredCorrect = _isEqual(correctList.sort(), answeredList.sort());
-    const hasWrong = _difference(answeredList, correctList).length > 0;
+  const renderItem = useCallback(
+    ({ item }) => {
+      const questionId = item.id;
+      const answered = typeof _get(answers, `${questionId}`) !== 'undefined';
 
-    return (
-      <ScrollView style={styles.content}>
-        <View style={styles.question}>
-          <Markdown style={markdownStyle}>{item.title}</Markdown>
-          {practice &&
-            answeredList.length > 0 &&
-            (hasWrong || answeredCorrect) && (
-              <View
-                style={[
-                  styles.explan,
-                  !explans[questionId] && { borderTopWidth: 0 },
-                ]}>
-                {explans[questionId] && (
-                  <Markdown style={{ body: markdownStyle.bodyItem }}>
-                    {item.explainAnswer}
-                  </Markdown>
-                )}
+      return (
+        <ScrollView style={styles.content}>
+          <View style={styles.question}>
+            <Markdown style={markdownStyle}>{item.title}</Markdown>
+          </View>
+          <View style={styles.answers}>
+            {answersList.map((answer) => {
+              const answerId = answer.id;
+              const answerType = answer.type || 'TEXT';
+
+              return (
                 <TouchableOpacity
-                  style={styles.btnExplan}
+                  key={answerId}
+                  style={[
+                    styles.answerItem,
+                    styles.shadow,
+                    _get(answers, `${questionId}`) === answerId &&
+                      styles.answerActive,
+                  ]}
                   onPress={() =>
-                    setExplan((pre) => ({
+                    setAnswer((pre) => ({
                       ...pre,
-                      [questionId]: !pre[questionId],
+                      [questionId]: answerId,
                     }))
                   }>
-                  <Text>{explans[questionId] ? 'Hide' : 'Show'} explan</Text>
-                  {hasWrong && (
-                    <FontAwesome5
-                      size={20}
-                      name="sad-tear"
-                      style={styles.emoji}
-                      color={Color.textColor}
-                    />
+                  {['CODE', 'TEXT'].includes(answerType) && (
+                    <Markdown style={{ body: markdownStyle.bodyItem }}>
+                      {answer.title}
+                    </Markdown>
                   )}
-                  {answeredCorrect && (
-                    <FontAwesome5
-                      size={20}
-                      name="smile-wink"
-                      style={styles.emoji}
-                      color={Color.success}
+                  {answerType === 'PICTURE' && (
+                    <Image
+                      style={{ width: 100, height: 100 }}
+                      source={{ uri: answer.title }}
                     />
                   )}
                 </TouchableOpacity>
-              </View>
-            )}
-        </View>
-        {!isSingle && (
-          <Text style={styles.caption}>Mutiple correct answers.</Text>
-        )}
-        <View style={styles.answers}>
-          {answersList.map((answer) => {
-            const answerId = answer.id;
-            const answered = _get(answers, `${questionId}.${answerId}`);
-            const wrong = practice && answered && !answer.isCorrect;
-            const correct = practice && answered && answer.isCorrect;
-
-            return (
-              <TouchableOpacity
-                key={answerId}
-                disabled={practice && (hasWrong || answeredCorrect)}
-                style={[
-                  styles.answerItem,
-                  styles.shadow,
-                  !!answered && styles.answerActive,
-                  wrong && styles.practiceWrong,
-                  correct && styles.practiceSuccess,
-                ]}
-                onPress={() =>
-                  setAnswer((pre) => ({
-                    ...pre,
-                    [questionId]: {
-                      ...(isSingle ? {} : _get(pre, questionId, {})),
-                      [answerId]: !answered,
-                    },
-                  }))
-                }>
-                {['CODE', 'TEXT'].includes(answer.answerType) && (
-                  <Markdown style={{ body: markdownStyle.bodyItem }}>
-                    {answer.title}
-                  </Markdown>
-                )}
-                {answer.answerType === 'PICTURE' && (
-                  <Image
-                    style={{ width: 100, height: 100 }}
-                    source={{ uri: answer.title }}
-                  />
-                )}
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-        <View style={styles.buttons}>
-          {current > 0 && (
-            <Button type="default" style={styles.btnPrev} onPress={goPrev}>
-              <MaterialCommunityIcons
-                size={30}
-                name="arrow-left"
-                color={Color.textColor}
-              />
-            </Button>
-          )}
-          {!current && (
-            <Button type="default" style={styles.btnPrev} onPress={goBack}>
-              <MaterialCommunityIcons
-                size={30}
-                name="window-close"
-                color={Color.textColor}
-              />
-            </Button>
-          )}
-          <View style={{ flex: 1, alignItems: 'flex-end' }}>
-            {current < total - 1 && (
-              <Button type="danger" style={styles.btnNext} onPress={goForward}>
-                <Text style={styles.btnNextText}>Next</Text>
-              </Button>
-            )}
-            {current === total - 1 && (
-              <Button
-                type="primary"
-                style={styles.btnNext}
-                onPress={() => goSubmit(answers)}>
-                <Text style={styles.btnNextText}>Submit</Text>
-              </Button>
-            )}
+              );
+            })}
           </View>
-        </View>
-      </ScrollView>
-    );
-  };
+          <View style={styles.buttons}>
+            {current > 0 && (
+              <Button type="default" style={styles.btnPrev} onPress={goPrev}>
+                <MaterialCommunityIcons
+                  size={30}
+                  name="arrow-left"
+                  color={Color.textColor}
+                />
+              </Button>
+            )}
+            {!current && (
+              <Button type="default" style={styles.btnPrev} onPress={goBack}>
+                <MaterialCommunityIcons
+                  size={30}
+                  name="window-close"
+                  color={Color.textColor}
+                />
+              </Button>
+            )}
+            <View style={{ flex: 1, alignItems: 'flex-end' }}>
+              {current < total - 1 && (
+                <Button
+                  type="primary"
+                  style={styles.btnNext}
+                  disabled={!answered}
+                  onPress={goForward}>
+                  <Text style={styles.btnNextText}>Next</Text>
+                </Button>
+              )}
+              {current === total - 1 && (
+                <Button
+                  type="primary"
+                  disabled={!answered}
+                  style={styles.btnNext}
+                  onPress={() => goSubmit(answers)}>
+                  <Text style={styles.btnNextText}>Submit</Text>
+                </Button>
+              )}
+            </View>
+          </View>
+        </ScrollView>
+      );
+    },
+    [answersList, answers, current]
+  );
 
   return (
     <Container>
@@ -269,6 +217,8 @@ export const Quiz = ({
         </View>
       </View>
       <Carousel
+        lockScrollWhileSnapping
+        scrollEnabled={false}
         ref={carouselRef}
         data={questions}
         renderItem={renderItem}
@@ -348,7 +298,7 @@ const styles = StyleSheet.create({
     top: 0,
     height: 35,
     position: 'absolute',
-    backgroundColor: Color.danger,
+    backgroundColor: Color.primary,
   },
   content: {
     padding: 20,

@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { SplashScreen } from 'expo';
 import * as Font from 'expo-font';
 import { StatusBar, StyleSheet, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { DrawerNavigator, UnauthNavigator } from './navigation';
 import useLinking from './navigation/useLinking';
@@ -55,9 +56,11 @@ export default function Root(props) {
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor={Color.white} barStyle="dark-content" />
-        <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
-          {isAuthenticated ? <DrawerNavigator /> : <UnauthNavigator />}
-        </NavigationContainer>
+        <SafeAreaProvider>
+          <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
+            {isAuthenticated ? <DrawerNavigator /> : <UnauthNavigator />}
+          </NavigationContainer>
+        </SafeAreaProvider>
       </View>
     );
   }

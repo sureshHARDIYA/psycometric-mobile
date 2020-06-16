@@ -3,6 +3,7 @@ import { AntDesign } from '@expo/vector-icons';
 import _get from 'lodash/get';
 import React, { useCallback } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { useSafeArea } from 'react-native-safe-area-context';
 
 import { Color } from '../constants';
 import { useAuth } from '../containers/Auth';
@@ -12,6 +13,7 @@ import { Avatar } from './Avatar';
 
 export const DrawerContent = ({ navigation }) => {
   const { currentUser, onLogout } = useAuth();
+  const insets = useSafeArea();
 
   const logout = useCallback(() => {
     Modal.alert('Confirm', `Confirm to log out?`, [
@@ -22,11 +24,11 @@ export const DrawerContent = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 20 }]}>
         <Avatar email={_get(currentUser, 'email')} />
         <Text style={styles.name}>{_get(currentUser, 'firstName')}</Text>
         <TouchableOpacity
-          style={styles.btnEdit}
+          style={[styles.btnEdit, { top: insets.top + 10 }]}
           onPress={() => navigation.navigate(Routes.Profile)}>
           <AntDesign size={20} name="edit" color={Color.white} />
         </TouchableOpacity>

@@ -20,8 +20,7 @@ export const Item = ({ item, index, max }) => {
             index === max && styles.last,
           ]}
         />
-        <View
-          style={[styles.circle, styles.shadow, item.passed && styles.passed]}>
+        <View style={[styles.circle, styles.shadow, styles.passed]}>
           <Text style={styles.time}>{createdAt.format('HH:mm')}</Text>
           <Text style={[styles.time, { fontSize: 10 }]}>
             {createdAt.format('DD')}/{createdAt.format('MMM')}
@@ -31,14 +30,8 @@ export const Item = ({ item, index, max }) => {
       <View style={[styles.itemRight, styles.shadow]}>
         <Text style={styles.itemTitle}>{item.title}</Text>
         <View style={styles.row}>
-          <View
-            style={[
-              styles.captionAddon,
-              item.passed && { backgroundColor: Color.success },
-            ]}>
-            <Text style={styles.caption}>
-              {item.passed ? 'PASSED' : 'FAILURE'}
-            </Text>
+          <View style={[styles.captionAddon]}>
+            <Text style={styles.caption}>Score: 11</Text>
           </View>
         </View>
       </View>
@@ -64,13 +57,6 @@ export const HistoryList = ({
       )}
       refreshControl={
         <RefreshControl refreshing={loading} onRefresh={onRefresh} />
-      }
-      ListHeaderComponent={() =>
-        (list || []).length > 0 && (
-          <View style={[styles.header]}>
-            <Text>Max score: {max}</Text>
-          </View>
-        )
       }
       ListEmptyComponent={() => (
         <View style={[styles.itemRight, styles.shadow]}>
@@ -194,7 +180,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
-    backgroundColor: Color.danger,
+    backgroundColor: Color.success,
   },
   itemRight: {
     flex: 1,

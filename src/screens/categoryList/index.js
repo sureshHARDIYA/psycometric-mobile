@@ -14,8 +14,6 @@ export const CategoryList = () => {
   const navigation = useNavigation();
   const { list, loading, error, onSearch, handleLoadMore, current } = useSearch();
 
-  console.log('error:', error)
-
   return (
     <Container backgroundColor={Color.background}>
       <HeaderMain />
@@ -72,7 +70,7 @@ const Item = ({ item, navigation }) => {
           <Text style={styles.title}>{item.name}</Text>
         </TouchableOpacity>
         <View style={styles.caption}>
-          <Text style={styles.subtitle}>{item.description.substr(0, 100)}</Text>
+          {!!item.description && <Text style={styles.subtitle}>{item.description.substr(0, 100)}</Text>}
         </View>
       </View>
     </View>
