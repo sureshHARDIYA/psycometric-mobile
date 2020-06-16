@@ -1,17 +1,16 @@
 import React, { useMemo, useRef, useEffect } from 'react';
-import { StyleSheet, View, Image, TouchableOpacity, ActivityIndicator as Loading, RefreshControl } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ActivityIndicator as Loading, RefreshControl } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import _get from 'lodash/get';
 
 import { Color } from '../../constants';
-import { Header, HeaderMain, Text, Form, Input, Checkbox, Container } from '../../themes';
+import { Header, HeaderMain, Text, Form, Input, Container } from '../../themes';
 import { useAuth } from '../../containers/Auth';
 import { useSubmit } from './useSubmit';
 import { useCategory } from './useCategory';
 import { Avatar } from '../../components';
 
 export const Profile = ({ navigation }) => {
-  const { list } = useCategory({ limit: 1000 });
   const { currentUser, loading: userLoading, refetch } = useAuth();
   const lastNameRef = useRef(null);
   const { loading, onSubmit } = useSubmit();
@@ -31,13 +30,11 @@ export const Profile = ({ navigation }) => {
       { email: _get(currentUser, 'email') },
       { firstName: _get(currentUser, 'firstName') },
       { lastName: _get(currentUser, 'lastName') },
-      { intrestedCategories: _get(currentUser, 'intrestedCategories', []).map(({ id }) => id) },
     ])
   }, [
     _get(currentUser, 'email'),
     _get(currentUser, 'firstName'),
     _get(currentUser, 'lastName'),
-    _get(currentUser, 'intrestedCategories'),
   ])
 
   return (
@@ -110,19 +107,6 @@ export const Profile = ({ navigation }) => {
               />
             }
             onChange={(args) => args[0].nativeEvent.text}
-          />
-          <Controller
-            control={control}
-            name="intrestedCategories"
-            as={
-              <Checkbox
-                label="Which categories are you interested in?"
-                disabled={loading}
-                style={styles.input}
-              >
-                {list.map((item) => <Checkbox.Item value={item.id} key={item.id}>{item.name}</Checkbox.Item>)}
-              </Checkbox>
-            }
           />
         </Form>
       </Container>

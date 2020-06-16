@@ -1,1 +1,1 @@
-export { Register } from './Register';
+export { Final as Register } from './Final';

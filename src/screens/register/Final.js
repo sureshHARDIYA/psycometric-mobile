@@ -1,5 +1,5 @@
 import React, { useRef, useCallback, useEffect } from 'react';
-import { useFormContext, Controller } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { StyleSheet, View, Image, ActivityIndicator as Spin } from 'react-native';
 import { useRegister } from './useRegister';
 import { Color, Images, Size, Layout } from '../../constants';
@@ -8,7 +8,7 @@ import { Routes } from '../../navigation'
 
 export const Final = ({ navigation }) => {
   const passwordRef = useRef(null);
-  const { control, handleSubmit, errors } = useFormContext();
+  const { control, handleSubmit, errors } = useForm();
   const { onRegister, loading, error } = useRegister();
   const onSubmitEditing = useCallback(() => passwordRef.current.focus(), []);
 
