@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
-import { SplashScreen } from 'expo';
+import { SplashScreen, Notifications } from 'expo';
 import * as Font from 'expo-font';
+import Constants from 'expo-constants';
 import { StatusBar, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import * as Permissions from 'expo-permissions';
 
 import { DrawerNavigator, UnauthNavigator } from './navigation';
 import useLinking from './navigation/useLinking';
@@ -13,14 +15,51 @@ import { useAuth } from './containers/Auth';
 import { Color } from './constants';
 
 export default function Root(props) {
-  const { authenticate, isAuthenticated } = useAuth();
+  const [token, setToken] = useState(null);
+  const { authenticate, isAuthenticated, createToken } = useAuth();
   const [isLoadingComplete, setLoadingComplete] = React.useState(false);
   const [initialNavigationState, setInitialNavigationState] = React.useState();
   const containerRef = React.useRef();
   const { getInitialState } = useLinking(containerRef);
 
+  registerForPushNotificationsAsync = useCallback(async () => {
+    if (Constants.isDevice) {
+      const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+        finalStatus = status;
+      }
+
+      if (finalStatus === 'granted') {
+        setToken(await Notifications.getExpoPushTokenAsync())
+      }
+    }
+
+    if (Platform.OS === 'android') {
+      Notifications.createChannelAndroidAsync('default', {
+        name: 'default',
+        sound: true,
+        priority: 'max',
+        vibrate: [0, 250, 250, 250],
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    registerForPushNotificationsAsync();
+  }, [isAuthenticated])
+
+  useEffect(() => {
+    if (token) {
+      createToken(token)
+      console.log('token:', token);
+    }
+  }, [token, isAuthenticated]);
+
   // Load any resources or data that we need prior to rendering the app
-  React.useEffect(() => {
+  useEffect(() => {
     async function loadResourcesAndDataAsync() {
       try {
         SplashScreen.preventAutoHide();

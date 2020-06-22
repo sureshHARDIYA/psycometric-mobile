@@ -22,7 +22,6 @@ export const Questionnaire = () => {
     () => ({
       id: _get(questionnaire, 'id'),
       name: _get(questionnaire, 'name', ''),
-      level: _get(questionnaire, 'level', ''),
       answers: _get(questionnaire, 'answers', []),
       questions: _get(questionnaire, 'questions', []),
       favourited: _get(questionnaire, 'favourited', false),

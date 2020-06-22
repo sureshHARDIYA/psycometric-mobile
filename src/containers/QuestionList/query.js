@@ -5,19 +5,9 @@ export const QUESTIONNAIRE_DETAIL = gql `
     questionnaire: questionnaireFind(id: $id) {
       id
       name
-      description
       status
-      level
+      description
       favourited
-      category {
-        id
-        name
-      }
-      author: createdBy {
-        id
-        firstName
-        lastName
-      }
       answers {
         id
         title

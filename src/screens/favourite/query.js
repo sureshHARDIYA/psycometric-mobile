@@ -11,17 +11,7 @@ export const USER_QUESTIONNAIRE_LIST = gql `
           name
           description
           status
-          level
           favourited
-          category {
-            id
-            name
-          }
-          createdBy {
-            id
-            firstName
-            lastName
-          }
           updatedAt
           createdAt
         }

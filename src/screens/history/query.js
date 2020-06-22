@@ -10,7 +10,6 @@ export const HISTORY_QUERY = gql `
         title
         score
         total
-        questionnaire
         createdAt
       }
     }

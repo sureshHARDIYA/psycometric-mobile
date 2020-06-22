@@ -11,12 +11,10 @@ export const Routes = {
   Profile: 'Profile',
   Register: 'Register',
   History: 'History',
-  Category: 'Category',
   Favourite: 'Favourite',
   QuizTest: 'QuizTest',
   QuizResult: 'QuizResult',
   QuizPractice: 'QuizPractice',
-  CategoryList: 'CategoryList',
   Questionnaire: 'Questionnaire',
   QuestionnaireLevel: 'QuestionnaireLevel',
 };

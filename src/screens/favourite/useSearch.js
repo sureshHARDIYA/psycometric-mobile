@@ -4,13 +4,11 @@ import _set from 'lodash/fp/set';
 import { useState } from "react";
 import { USER_QUESTIONNAIRE_LIST } from "./query";
 
-export const useSearch = ({ level } = {}) => {
+export const useSearch = () => {
   const defaultVariables = {
     filter: {
       createdAtRange: [],
-      level,
       status: 'ACTIVE',
-      category: null,
     },
     orderBy: null,
     limit: 10,

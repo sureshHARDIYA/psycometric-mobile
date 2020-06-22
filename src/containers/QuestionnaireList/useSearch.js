@@ -1,19 +1,14 @@
 import { useQuery } from "@apollo/react-hooks";
 import _get from 'lodash/get';
 import _set from 'lodash/fp/set';
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { QUESTIONNAIRE_LIST } from "./query";
-import { useAuth } from "../Auth";
 
-export const useSearch = ({ level } = {}) => {
-  const { categoryIds } = useAuth();
-
+export const useSearch = ({} = {}) => {
   const defaultVariables = {
     filter: {
       createdAtRange: [],
-      level,
       status: 'ACTIVE',
-      category: null,
     },
     orderBy: null,
     limit: 10,
@@ -23,25 +18,9 @@ export const useSearch = ({ level } = {}) => {
   const [variables, setOption] = useState(defaultVariables);
 
   const { loading, error, data, fetchMore, refetch } = useQuery(QUESTIONNAIRE_LIST, {
-    variables: {
-      ...variables,
-      filter: {
-        ...variables.filter,
-        category: (variables.filter.category || []).length > 0 ? categoryIds : null,
-      }
-    },
+    variables,
     fetchPolicy: "cache-and-network"
   });
-
-  useEffect(() => {
-    setOption((pre) => ({
-      ...pre,
-      filter: {
-        ...pre.filter,
-        category: categoryIds
-      }
-    }))
-  }, [categoryIds])
 
   const list = _get(data, 'result.rows', []);
   const count = _get(data, 'result.count', 0);

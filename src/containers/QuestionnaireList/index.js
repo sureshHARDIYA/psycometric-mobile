@@ -36,8 +36,8 @@ export const SearchBar = ({ onSearchName }) => {
   )
 }
 
-export const QuestionnaireList = ({ level, search = true, ...props }) => {
-  const { list, loading, onRefresh, handleLoadMore, current, onSearchName } = useSearch({ level });
+export const QuestionnaireList = ({ search = true, ...props }) => {
+  const { list, loading, onRefresh, handleLoadMore, current, onSearchName } = useSearch();
 
   return (
     <View style={styles.container}>

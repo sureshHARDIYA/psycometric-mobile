@@ -5,7 +5,7 @@ import { getToken } from "./containers/Auth";
 
 console.log('GRAPHQL_URL:', uri);
 
-const httpLink = new HttpLink({ uri: "http://localhost:8080/api" });
+const httpLink = new HttpLink({ uri });
 const authLink = setContext(async (_, { headers }) => {
   let accessToken;
 

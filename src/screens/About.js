@@ -27,17 +27,17 @@ export const About = ({ navigation }) => (
     </Header>
     <ScrollView style={styles.content}>
       <Text style={styles.text}>
-        <Text style={styles.bold}>Tech Quiz</Text> is a free app created for
+        <Text style={styles.bold}>Psychometric</Text> is a free app created for
         beginners to advanced IT students, developers, designers, and another
         computer scientist. You can create a free account and start learning.
       </Text>
       <Text style={styles.text}>
-        <Text style={styles.bold}>Tech Quiz</Text> is the entertainment trivia
-        game where you get unlimited questions that can’t be found anywhere
-        else.
+        <Text style={styles.bold}>Psychometric</Text> is the entertainment
+        trivia game where you get unlimited questions that can’t be found
+        anywhere else.
       </Text>
       <Text style={styles.text}>
-        Install <Text style={styles.bold}>Tech Quiz</Text> and answer trivia
+        Install <Text style={styles.bold}>Psychometric</Text> and answer trivia
         questions, read interesting explanations, educate yourself!
       </Text>
       <Text style={styles.text}>
@@ -48,7 +48,7 @@ export const About = ({ navigation }) => (
         Join the league of top players and collect achievements of all kinds.
       </Text>
       <Text style={styles.text}>
-        <Text style={styles.bold}>Tech Quiz</Text> is:
+        <Text style={styles.bold}>Psychometric</Text> is:
       </Text>
       <Text style={styles.text}>
         - Free trivia game to test your IQ and general knowledge
@@ -64,7 +64,8 @@ export const About = ({ navigation }) => (
       </Text>
       <Text style={styles.text}>- Detailed explanation for every question</Text>
       <Text style={styles.text}>
-        <Text style={styles.bold}>Tech Quiz</Text> makes learning easy and fun!
+        <Text style={styles.bold}>Psychometric</Text> makes learning easy and
+        fun!
       </Text>
       <Text style={styles.text}>
         <Text style={styles.bold}>Development Team:</Text>

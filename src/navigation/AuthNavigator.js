@@ -24,28 +24,8 @@ export const AuthNavigator = () => (
       options={{ header: () => null }}
     />
     <Stack.Screen
-      name={Routes.QuizPractice}
-      component={Screens.QuizPractice}
-      options={{ header: () => null }}
-    />
-    <Stack.Screen
       name={Routes.QuizResult}
       component={Screens.QuizResult}
-      options={{ header: () => null }}
-    />
-    <Stack.Screen
-      name={Routes.Category}
-      component={Screens.Category}
-      options={{ header: () => null }}
-    />
-    <Stack.Screen
-      name={Routes.QuestionnaireLevel}
-      component={Screens.QuestionnaireLevel}
-      options={{ header: () => null }}
-    />
-    <Stack.Screen
-      name={Routes.Author}
-      component={Screens.Author}
       options={{ header: () => null }}
     />
     <Stack.Screen
@@ -66,16 +46,6 @@ export const AuthNavigator = () => (
     <Stack.Screen
       name={Routes.About}
       component={Screens.About}
-      options={{ header: () => null }}
-    />
-    <Stack.Screen
-      name={Routes.Created}
-      component={Screens.Created}
-      options={{ header: () => null }}
-    />
-    <Stack.Screen
-      name={Routes.CategoryList}
-      component={Screens.CategoryList}
       options={{ header: () => null }}
     />
     <Stack.Screen

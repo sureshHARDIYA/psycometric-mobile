@@ -37,7 +37,7 @@ export const Feedback = ({ navigation }) => {
       <ScrollView style={styles.content}>
         <Form>
           <Text style={styles.text}>
-            <Text style={styles.bold}>Tech Quiz</Text> is a free app created for
+            <Text style={styles.bold}>Psychometric</Text> is a free app created for
             beginners to advanced IT students, developers, designers, and another
             computer scientist.
           </Text>

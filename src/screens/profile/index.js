@@ -7,7 +7,6 @@ import { Color } from '../../constants';
 import { Header, HeaderMain, Text, Form, Input, Container } from '../../themes';
 import { useAuth } from '../../containers/Auth';
 import { useSubmit } from './useSubmit';
-import { useCategory } from './useCategory';
 import { Avatar } from '../../components';
 
 export const Profile = ({ navigation }) => {

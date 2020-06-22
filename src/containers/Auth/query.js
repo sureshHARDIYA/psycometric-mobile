@@ -12,9 +12,6 @@ export const AUTH_ME = gql `
       phoneNumber
       email
       roles
-      intrestedCategories {
-        id
-      }
       avatars {
         id
         name
