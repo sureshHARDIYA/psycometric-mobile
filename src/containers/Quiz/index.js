@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react';
 import { useSubmit } from './useSubmit';
-import { Quiz as TakQuiz } from '../../components';
+import { Quiz as TakeQuiz } from '../../components';
 import shuffle from 'lodash/shuffle';
 
 export const Quiz = ({
   practice = false,
   answers,
+  rules,
   questions: _questions = [],
   id,
 }) => {
@@ -16,8 +17,9 @@ export const Quiz = ({
   })), [_questions]);
 
   return (
-    <TakQuiz
+    <TakeQuiz
       id={id}
+      rules={rules}
       answers={answers}
       submiting={loading}
       onSubmit={onSubmit}

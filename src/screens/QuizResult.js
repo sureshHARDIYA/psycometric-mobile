@@ -3,7 +3,6 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { TouchableOpacity, ScrollView } from 'react-native-gesture-handler';
-// import Markdown from 'react-native-markdown-display';
 
 import { Summary } from '../components/Summary';
 import { Color, Size } from '../constants';
@@ -14,16 +13,7 @@ export const QuizResult = () => {
   const navigation = useNavigation();
   const { params } = useRoute();
   const [visible, setVisible] = useState(false);
-  const { questions, total } = params;
-
-  const { score } = questions.reduce(
-    (obj, question) => {
-      obj.score += question.answered.score;
-
-      return obj;
-    },
-    { score: 0 }
-  );
+  const { questions, total, score, caption } = params;
 
   return (
     <Container>
@@ -38,11 +28,14 @@ export const QuizResult = () => {
                 </Text>
               </View>
             </View>
-            <View style={[styles.resultCaption]}>
-              <Text style={{ textAlign: 'center' }}>
-                Show text rule on message in here
-              </Text>
-            </View>
+            {!!caption && (
+              <View style={[styles.resultCaption]}>
+                <Text style={{ textAlign: 'center', marginBottom: 5 }}>
+                  Result:
+                </Text>
+                <Text style={{ textAlign: 'center' }}>{caption}</Text>
+              </View>
+            )}
             <View style={styles.buttons}>
               <Button
                 style={styles.btnClose}

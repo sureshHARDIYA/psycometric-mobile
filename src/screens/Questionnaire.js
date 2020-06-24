@@ -18,11 +18,20 @@ export const Questionnaire = () => {
   const { questionnaire, loading } = useSearch(params.id);
   const [more, setMore] = useState(false);
 
-  const { description, name, questions, favourited, answers, id } = useMemo(
+  const {
+    description,
+    name,
+    questions,
+    favourited,
+    answers,
+    id,
+    rules,
+  } = useMemo(
     () => ({
       id: _get(questionnaire, 'id'),
       name: _get(questionnaire, 'name', ''),
       answers: _get(questionnaire, 'answers', []),
+      rules: _get(questionnaire, 'rules', []),
       questions: _get(questionnaire, 'questions', []),
       favourited: _get(questionnaire, 'favourited', false),
       description: _get(questionnaire, 'description') || '',
@@ -100,7 +109,12 @@ export const Questionnaire = () => {
           style={styles.btnFooter}
           textStyle={{ fontWeight: '600' }}
           onPress={() =>
-            navigation.navigate(Routes.QuizTest, { questions, answers, id })
+            navigation.navigate(Routes.QuizTest, {
+              questions,
+              answers,
+              id,
+              rules,
+            })
           }>
           <Foundation size={20} name="clipboard-pencil" color={Color.white} />
           {`  Take a test`}

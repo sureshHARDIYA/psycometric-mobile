@@ -18,6 +18,22 @@ import { Color, Size } from '../constants';
 import { Routes } from '../navigation';
 import { Text, Button, Container } from '../themes';
 
+const parseMessage = (score, rules) => {
+  const orderRules = rules.sort((a, b) => a.min - b.min);
+
+  for (const rule of orderRules) {
+    if (
+      (rule.max >= score && score >= rule.min) ||
+      (!rule.min && rule.max >= score) ||
+      (!rule.max && rule.min <= score)
+    ) {
+      return rule;
+    }
+  }
+
+  return null;
+};
+
 export const Quiz = ({
   answers: answersList = [],
   questions = [],
@@ -28,6 +44,7 @@ export const Quiz = ({
   preview,
   onSkip,
   loading,
+  rules,
 }) => {
   const [current, setCurrent] = useState(0);
   const [answers, setAnswer] = useState({});
@@ -78,22 +95,50 @@ export const Quiz = ({
         {
           text: 'Yes',
           onPress: () => {
+            const _questions = questions.map((question) => ({
+              id: question.id,
+              title: question.title,
+              answered: {
+                id: answerObject[answersSubmit[question.id]].id,
+                type: answerObject[answersSubmit[question.id]].type,
+                title: answerObject[answersSubmit[question.id]].title,
+                score: answerObject[answersSubmit[question.id]].score,
+              },
+            }));
+
+            const score = _questions.reduce(
+              (total, question) => total + question.answered.score,
+              0
+            );
+
+            const result = () => {
+              const rule = parseMessage(score, rules);
+
+              if (!rule) {
+                return null;
+              }
+
+              return `${
+                rule.min
+                  ? rule.max
+                    ? `${rule.min} - ${rule.max}: `
+                    : `>= ${rule.min}: `
+                  : rule.max
+                  ? `<= ${rule.max}: `
+                  : ''
+              } ${rule.message || ''}`;
+            };
+
             const params = {
+              score,
               duration,
-              total: maxScore * questions.length,
+              caption: result(),
+              questions: _questions,
               randomizeQuestion: true,
               questionnaire: questionnaireId,
-              questions: questions.map((question) => ({
-                id: question.id,
-                title: question.title,
-                answered: {
-                  id: answerObject[answersSubmit[question.id]].id,
-                  type: answerObject[answersSubmit[question.id]].type,
-                  title: answerObject[answersSubmit[question.id]].title,
-                  score: answerObject[answersSubmit[question.id]].score,
-                },
-              })),
+              total: maxScore * questions.length,
             };
+
             if (!preview) {
               onSubmit &&
                 onSubmit(params).then(() =>
@@ -106,7 +151,7 @@ export const Quiz = ({
         },
       ]);
     },
-    [questionnaireId, answersList, questions]
+    [questionnaireId, answersList, questions, rules]
   );
 
   const renderItem = useCallback(

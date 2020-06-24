@@ -18,6 +18,11 @@ export const QUESTIONNAIRE_DETAIL = gql `
         id
         title
       }
+      rules {
+        min
+        max
+        message
+      }
       createdAt
       updatedAt
     }
