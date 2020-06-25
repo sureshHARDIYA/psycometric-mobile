@@ -11,7 +11,7 @@ export const useSubmit = () => {
       const profile = {
         lastName: form.lastName,
         firstName: form.firstName,
-        intrestedCategories: form.intrestedCategories,
+        notification: form.notification,
       };
 
       await submit({

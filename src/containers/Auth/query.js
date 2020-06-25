@@ -12,6 +12,7 @@ export const AUTH_ME = gql `
       phoneNumber
       email
       roles
+      notification
       avatars {
         id
         name

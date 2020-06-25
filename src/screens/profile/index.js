@@ -2,9 +2,9 @@ import React, { useMemo, useRef, useEffect } from 'react';
 import { StyleSheet, View, TouchableOpacity, ActivityIndicator as Loading, RefreshControl } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import _get from 'lodash/get';
-
+import moment from 'moment';
 import { Color } from '../../constants';
-import { Header, HeaderMain, Text, Form, Input, Container } from '../../themes';
+import { Header, HeaderMain, Text, Form, Input, Container, DatePicker } from '../../themes';
 import { useAuth } from '../../containers/Auth';
 import { useSubmit } from './useSubmit';
 import { Avatar } from '../../components';
@@ -13,7 +13,13 @@ export const Profile = ({ navigation }) => {
   const { currentUser, loading: userLoading, refetch } = useAuth();
   const lastNameRef = useRef(null);
   const { loading, onSubmit } = useSubmit();
-  const { control, handleSubmit, getValues, watch, errors, setValue } = useForm({ defaultValues: currentUser || {} });
+
+  const { control, handleSubmit, getValues, watch, errors, setValue } = useForm({
+    defaultValues:  {
+      ...(currentUser || {}),
+      notification: moment(_get(currentUser, 'notification') || new Date()).toDate()
+    }
+  });
 
   useEffect(() => {
     refetch();
@@ -27,13 +33,15 @@ export const Profile = ({ navigation }) => {
   useEffect(() => {
     setValue([
       { email: _get(currentUser, 'email') },
-      { firstName: _get(currentUser, 'firstName') },
       { lastName: _get(currentUser, 'lastName') },
+      { firstName: _get(currentUser, 'firstName') },
+      { notification: moment(_get(currentUser, 'notification') || new Date()).toDate() },
     ])
   }, [
     _get(currentUser, 'email'),
-    _get(currentUser, 'firstName'),
     _get(currentUser, 'lastName'),
+    _get(currentUser, 'firstName'),
+    _get(currentUser, 'notification'),
   ])
 
   return (
@@ -107,6 +115,20 @@ export const Profile = ({ navigation }) => {
             }
             onChange={(args) => args[0].nativeEvent.text}
           />
+
+          <Controller
+            control={control}
+            name="notification"
+            as={
+              <DatePicker
+                mode="time"
+                value={moment().toDate()}
+                label="Time send notification"
+              />
+            }
+            onChange={(args) => args[1]}
+          />
+
         </Form>
       </Container>
     </Container>
