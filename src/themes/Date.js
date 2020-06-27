@@ -1,6 +1,13 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import moment from 'moment';
+import React, { useState, useCallback, useEffect } from 'react';
+import {
+  View,
+  Text,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 
 import { Font, Color, Layout, Size } from '../constants';
 import Label from './Text';
@@ -17,16 +24,47 @@ export default React.forwardRef(
       light,
       height,
       Icon,
+      value,
+      format = 'DD-MM-YYYY',
+      defaultValue,
+      onChange,
       ...props
     },
     ref
   ) => {
     const theme = {
+      borderWidth: 1,
+      padding: 10,
+      paddingRight: 25,
       position: 'relative',
+      alignItems: 'center',
       height: height || Size.input,
       fontFamily: Font.fontFamily,
       flexDirection: Layout.row,
+      borderRadius: Size.inputRadius,
+      borderColor: light ? Color.white : Color.inputBorder,
     };
+
+    const [show, setShow] = useState(false);
+    const [_value, setValue] = useState(value || defaultValue || new Date());
+
+    const _onChange = useCallback((_, e) => {
+      if (Platform.OS === 'android') {
+        setShow(false);
+        onChange(e);
+      } else {
+        setValue(e);
+      }
+    }, []);
+
+    const onOkay = useCallback((v) => {
+      onChange(v);
+      setShow(false);
+    }, []);
+
+    useEffect(() => {
+      setValue(value);
+    }, [value]);
 
     const item = {
       marginBottom: 15,
@@ -52,14 +90,10 @@ export default React.forwardRef(
             {label}
           </Label>
         )}
-        <View style={theme}>
-          <DateTimePicker
-            mode="time"
-            display="clock"
-            testID="dateTimePicker"
-            style={StyleSheet.flatten([input, inputStyle])}
-            {...props}
-          />
+        <TouchableOpacity style={theme} onPress={() => setShow(true)}>
+          <Text style={StyleSheet.flatten([input, inputStyle])}>
+            {moment(value).format(format)}
+          </Text>
           <View
             style={{
               right: 0,
@@ -70,7 +104,7 @@ export default React.forwardRef(
             }}>
             {Icon}
           </View>
-        </View>
+        </TouchableOpacity>
         {!!error && (
           <Label
             type="danger"
@@ -78,7 +112,47 @@ export default React.forwardRef(
             {error}
           </Label>
         )}
+        {show && (
+          <View>
+            {Platform.OS !== 'android' && (
+              <View style={styles.header}>
+                <TouchableOpacity
+                  style={[styles.btn]}
+                  onPress={() => setShow(false)}>
+                  <Text>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.btn]}
+                  onPress={() => onOkay(_value)}>
+                  <Text>Ok</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            <DateTimePicker
+              mode="time"
+              display="clock"
+              testID="dateTimePicker"
+              value={moment(_value).toDate()}
+              style={StyleSheet.flatten([input, inputStyle])}
+              {...props}
+              onChange={_onChange}
+            />
+          </View>
+        )}
       </View>
     );
   }
 );
+
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  btn: {
+    width: 100,
+    padding: 10,
+    alignItems: 'center',
+  },
+});

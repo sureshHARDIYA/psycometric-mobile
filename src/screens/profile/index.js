@@ -122,11 +122,11 @@ export const Profile = ({ navigation }) => {
             as={
               <DatePicker
                 mode="time"
+                format="HH:mm"
                 value={moment().toDate()}
                 label="Time send notification"
               />
             }
-            onChange={(args) => args[1]}
           />
 
         </Form>
