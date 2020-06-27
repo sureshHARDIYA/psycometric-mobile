@@ -24,7 +24,7 @@ export const QuizResult = () => {
               <View style={styles.score}>
                 <Text style={[styles.scoreCaption]}>Your score</Text>
                 <Text style={styles.scoreText}>
-                  {score + 1} / {total}
+                  {score} / {total}
                 </Text>
               </View>
             </View>
