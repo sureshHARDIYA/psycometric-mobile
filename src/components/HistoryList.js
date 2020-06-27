@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fafafa',
   },
   passed: {
-    borderColor: Color.success,
+    borderColor: Color.primary,
   },
   row: {
     flexDirection: Layout.row,
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
-    backgroundColor: Color.success,
+    backgroundColor: Color.primary,
   },
   itemRight: {
     flex: 1,

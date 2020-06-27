@@ -1,4 +1,5 @@
-const primary = '#81b23e';
+// const primary = '#81b23e';
+const primary = '#00D68F';
 const tintColor = '#56CAFF';
 
 export default {

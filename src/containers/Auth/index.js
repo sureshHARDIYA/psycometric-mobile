@@ -27,43 +27,33 @@ export const getUser = async () => await AsyncStorage.getItem(keyUser);
 export const getToken = async () => await AsyncStorage.getItem(keyToken);
 
 export const Auth = (props) => {
-  const [currentUser, setCurrentUser] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
   const [profile, {loading, data, error}] = useLazyQuery(AUTH_ME);
   const [_createToken] = useMutation(MUTATION_PUSH_NOTIFICATION);
-
   const createToken = useCallback((token) => _createToken({ variables: { token } }), [])
 
-  useEffect(() => {
-    setCurrentUser(_get(data, 'result'));
-  }, [data, error])
-
-  useEffect(() => {
-    if (!accessToken) {
-      setCurrentUser(null);
-    }
-  }, [accessToken])
-
-  const setToken = useCallback(async (token) => {
+  const setToken = async (token) => {
     try {
       if (token) {
         await AsyncStorage.setItem(keyToken, token);
-        await profile();
       } else {
         await AsyncStorage.removeItem(keyToken);
       }
       setAccessToken(token);
+      await profile();
     } catch (error) {
       setAccessToken(null);
       throw error;
     }
-  }, []);
+  };
 
   const authenticate = useCallback(async () => {
     let token;
     try {
-      await profile();
       token = await getToken();
+      if (token) {
+        await profile();
+      }
     } catch (error) {
       token = null;
     } finally {
@@ -82,11 +72,11 @@ export const Auth = (props) => {
         loading,
         onLogout,
         setToken,
-        currentUser,
         accessToken,
         authenticate,
         createToken,
         refetch: profile,
+        currentUser: _get(data, 'result'),
         isAuthenticated: !!accessToken,
       }}>
       {props.children}

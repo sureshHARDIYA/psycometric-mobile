@@ -7,7 +7,7 @@ import { TouchableOpacity, ScrollView } from 'react-native-gesture-handler';
 import { Summary } from '../components/Summary';
 import { Color, Size } from '../constants';
 import { Routes } from '../navigation';
-import { Text, Button, Container } from '../themes';
+import { Text, Button, Container, Header } from '../themes';
 
 export const QuizResult = () => {
   const navigation = useNavigation();
@@ -16,10 +16,21 @@ export const QuizResult = () => {
   const { questions, total, score, caption } = params;
 
   return (
-    <Container>
-      <View style={styles.content}>
+    <Container backgroundColor={Color.background}>
+      <Header>
+        <Button
+          style={styles.btnClose}
+          onPress={() => navigation.navigate(Routes.Home)}>
+          <MaterialCommunityIcons
+            size={30}
+            name="window-close"
+            color={Color.textColor}
+          />
+        </Button>
+      </Header>
+      <View style={[styles.content, styles.card]}>
         <ScrollView style={{ flex: 1, padding: 20, width: '100%' }}>
-          <View style={styles.content}>
+          <View style={[styles.content]}>
             <View style={[styles.result]}>
               <View style={styles.score}>
                 <Text style={[styles.scoreCaption]}>Your score</Text>
@@ -37,15 +48,6 @@ export const QuizResult = () => {
               </View>
             )}
             <View style={styles.buttons}>
-              <Button
-                style={styles.btnClose}
-                onPress={() => navigation.navigate(Routes.Home)}>
-                <MaterialCommunityIcons
-                  size={30}
-                  name="window-close"
-                  color={Color.textColor}
-                />
-              </Button>
               <Button
                 type="warning"
                 style={styles.btnNext}
@@ -74,10 +76,23 @@ export const QuizResult = () => {
 const styles = StyleSheet.create({
   content: {
     flex: 1,
-    paddingTop: 50,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Color.white,
+  },
+  card: {
+    margin: 20,
+    paddingTop: 30,
+    zIndex: 2,
+    borderRadius: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 2,
+    shadowOpacity: 0.25,
+    elevation: 3,
   },
   score: {
     flex: 1,
@@ -133,8 +148,7 @@ const styles = StyleSheet.create({
     margin: 10,
     paddingLeft: 0,
     paddingRight: 0,
-    borderRadius: 40,
-    borderColor: Color.textColor,
+    borderWidth: 0,
   },
   btnNext: {
     margin: 10,
