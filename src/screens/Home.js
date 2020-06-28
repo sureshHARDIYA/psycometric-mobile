@@ -7,10 +7,12 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { Color } from '../constants';
 import { QuestionnaireList } from '../containers';
+import { useAuth } from '../containers/Auth';
 import { Routes } from '../navigation';
 import { HeaderMain, Container } from '../themes';
 
 export const Home = ({ navigation }) => {
+  const { accessToken } = useAuth();
   const handleNotification = useCallback((notification) => {
     Vibration.vibrate();
     const id = _get(notification, 'data.questionnaire.id');
@@ -22,6 +24,10 @@ export const Home = ({ navigation }) => {
   useEffect(() => {
     Notifications.addListener(handleNotification);
   }, []);
+
+  useEffect(() => {
+    navigation.closeDrawer();
+  }, [accessToken]);
 
   return (
     <Container>

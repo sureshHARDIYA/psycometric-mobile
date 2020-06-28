@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useCallback, useEffect, use
 import { AsyncStorage } from 'react-native';
 import _get from 'lodash/get';
 import { AUTH_ME } from "./query";
-import { useQuery, useMutation, useLazyQuery } from 'react-apollo';
+import { useMutation, useLazyQuery } from 'react-apollo';
 import { MUTATION_PUSH_NOTIFICATION } from './mutation';
 
 const keyUser = '@User';
@@ -28,9 +28,15 @@ export const getToken = async () => await AsyncStorage.getItem(keyToken);
 
 export const Auth = (props) => {
   const [accessToken, setAccessToken] = useState(null);
-  const [profile, {loading, data, error}] = useLazyQuery(AUTH_ME);
+  const [profile, {loading, data, refetch}] = useLazyQuery(AUTH_ME);
   const [_createToken] = useMutation(MUTATION_PUSH_NOTIFICATION);
   const createToken = useCallback((token) => _createToken({ variables: { token } }), [])
+
+  useEffect(() => {
+    if (accessToken) {
+      refetch && refetch();
+    }
+  }, [accessToken])
 
   const setToken = async (token) => {
     try {
@@ -40,7 +46,7 @@ export const Auth = (props) => {
         await AsyncStorage.removeItem(keyToken);
       }
       setAccessToken(token);
-      await profile();
+      await refetch();
     } catch (error) {
       setAccessToken(null);
       throw error;

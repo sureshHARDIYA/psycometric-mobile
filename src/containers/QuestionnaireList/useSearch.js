@@ -1,14 +1,17 @@
 import { useQuery } from "@apollo/react-hooks";
 import _get from 'lodash/get';
 import _set from 'lodash/fp/set';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { QUESTIONNAIRE_LIST } from "./query";
+import { useAuth } from '../Auth'
 
 export const useSearch = ({} = {}) => {
+  const { currentUser } = useAuth();
   const defaultVariables = {
     filter: {
       createdAtRange: [],
       status: 'ACTIVE',
+      assgined: _get(currentUser, 'id') || 'none',
     },
     orderBy: null,
     limit: 10,
@@ -16,6 +19,16 @@ export const useSearch = ({} = {}) => {
   };
 
   const [variables, setOption] = useState(defaultVariables);
+
+  useEffect(() => {
+    setOption((pre) => ({
+      ...pre,
+      filter: {
+        ...pre.filter,
+        assgined: _get(currentUser, 'id') || 'none',
+      }
+    }))
+  }, [currentUser])
 
   const { loading, error, data, fetchMore, refetch } = useQuery(QUESTIONNAIRE_LIST, {
     variables,

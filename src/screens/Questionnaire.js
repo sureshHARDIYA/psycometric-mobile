@@ -67,7 +67,7 @@ export const Questionnaire = () => {
                 <Text style={styles.title}>{name}</Text>
               </View>
               <Button
-                disabled={disabled}
+                disabled={notReady}
                 style={[styles.favourite, favourited && styles.favourited]}
                 onPress={() => onFavourte(id)}>
                 <Ionicons
