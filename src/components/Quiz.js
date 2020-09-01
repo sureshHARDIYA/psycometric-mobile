@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: 'hidden',
     position: 'relative',
-    borderColor: Color.gray,
+    borderColor: Color.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
