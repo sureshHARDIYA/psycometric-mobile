@@ -68,18 +68,18 @@ export const About = ({ navigation }) => (
         fun!
       </Text>
       <Text style={styles.text}>
-        <Text style={styles.bold}>Development Team:</Text>
-      </Text>
-      <Text style={styles.text}>
-        - <Text style={styles.bold}>Hung K. Hoang:</Text>{' '}
-        <Text onPress={() => Linking.canOpenURL('mailto:hunghk.it@gmail.com')}>
-          hunghk.it@gmail.com
-        </Text>
+        <Text style={styles.team}>Development Team:</Text>
       </Text>
       <Text style={styles.text}>
         - <Text style={styles.bold}>Suresh K. Mukhiya:</Text>{' '}
         <Text onPress={() => Linking.canOpenURL('mailto:itsmeskm99@gmail.com')}>
           itsmeskm99@gmail.com
+        </Text>
+      </Text>
+      <Text style={styles.text}>
+        - <Text style={styles.bold}>Hung K. Hoang:</Text>{' '}
+        <Text onPress={() => Linking.canOpenURL('mailto:hunghk.it@gmail.com')}>
+          hunghk.it@gmail.com
         </Text>
       </Text>
     </ScrollView>
@@ -113,6 +113,10 @@ const styles = StyleSheet.create({
   },
   bold: {
     fontWeight: 'bold',
+  },
+  team: {
+    fontWeight: 'bold',
+    marginTop: 20,
   },
   about: {
     margin: 20,
