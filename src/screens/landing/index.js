@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Image, StyleSheet } from 'react-native';
-import { Container, Button, Text } from "../../themes";
-import { Images, Size, Color } from '../../constants';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Container, Button, Text } from '../../themes';
+import { Images, Size, Color } from '../../constants';
 import { Routes } from '../../navigation';
 
 export const Landing = ({ navigation }) => (
@@ -12,7 +12,10 @@ export const Landing = ({ navigation }) => (
         <Image source={Images.logo} style={[styles.img]} />
       </View>
       <Text style={styles.text}>Don’t have an account?</Text>
-      <Button type="primary" style={styles.btn} onPress={() => navigation.navigate(Routes.Register)}>
+      <Button
+        type="primary"
+        style={styles.btn}
+        onPress={() => navigation.navigate(Routes.Register)}>
         Register
       </Button>
     </View>
@@ -23,13 +26,13 @@ export const Landing = ({ navigation }) => (
       </TouchableOpacity>
     </View>
   </Container>
-)
+);
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   logo: {
     marginTop: -100,
@@ -49,9 +52,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   highlight: {
     color: Color.primary,
   },
-})
+});

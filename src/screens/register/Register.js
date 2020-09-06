@@ -1,10 +1,15 @@
 import React, { useRef, useCallback, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { StyleSheet, View, Image, ActivityIndicator as Spin } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Image,
+  ActivityIndicator as Spin,
+} from 'react-native';
 import { useRegister } from './useRegister';
 import { Color, Images, Size, Layout } from '../../constants';
 import { Container, Button, Input, Form, Text, Topbar } from '../../themes';
-import { Routes } from '../../navigation'
+import { Routes } from '../../navigation';
 
 export const Register = ({ navigation }) => {
   const passwordRef = useRef(null);
@@ -18,12 +23,12 @@ export const Register = ({ navigation }) => {
         <Topbar.Right
           actions={{
             text: 'Login',
-            onPress: () => navigation.replace(Routes.Login)
+            onPress: () => navigation.replace(Routes.Login),
           }}
         />
       ),
-    })
-  }, [])
+    });
+  }, []);
 
   return (
     <Container>
@@ -37,11 +42,11 @@ export const Register = ({ navigation }) => {
             control={control}
             name="email"
             rules={{
-              required: "Please enter an email",
+              required: 'Please enter an email',
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                message: "Invalid email address"
-              }
+                message: 'Invalid email address',
+              },
             }}
             defaultValue=""
             as={
@@ -65,10 +70,10 @@ export const Register = ({ navigation }) => {
             control={control}
             name="password"
             rules={{
-              required: "Please enter password",
+              required: 'Please enter password',
               minLength: {
                 value: 6,
-                message: "Password required to be more than 6"
+                message: 'Password required to be more than 6',
               },
             }}
             defaultValue=""
@@ -96,7 +101,13 @@ export const Register = ({ navigation }) => {
             disabled={loading}
             style={styles.btnSubmit}
             onPress={handleSubmit(onRegister)}>
-            {loading && <Spin size="small" color={Color.white} style={{ marginTop: -5, marginRight: 10, }} /> }
+            {loading && (
+              <Spin
+                size="small"
+                color={Color.white}
+                style={{ marginTop: -5, marginRight: 10 }}
+              />
+            )}
             Register
           </Button>
           {!loading && !!error && <Text style={styles.error}>{error}</Text>}

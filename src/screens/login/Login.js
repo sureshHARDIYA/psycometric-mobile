@@ -1,7 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useRef, useCallback, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { StyleSheet, View, Image, TouchableOpacity, ActivityIndicator as Spin, AsyncStorage } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator as Spin,
+  AsyncStorage,
+} from 'react-native';
 import { SimpleLineIcons, Feather } from '@expo/vector-icons';
 
 import { Routes } from '../../navigation';
@@ -22,7 +29,7 @@ export const Login = () => {
 
   useEffect(() => {
     AsyncStorage.setItem('@firstLoading', 'initiated');
-  }, [])
+  }, []);
 
   return (
     <Container>
@@ -31,8 +38,7 @@ export const Login = () => {
           enableOnAndroid
           extraHeight={150}
           extraScrollHeight={150}
-          enableAutomaticScroll={(Platform.OS === 'ios')}
-        >
+          enableAutomaticScroll={Platform.OS === 'ios'}>
           <View style={styles.logo}>
             <Image source={Images.logo} style={[styles.img]} />
           </View>
@@ -40,11 +46,11 @@ export const Login = () => {
             control={control}
             name="email"
             rules={{
-              required: "Please enter an email",
+              required: 'Please enter an email',
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                message: "Invalid email address"
-              }
+                message: 'Invalid email address',
+              },
             }}
             defaultValue=""
             as={
@@ -68,10 +74,10 @@ export const Login = () => {
             control={control}
             name="password"
             rules={{
-              required: "Please enter password",
+              required: 'Please enter password',
               minLength: {
                 value: 6,
-                message: "Password required to be more than 6"
+                message: 'Password required to be more than 6',
               },
             }}
             defaultValue=""
@@ -98,15 +104,19 @@ export const Login = () => {
             type="primary"
             disabled={loading}
             style={styles.btnSubmit}
-            onPress={handleSubmit(onLogin)}
-          >
-            {loading && <Spin size="small" color={Color.white} style={{ marginTop: -5, marginRight: 10, }} /> }
+            onPress={handleSubmit(onLogin)}>
+            {loading && (
+              <Spin
+                size="small"
+                color={Color.white}
+                style={{ marginTop: -5, marginRight: 10 }}
+              />
+            )}
             Login
           </Button>
           {!loading && !!error && <Text style={styles.error}>{error}</Text>}
         </Form>
-        <View style={styles.footer}>
-        </View>
+        <View style={styles.footer}></View>
       </View>
       <View style={styles.footer}>
         <View style={styles.row}>
@@ -119,23 +129,13 @@ export const Login = () => {
       <View style={[styles.row, { justifyContent: 'center' }]}>
         <TouchableOpacity
           style={styles.btn}
-          onPress={() => navigation.navigate(Routes.Feedback)}
-        >
-          <Feather
-            size={22}
-            name="mail"
-            color={Color.textColor}
-          />
+          onPress={() => navigation.navigate(Routes.Feedback)}>
+          <Feather size={22} name="mail" color={Color.textColor} />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.btn}
-          onPress={() => navigation.navigate(Routes.About)}
-        >
-          <SimpleLineIcons
-            size={20}
-            name="question"
-            color={Color.textColor}
-          />
+          onPress={() => navigation.navigate(Routes.About)}>
+          <SimpleLineIcons size={20} name="question" color={Color.textColor} />
         </TouchableOpacity>
       </View>
     </Container>
@@ -144,12 +144,12 @@ export const Login = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Color.white,
+    backgroundColor: Color.danger,
   },
   about: {
     top: 40,
     right: 20,
-    position: 'absolute'
+    position: 'absolute',
   },
   img: {
     width: (Size.deviceWidth * 2) / 3,
@@ -187,5 +187,5 @@ const styles = StyleSheet.create({
   btn: {
     padding: 15,
     paddingTop: 5,
-  }
+  },
 });

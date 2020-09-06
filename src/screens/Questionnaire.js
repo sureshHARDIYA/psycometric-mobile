@@ -164,9 +164,11 @@ const styles = StyleSheet.create({
   description: {
     marginTop: 10,
     lineHeight: 20,
+    fontSize: 16,
   },
   more: {
     fontWeight: '600',
+    textTransform: 'uppercase',
   },
   addon: {
     width: 40,
