@@ -1,7 +1,7 @@
 import { Modal } from '@ant-design/react-native';
 import { AntDesign } from '@expo/vector-icons';
 import _get from 'lodash/get';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
 
@@ -12,13 +12,25 @@ import { Text } from '../themes';
 import { Avatar } from './Avatar';
 
 export const DrawerContent = ({ navigation }) => {
-  const { currentUser, onLogout } = useAuth();
+  const { currentUser, onLogout, refetch } = useAuth();
   const insets = useSafeArea();
+
+  useEffect(() => {
+    if (refetch && typeof refetch === 'function') {
+      refetch();
+    }
+  }, []);
 
   const logout = useCallback(() => {
     Modal.alert('Confirm', `Confirm to log out?`, [
       { text: 'No', onPress: () => false },
-      { text: 'Yes', onPress: () => onLogout() },
+      {
+        text: 'Yes',
+        onPress: () => {
+          navigation.closeDrawer();
+          onLogout();
+        },
+      },
     ]);
   }, []);
 

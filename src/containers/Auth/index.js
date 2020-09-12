@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { AsyncStorage } from 'react-native';
 import _get from 'lodash/get';
 import { AUTH_ME } from "./query";
@@ -33,8 +33,8 @@ export const Auth = (props) => {
   const createToken = useCallback((token) => _createToken({ variables: { token } }), [])
 
   useEffect(() => {
-    if (accessToken) {
-      refetch && refetch();
+    if (profile && typeof profile === 'function') {
+      profile();
     }
   }, [accessToken])
 
@@ -46,7 +46,7 @@ export const Auth = (props) => {
         await AsyncStorage.removeItem(keyToken);
       }
       setAccessToken(token);
-      await refetch();
+      await profile();
     } catch (error) {
       setAccessToken(null);
       throw error;
