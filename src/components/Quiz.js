@@ -19,6 +19,7 @@ import { Routes } from '../navigation';
 import { Text, Button, Container } from '../themes';
 
 const parseMessage = (score, rules) => {
+  const messages = [];
   const orderRules = rules.sort((a, b) => a.min - b.min);
 
   for (const rule of orderRules) {
@@ -27,11 +28,11 @@ const parseMessage = (score, rules) => {
       (!rule.min && rule.max >= score) ||
       (!rule.max && rule.min <= score)
     ) {
-      return rule;
+      messages.push(rule);
     }
   }
 
-  return null;
+  return messages;
 };
 
 export const Quiz = ({
@@ -112,21 +113,27 @@ export const Quiz = ({
             );
 
             const result = () => {
-              const rule = parseMessage(score, rules);
+              const messages = parseMessage(score, rules);
 
-              if (!rule) {
+              if (!messages.length) {
                 return null;
               }
 
-              return `${
-                rule.min
-                  ? rule.max
-                    ? `${rule.min} - ${rule.max}: `
-                    : `>= ${rule.min}: `
-                  : rule.max
-                  ? `<= ${rule.max}: `
-                  : ''
-              } ${rule.message || ''}`;
+              return messages
+                .map(
+                  (rule) =>
+                    `${
+                      rule.min
+                        ? rule.max
+                          ? `${rule.min} - ${rule.max}: `
+                          : `>= ${rule.min}: `
+                        : rule.max
+                        ? `<= ${rule.max}: `
+                        : ''
+                    } ${rule.message || ''}`
+                )
+                .filter((i) => i)
+                .join('-join-');
             };
 
             const params = {

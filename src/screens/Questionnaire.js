@@ -15,8 +15,8 @@ export const Questionnaire = () => {
   const { params } = useRoute();
   const { onFavourte } = useFavourite();
   const navigation = useNavigation();
+  const [more, setMore] = useState(true);
   const { questionnaire, loading } = useSearch(params.id);
-  const [more, setMore] = useState(false);
 
   const {
     description,

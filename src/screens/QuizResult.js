@@ -44,7 +44,9 @@ export const QuizResult = () => {
                 <Text style={{ textAlign: 'center', marginBottom: 5 }}>
                   Result:
                 </Text>
-                <Text style={{ textAlign: 'center' }}>{caption}</Text>
+                {(caption || '').split('-join-').map((i) => (
+                  <Text style={{ textAlign: 'center' }}>{i}</Text>
+                ))}
               </View>
             )}
             <View style={styles.buttons}>
