@@ -1,13 +1,16 @@
-import React from 'react';
-import { StyleSheet, TouchableOpacity, View, FlatList, Text } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, TouchableOpacity, View, Text, Button, Slider } from 'react-native';
+/*import Slider from '@react-native-community/slider';*/
 import { Color } from '../../../constants';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { Routes } from '../../../navigation';
 
 
 const Emotions = [
   {
     id: 'tenseNervousEmoji',
+    description: 'Tense/Nervous',
     color: '#3CBB75',
     icon: 'frown-open',
     listElementStyle: {
@@ -17,22 +20,6 @@ const Emotions = [
       top:-10,
       width: '50%',
       height: '50%',
-/*      after:{
-        content: "",
-        backgroundColor: Color.white,
-        borderWidth: 10,
-        borderColor: Color.transparent,
-        width: 58,
-        height: 58,
-        position: 'absolute',
-        opacity: 1.0,
-        top: 6,
-        left: 6,
-        bottom: 0,
-        right: 0,
-        zIndex: -1,
-      }*/
-
     },
     iconStyle: {
       transform: [{rotate: '-45deg'}, {skewY: '0deg'}],
@@ -49,6 +36,7 @@ const Emotions = [
   },
   {
     id: 'irritatedAnnoyedEmoji',
+    description: 'Irritated/Annoyed',
     color: '#DE6465',
     icon: 'angry',
     listElementStyle: {
@@ -74,6 +62,7 @@ const Emotions = [
   },
   {
     id: 'excitedLivelyEmoji',
+    description: 'Excited/Lively',
     color: '#EB7955',
     icon: 'grin-stars',
     listElementStyle: {
@@ -100,6 +89,7 @@ const Emotions = [
   },
   {
     id: 'cheerfulHappyEmoji',
+    description: 'Cheerful/Happy',
     color: '#F7CB50',
     icon: 'laugh-beam',
     listElementStyle: {
@@ -125,6 +115,7 @@ const Emotions = [
   },
   {
     id: 'boredWearyEmoji',
+    description: 'Bored/Weary',
     color: '#8B42CC',
     icon: 'meh',
     listElementStyle: {
@@ -150,6 +141,7 @@ const Emotions = [
   },
   {
     id: 'gloomySadEmoji',
+    description: 'Gloomy/Sad',
     color: '#3D3D3D',
     icon: 'frown',
     listElementStyle: {
@@ -175,6 +167,7 @@ const Emotions = [
   },
   {
     id: 'relaxedCalmEmoji',
+    description: 'Relaxed/Calm',
     color: '#425CCC',
     icon: 'smile-beam',
     listElementStyle: {
@@ -226,9 +219,11 @@ const Emotions = [
 ];
 
 export const MoodOverview = ({ navigation }) => {
+  const [sliderValue, setSliderValue] = useState(4);
+  const [selectedMood, setSelectedMood] = useState('No mood selected');
   return (
     <View style={styles.container} backgroundColor={ Color.transparent }>
-
+      {console.log('Selcted Mood: ', selectedMood)}
       <View style={styles.selectEmotionOverview}>
         <LinearGradient colors={['#24c6dc', '#514A9D']}
                         start={{ x: 0, y: 0.5 }}
@@ -240,12 +235,17 @@ export const MoodOverview = ({ navigation }) => {
               return (
                 <View style={styles.circlePart}>
                   <View style={val.listElementStyle}>
+                    <TouchableOpacity
+                      onPress={() =>
+                        setSelectedMood(val.description)
+                      }>
                     <View  style={val.iconStyle}>
                       <FontAwesome5  size={55}
                                      name={val.icon}
                                      solid
                                      color={val.color} />
                     </View>
+                    </TouchableOpacity>
                 </View>
                 </View>
               )
@@ -253,7 +253,26 @@ export const MoodOverview = ({ navigation }) => {
           }
           </View>
         </LinearGradient>
+        <View style={styles.currentTrackingInfo}>
+          <Text style={styles.noMoodSelectedText}>{selectedMood}</Text>
+          <Text>{ sliderValue }</Text>
+          <Slider
+            style={{width: 100, height: 30, borderRadius: 50, top: 10}}
+            minimumValue={0}
+            maximumValue={7}
+            value={sliderValue}
+            onValueChange={(value)=> setSliderValue(value) }
+            maximumTrackTintColor= {Color.white}
+            minimumTrackTintColor={'#514A9D'}
+            thumbTintColor={'#514A9D'}
+          />
+          <View style={styles.trackingButton}>
+            <Button title={'track'} color={Color.secondary}/>
+          </View>
+
+        </View>
       </View>
+
     </View>
   );
 };
@@ -279,7 +298,7 @@ const styles = StyleSheet.create({
     height: 280,
     borderRadius: 280/2,
     borderColor: '#3c1053',
-    borderWidth: 3,
+    borderWidth: 4,
     position: 'relative',
     justifyContent: 'center',
     alignItems: 'center',
@@ -302,5 +321,25 @@ const styles = StyleSheet.create({
     top: 46,
     width: '190%',
     height: '190%',
+  },
+  currentTrackingInfo:{
+    position: 'absolute',
+    width: 180,
+    height: 180,
+    transform: [{ skewY: '0deg' },{ rotate: '105deg' }],
+    alignItems: 'center',
+  },
+  noMoodSelectedText:{
+    textAlign: 'center',
+    color: Color.white,
+    padding: 20,
+    fontSize: 16,
+    top: 10,
+
+  },
+  trackingButton:{
+    width: 100,
+    height: 20,
+    top: 20,
   }
 });

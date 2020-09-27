@@ -1,6 +1,11 @@
-import { Ionicons, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
-import React from 'react';
+import {
+  Ionicons,
+  FontAwesome5,
+  AntDesign,
+  MaterialCommunityIcons,
+} from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -8,19 +13,20 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
-import { Color } from '../../constants';
-import { Text, Header, Container } from '../../themes';
-import { Routes } from '../../navigation';
+
 import { MoodOverview } from '../../components/moodtrackingapp/moodoverview';
+import { Color } from '../../constants';
+import { Routes } from '../../navigation';
+import { Text, Header, Container } from '../../themes';
 
 export const MoodTracking = ({ navigation }) => {
+  const [showMoodOverview, setShowMoodOverview] = useState(true);
 
   return (
     <Container style={styles.container}>
       <ImageBackground
         style={{ flex: 1 }}
-        source={require('../../../assets/images/moodtrackingapp/pinkishBeach.jpg')}
-      >
+        source={require('../../../assets/images/moodtrackingapp/pinkishBeach.jpg')}>
         <LinearGradient
           colors={['#24c6dc', '#514A9D']}
           start={{ x: 0, y: 0.5 }}
@@ -33,8 +39,7 @@ export const MoodTracking = ({ navigation }) => {
             height: 60,
             flexDirection: 'row',
           }}>
-          <Header style={styles.header} >
-
+          <Header style={styles.header}>
             <TouchableOpacity
               style={styles.goBack}
               onPress={() => navigation.goBack()}>
@@ -45,56 +50,92 @@ export const MoodTracking = ({ navigation }) => {
                 style={styles.icon}
               />
             </TouchableOpacity>
-{/*              <Text style={styles.title}>Mood Tracking</Text>*/}
+            {/*              <Text style={styles.title}>Mood Tracking</Text>*/}
           </Header>
           <View style={styles.hamburgerMenu}>
-            <View style={styles.bar1}></View>
-            <View style={styles.bar2}></View>
-            <View style={styles.bar3}></View>
+            <View style={styles.bar1} />
+            <View style={styles.bar2} />
+            <View style={styles.bar3} />
           </View>
         </LinearGradient>
-        <ScrollView style={styles.content}>
-        </ScrollView>
-        <MoodOverview/>
+        <ScrollView style={styles.content} />
+        {showMoodOverview && <MoodOverview />}
         <View style={styles.mainMenu}>
-          <LinearGradient colors={['#24c6dc', '#514A9D']}
-                          start={{ x: 0, y: 0.5 }}
-                          end={{ x: 1, y: 0.5 }}
-                          style={{
-                            position: 'absolute',
-                            left: 0,
-                            right: 0,
-                            top: 0,
-                            height: 110,
-                            flexDirection: 'row',
-                          }}>
+          <LinearGradient
+            colors={['#24c6dc', '#514A9D']}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 1, y: 0.5 }}
+            style={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              top: 0,
+              height: 110,
+              flexDirection: 'row',
+            }}>
             <View style={styles.statistics}>
               <TouchableOpacity
                 style={styles.statisticsTouchZone}
-                onPress={() => navigation.navigate(Routes.MoodTrackingStatistics)}>
-              <FontAwesome5
-                size={40}
-                name="heartbeat"
-                color={Color.white}
-                style={styles.icon}>
-              </FontAwesome5>
-              <Text style={styles.iconCaptions}>Statistics</Text>
+                onPress={() =>
+                  navigation.navigate(Routes.MoodTrackingStatistics)
+                }>
+                <FontAwesome5
+                  size={40}
+                  name="heartbeat"
+                  color={Color.white}
+                  style={styles.icon}
+                />
+                <Text style={styles.iconCaptions}>Statistics</Text>
               </TouchableOpacity>
             </View>
-            <View style={styles.moodTracker}>
-              <View style={styles.outerCircle}>
-                <View style={styles.innerCircle}>
-                  <Text style={styles.selectMoodText}>Select{'\n'} Mood</Text>
-                </View>
+
+            {!showMoodOverview && (
+              <View style={styles.moodTracker}>
+                {/*TODO: Change from statisticsTouchZOne styling */}
+                <TouchableOpacity
+                  style={styles.statisticsTouchZone}
+                  onPress={() => {
+                    setShowMoodOverview(true);
+                  }}>
+                  <View style={styles.outerCircle}>
+                    <View style={styles.innerCircle}>
+                      <Text style={styles.selectMoodText}>
+                        Select{'\n'} Mood
+                      </Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
               </View>
-            </View>
+            )}
+
+            {showMoodOverview && (
+              <View style={styles.moodTracker}>
+                {/*TODO: Change from statisticsTouchZOne styling */}
+                <TouchableOpacity
+                  style={styles.statisticsTouchZone}
+                  onPress={() => {
+                    setShowMoodOverview(false);
+                  }}>
+                  <View style={styles.outerCircle}>
+                    <View style={styles.innerCircle}>
+                  <AntDesign
+                    size={40}
+                    name="close"
+                    color={'#3f3f41'}
+                  />
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            )}
+
             <View style={styles.contact}>
               <MaterialCommunityIcons
                 size={40}
                 name="message-text"
                 color={Color.white}
-                style={styles.icon}>
-              </MaterialCommunityIcons>
+                style={styles.icon}
+              />
               <Text style={styles.iconCaptions}>Contact</Text>
             </View>
           </LinearGradient>
@@ -119,7 +160,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
     marginLeft: 10,
   },
-hamburgerMenu:{
+  hamburgerMenu: {
     position: 'absolute',
     right: 10,
     top: 5,
@@ -129,7 +170,7 @@ hamburgerMenu:{
     flexDirection: 'column',
     justifyContent: 'center',
     alignContent: 'center',
-},
+  },
   bar1: {
     width: 30,
     height: 4,
@@ -171,7 +212,7 @@ hamburgerMenu:{
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    bottom: 50,
+    bottom: 0,
   },
   innerCircle: {
     width: 105,
