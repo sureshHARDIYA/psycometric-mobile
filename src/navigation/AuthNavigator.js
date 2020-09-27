@@ -53,5 +53,15 @@ export const AuthNavigator = () => (
       component={Screens.History}
       options={{ header: () => null }}
     />
+    <Stack.Screen
+      name={Routes.MoodTracking}
+      component={Screens.MoodTracking}
+      options={{ header: () => null }}
+    />
+    <Stack.Screen
+      name={Routes.MoodTrackingStatistics}
+      component={Screens.MoodTrackingStatistics}
+      options={{ header: () => null }}
+    />
   </Stack.Navigator>
 );

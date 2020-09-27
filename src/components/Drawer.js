@@ -1,5 +1,5 @@
 import { Modal } from '@ant-design/react-native';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, SimpleLineIcons } from '@expo/vector-icons';
 import _get from 'lodash/get';
 import React, { useCallback, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
@@ -75,6 +75,12 @@ export const DrawerContent = ({ navigation }) => {
           onPress={() => navigation.navigate(Routes.Feedback)}>
           <AntDesign size={20} name="questioncircleo" color={Color.success} />
           <Text style={styles.txtItem}>Feedback</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.item}
+          onPress={() => navigation.navigate(Routes.MoodTracking)}>
+          <SimpleLineIcons size={20} name="emotsmile" color={Color.secondary} />
+          <Text style={styles.txtItem}>Mood tracking</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.footer}>

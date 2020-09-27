@@ -11,3 +11,5 @@ export { QuizTest } from './QuizTest';
 export { QuizResult } from './QuizResult';
 export { QuizPractice } from './QuizPractice';
 export { Questionnaire } from './Questionnaire';
+export { MoodTracking } from './moodtracking';
+export { MoodTrackingStatistics } from './moodtrackingstatistics';
