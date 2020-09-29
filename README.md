@@ -4,4 +4,4 @@
 
 # Get started for Development
 
-Follow the instructions [here.] (https://github.com/sureshHARDIYA/psycometric-mobile/wiki)
+Follow the instructions [here.](https://github.com/sureshHARDIYA/psycometric-mobile/wiki)
