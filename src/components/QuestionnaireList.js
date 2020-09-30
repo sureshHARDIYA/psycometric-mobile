@@ -49,7 +49,7 @@ export const QuestionnaireList = ({
       ListEmptyComponent={() => (
         <View
           style={[styles.item, styles.shadow, { justifyContent: 'center' }]}>
-          <Text>No Questionnaire</Text>
+          <Text>No Questionnaire scheduled for today !</Text>
         </View>
       )}
       ListFooterComponent={() => (
