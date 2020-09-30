@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { useQuery } from "@apollo/react-hooks";
 import _get from 'lodash/get';
 import _set from 'lodash/fp/set';
@@ -12,6 +13,7 @@ export const useSearch = ({} = {}) => {
       createdAtRange: [],
       status: 'ACTIVE',
       assgined: _get(currentUser, 'id') || 'none',
+      schedule: moment().startOf('day').utc(),
     },
     orderBy: null,
     limit: 10,
