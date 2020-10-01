@@ -17,6 +17,13 @@ export class MainMenu extends React.Component {
     this.state = {
       showMoodOverview: false,
     };
+    this.setShowMoodOverview = this.setShowMoodOverview.bind(this);
+  }
+
+  setShowMoodOverview(boolean){
+    this.setState({
+      showMoodOverview: boolean,
+    })
   }
 
   openMoodOverview() {
@@ -31,7 +38,7 @@ export class MainMenu extends React.Component {
     return (
       <View>
         {this.state.showMoodOverview && (
-          <MoodOverview navigation={this.props.navigation} />
+          <MoodOverview navigation={this.props.navigation} setMoodOverview={this.setShowMoodOverview}/>
         )}
         <View style={styles.mainMenu}>
           <LinearGradient

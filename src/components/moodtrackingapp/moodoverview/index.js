@@ -217,15 +217,30 @@ export class MoodOverview extends React.Component {
       showConfirmationBubble: false,
       showFeedbackBubble: false,
     };
-    this.showConfirmationDialog = this.showConfirmationDialog.bind(this);
+    this.setShowConfirmationBubble = this.setShowConfirmationBubble.bind(this);
+    this.setShowFeedbackBubble = this. setShowFeedbackBubble.bind(this);
+    this.setSliderValue = this.setSliderValue.bind(this);
+    this.setSelectedMood = this.setSelectedMood.bind(this);
   }
-  showConfirmationDialog(newValue) {
+  setShowConfirmationBubble(boolean) {
     this.setState({
-      showConfirmationBubble: newValue,
+      showConfirmationBubble: boolean,
+    })
+  }
+  setShowFeedbackBubble(boolean) {
+    this.setState({
+      showFeedbackBubble: boolean,
     })
   }
 
-  updateSelectedMood(moodDescription, moodId) {
+
+  setSliderValue(number) {
+    this.setState({
+      sliderValue: number,
+    })
+  }
+
+  setSelectedMood(moodDescription) {
     this.setState({
       selectedMood: moodDescription,
     });
@@ -233,12 +248,6 @@ export class MoodOverview extends React.Component {
 // TODO: Set rest of the icons to 55.
     /*    document.getElementById(`#${moodId}`).style.borderColor = '';
           document.querySelector(`#${moodId}`).style.borderWidth = 2;*/
-  }
-
-  updateSliderValue(newValue) {
-    this.setState({
-      sliderValue: newValue,
-    });
   }
 
   render() {
@@ -267,7 +276,7 @@ export class MoodOverview extends React.Component {
                       <View style={val.listElementStyle}>
                         <View style={val.iconStyle}>
                           <TouchableOpacity
-                            onPress={() => this.updateSelectedMood(val.description, val.id)}>
+                            onPress={() => this.setSelectedMood(val.description, val.id)}>
                             <FontAwesome5
                               size={55}
                               name={val.icon}
@@ -304,7 +313,7 @@ export class MoodOverview extends React.Component {
               maximumValue={7}
               value={this.state.sliderValue}
               onValueChange={(value) => {
-                this.updateSliderValue(value);
+                this.setSliderValue(value);
               }}
               step={1}
               maximumTrackTintColor={Color.white}
@@ -316,13 +325,21 @@ export class MoodOverview extends React.Component {
             <View style={styles.trackingButton}>
               <Button title={'track'}
                       color={Color.secondary}
-                      onPress={() => {this.showConfirmationDialog('true')}}
+                      onPress={() => {this.setShowConfirmationBubble('true')}}
               />
             </View>
           </View>
         </View>
-        <ConfirmationBubble showConfirmationDialog={this.showConfirmationDialog} showConfirmationBubble={this.state.showConfirmationBubble} emojiDescription={this.state.selectedMood} degree={this.state.sliderValue} />
-        <FeedbackBubble showFeedbackBubble={this.state.showFeedbackBubble}/>
+        <ConfirmationBubble
+          setShowConfirmationBubble={this.setShowConfirmationBubble}
+          setSelectedMood={this.setSelectedMood}
+          setSliderValue={this.setSliderValue}
+          setShowFeedbackBubble={this.setShowFeedbackBubble}
+          showConfirmationBubble={this.state.showConfirmationBubble}
+          emojiDescription={this.state.selectedMood}
+          degree={this.state.sliderValue}
+          setMoodOverview={this.props.setMoodOverview}/>
+        <FeedbackBubble showFeedbackBubble={this.state.showFeedbackBubble} setShowFeedbackBubble={this.setShowFeedbackBubble} setMoodOverview={this.props.setMoodOverview}/>
       </View>
     );
   }

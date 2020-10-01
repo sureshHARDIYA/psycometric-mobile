@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import Dialog from 'react-native-dialog';
 
 export class ConfirmationBubble extends React.Component {
@@ -7,33 +7,50 @@ export class ConfirmationBubble extends React.Component {
     super(props);
   }
 
-  showConfirmationDialog(){
+  setShowConfirmationBubble() {
     // Check to prevent null exception.
-    this.props.showConfirmationDialog?.(); // Same as this.props.onPress && this.props.onPress();
+    this.props.setShowConfirmationBubble?.(); // Same as this.props.onPress && this.props.onPress();
   }
 
-  confirmMoodTracking(){
-    // set sliderValue to 4
-    //set selectedMood to 'selectedMood: 'No mood selected'
-    //set showMoodOverview in main menu to  false.
-    //set showConfirmationBubble to  false.
+  cancelMoodTracking() {
+    this.setShowConfirmationBubble('false');
+  }
 
-    //set showFeedbackBubble to  true.
-    //send in data.
+  confirmMoodTracking() {
+    //set layout to default state
+    this.props.setSliderValue(4);
+    this.setShowConfirmationBubble('false');
+    this.props.setSelectedMood('No mood selected');
+
+    //showFeedbackBubble
+    this.props.setShowFeedbackBubble('true');
+
+    //send in data
+
 
   }
 
   render() {
     return (
       <View>
-        <Dialog.Container visible={this.props.showConfirmationBubble}>
-          <Dialog.Title>Would you like to track</Dialog.Title>
+        <Dialog.Container
+          visible={this.props.showConfirmationBubble}
+          onBackdropPress={() => {
+            this.cancelMoodTracking();
+          }}>
+          <Dialog.Title><Text>Would you like to track</Text></Dialog.Title>
           <Dialog.Description>
-            Emotion: {this.props.emojiDescription} {'\n'}
-            Degree/intensity: {this.props.degree}
+            <Text>
+              Emotion: {this.props.emojiDescription} {'\n'}
+              Degree/intensity: {this.props.degree}
+            </Text>
           </Dialog.Description>
-          <Dialog.Button label="Cancel" onPress={() => {this.showConfirmationDialog('false')}} color={'#DE6465'} />
-          <Dialog.Button label="Confirm" onPress={() => {this.confirmMoodTracking}} color={'#3CBB75'} />
+          <Dialog.Button label="Cancel" onPress={() => {
+            this.cancelMoodTracking();
+          }} color={'#DE6465'} />
+          <Dialog.Button label="Confirm" onPress={() => {
+            this.confirmMoodTracking();
+          }} color={'#3CBB75'} />
         </Dialog.Container>
       </View>
     );
