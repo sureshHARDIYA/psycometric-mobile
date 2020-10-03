@@ -11,13 +11,11 @@ export class FeedbackBubble extends React.Component {
   setShowFeedbackBubble() {
     // Check to prevent null exception.
     this.props.setShowFeedbackBubble?.(); // Same as this.props.onPress && this.props.onPress();
-    // set moodOverview to not show...
   }
 
   setMoodOverview() {
     // Check to prevent null exception.
     this.props.setMoodOverview?.(); // Same as this.props.onPress && this.props.onPress();
-    // set moodOverview to not show...
   }
 
   render() {

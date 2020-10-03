@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { View, Text } from 'react-native';
 import Dialog from 'react-native-dialog';
 
 export class ConfirmationBubble extends React.Component {
+
   constructor(props) {
     super(props);
   }
@@ -12,22 +13,22 @@ export class ConfirmationBubble extends React.Component {
     this.props.setShowConfirmationBubble?.(); // Same as this.props.onPress && this.props.onPress();
   }
 
+
   cancelMoodTracking() {
-    this.setShowConfirmationBubble('false');
+    this.setShowConfirmationBubble(false);
   }
 
   confirmMoodTracking() {
-    //set layout to default state
-    this.props.setSliderValue(4);
-    this.setShowConfirmationBubble('false');
-    this.props.setSelectedMood('No mood selected');
+    this.setShowConfirmationBubble(false);
 
     //showFeedbackBubble
-    this.props.setShowFeedbackBubble('true');
+    this.props.setShowFeedbackBubble(true);
 
     //send in data
-
-
+    this.props.onSubmit({
+      emotion: this.props.emojiDescription,
+      degree: this.props.sliderValue.toString(),
+    });
   }
 
   render() {
@@ -42,7 +43,7 @@ export class ConfirmationBubble extends React.Component {
           <Dialog.Description>
             <Text>
               Emotion: {this.props.emojiDescription} {'\n'}
-              Degree/intensity: {this.props.degree}
+              Degree/intensity: {this.props.sliderValue}
             </Text>
           </Dialog.Description>
           <Dialog.Button label="Cancel" onPress={() => {

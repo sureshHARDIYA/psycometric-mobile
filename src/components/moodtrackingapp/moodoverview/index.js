@@ -4,14 +4,15 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 /*import Slider from '@react-native-community/slider';*/
 import { Color } from '../../../constants';
 import { LinearGradient } from 'expo-linear-gradient';
+import { ConfirmationBubble } from '../../../containers/MoodTracking';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { ConfirmationBubble } from '../confirmationBubble';
 import { FeedbackBubble } from '../feedbackBubble';
+import { useSubmit } from '../../../containers/Quiz/useSubmit';
 
 const Emotions = [
   {
     id: 'tenseNervousEmoji',
-    description: 'Tense/Nervous',
+    description: "Tense/Nervous",
     color: '#3CBB75',
     icon: 'frown-open',
     listElementStyle: {
@@ -36,7 +37,7 @@ const Emotions = [
   },
   {
     id: 'irritatedAnnoyedEmoji',
-    description: 'Irritated/Annoyed',
+    description: "Irritated/Annoyed",
     color: '#DE6465',
     icon: 'angry',
     listElementStyle: {
@@ -61,7 +62,7 @@ const Emotions = [
   },
   {
     id: 'excitedLivelyEmoji',
-    description: 'Excited/Lively',
+    description: "Excited/Lively",
     color: '#EB7955',
     icon: 'grin-stars',
     listElementStyle: {
@@ -87,7 +88,7 @@ const Emotions = [
   },
   {
     id: 'cheerfulHappyEmoji',
-    description: 'Cheerful/Happy',
+    description: "Cheerful/Happy",
     color: '#F7CB50',
     icon: 'laugh-beam',
     listElementStyle: {
@@ -112,7 +113,7 @@ const Emotions = [
   },
   {
     id: 'boredWearyEmoji',
-    description: 'Bored/Weary',
+    description: "Bored/Weary",
     color: '#8B42CC',
     icon: 'meh',
     listElementStyle: {
@@ -137,7 +138,7 @@ const Emotions = [
   },
   {
     id: 'gloomySadEmoji',
-    description: 'Gloomy/Sad',
+    description: "Gloomy/Sad",
     color: '#3D3D3D',
     icon: 'frown',
     listElementStyle: {
@@ -162,7 +163,7 @@ const Emotions = [
   },
   {
     id: 'relaxedCalmEmoji',
-    description: 'Relaxed/Calm',
+    description: "Relaxed/Calm",
     color: '#425CCC',
     icon: 'smile-beam',
     listElementStyle: {
@@ -232,7 +233,6 @@ export class MoodOverview extends React.Component {
       showFeedbackBubble: boolean,
     })
   }
-
 
   setSliderValue(number) {
     this.setState({
@@ -337,8 +337,10 @@ export class MoodOverview extends React.Component {
           setShowFeedbackBubble={this.setShowFeedbackBubble}
           showConfirmationBubble={this.state.showConfirmationBubble}
           emojiDescription={this.state.selectedMood}
-          degree={this.state.sliderValue}
-          setMoodOverview={this.props.setMoodOverview}/>
+          sliderValue={this.state.sliderValue}
+          setMoodOverview={this.props.setMoodOverview}
+          onSubmit={this.props.onSubmit}
+          />
         <FeedbackBubble showFeedbackBubble={this.state.showFeedbackBubble} setShowFeedbackBubble={this.setShowFeedbackBubble} setMoodOverview={this.props.setMoodOverview}/>
       </View>
     );
