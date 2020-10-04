@@ -1,5 +1,5 @@
 import React from 'react';
-import Calendar from '../../components/moodtrackingapp/calendar';
+import { Calendar } from '../../containers/MoodTracking/index';
 import { TopMenu } from '../../components/moodtrackingapp/topmenu';
 import {
   StyleSheet,
@@ -10,6 +10,7 @@ import {
 import { Color } from '../../constants';
 import { Container } from '../../themes';
 import { MainMenu } from '../../components/moodtrackingapp/mainmenu';
+import { Calendar as QueryComponent } from '../../components/moodtrackingapp/calendar';
 
 export class MoodTrackingStatistics extends React.Component {
   constructor(props) {
@@ -51,7 +52,10 @@ export class MoodTrackingStatistics extends React.Component {
                    currentBackgroundImage={this.state.backgroundImage}/>
           <ScrollView>
             <View style={styles.calendar}>
-              <Calendar />
+              <Calendar
+                data={this.props.data}
+                loading={this.props.loading}
+                onRefresh={this.props.onRefresh}/>
             </View>
           </ScrollView>
           <MainMenu page={'statistics'} navigation={this.props.navigation}/>

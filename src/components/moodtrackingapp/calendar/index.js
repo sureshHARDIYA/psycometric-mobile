@@ -1,12 +1,12 @@
 import React from 'react';
-import { Platform, ScrollView, StyleSheet, View, Text } from 'react-native';
+import { Platform, ScrollView, StyleSheet, View, Text, Alert } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 /*import {Overlay} from 'react-native-elements';*/
 /*import Date from '../../themes/Date';*/
 import { Color } from '../../../constants';
 
-export default class Calendar extends React.Component {
+export class Calendar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -58,9 +58,18 @@ export default class Calendar extends React.Component {
     this.showMode('time');
   };
 
+
   render() {
     return (
       <View style={styles.calendar}>
+       {/* {this.props.data.map((val, index, arr) => {
+          return (
+            <View>
+              <Text>{val.emotion}</Text>
+              <Text>{val.degree}</Text>
+            </View>
+          );
+        })}*/}
         {/*<DateTimePicker
           testID="dateTimePicker"
           value={`${new Date().getDate()}-${new Date().getMonth() + 1}-${new Date().getFullYear()}` }

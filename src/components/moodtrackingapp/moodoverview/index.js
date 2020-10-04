@@ -7,7 +7,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { ConfirmationBubble } from '../../../containers/MoodTracking';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { FeedbackBubble } from '../feedbackBubble';
-import { useSubmit } from '../../../containers/Quiz/useSubmit';
 
 const Emotions = [
   {
