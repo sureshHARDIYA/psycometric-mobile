@@ -20,10 +20,10 @@ export class MainMenu extends React.Component {
     this.setShowMoodOverview = this.setShowMoodOverview.bind(this);
   }
 
-  setShowMoodOverview(boolean){
+  setShowMoodOverview(boolean) {
     this.setState({
       showMoodOverview: boolean,
-    })
+    });
   }
 
   openMoodOverview() {
@@ -38,7 +38,7 @@ export class MainMenu extends React.Component {
     return (
       <View>
         {this.state.showMoodOverview && (
-          <MoodOverview navigation={this.props.navigation} setMoodOverview={this.setShowMoodOverview}/>
+          <MoodOverview navigation={this.props.navigation} setMoodOverview={this.setShowMoodOverview} />
         )}
         <View style={styles.mainMenu}>
           <LinearGradient
@@ -78,22 +78,22 @@ export class MainMenu extends React.Component {
             </View>
 
             {this.props.page === 'moodtracking' &&
-              !this.state.showMoodOverview && (
-                <View style={styles.moodTracker}>
-                  <View style={styles.outerCircle}>
-                    <View style={styles.innerCircle}>
-                      <TouchableOpacity
-                        style={styles.moodTrackerTouchZone}
-                        hitSlop={{ top: 34, bottom: 34, left: 34, right: 34 }}
-                        onPress={() => this.openMoodOverview()}>
-                        <Text style={styles.selectMoodText}>
-                          Select{'\n'}Mood
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
+            !this.state.showMoodOverview && (
+              <View style={styles.moodTracker}>
+                <View style={styles.outerCircle}>
+                  <View style={styles.innerCircle}>
+                    <TouchableOpacity
+                      style={styles.moodTrackerTouchZone}
+                      hitSlop={{ top: 34, bottom: 34, left: 34, right: 34 }}
+                      onPress={() => this.openMoodOverview()}>
+                      <Text style={styles.selectMoodText}>
+                        Select{'\n'}Mood
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
-              )}
+              </View>
+            )}
 
             {this.props.page === 'moodtracking' && this.state.showMoodOverview && (
               <View style={styles.moodTracker}>

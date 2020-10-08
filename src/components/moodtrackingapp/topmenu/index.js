@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Image, Alert } from 'react-native';
 import { Color } from '../../../constants';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Header } from '../../../themes';
@@ -12,21 +12,14 @@ export class TopMenu extends React.Component {
       showBackgroundImagePicker: false,
     };
   }
-/*
-  setBackgroundImage() {
-    // Check to prevent null exception.
-    this.props.setBackgroundImage?.(); // Same as this.props.onPress && this.props.onPress();
-  }*/
 
   selectBackground(selectedBackground){
     this.props.setBackgroundImage(selectedBackground);
-    this.setState({showBackgroundImagePicker: false});
+    this.setState({ showBackgroundImagePicker: false });
   }
 
   openBackgroundImagePicker() {
-    this.setState({
-      showBackgroundImagePicker: true,
-    });
+    this.setState({ showBackgroundImagePicker: true });
   }
 
   closeBackgroundImagePicker() {
@@ -70,12 +63,12 @@ export class TopMenu extends React.Component {
           && (
             <Text style={styles.statisticsTopMenuText}>Statistics</Text>)}
 
-          {!this.showBackgroundImagePicker && (
+          {!this.state.showBackgroundImagePicker && (
             <TouchableOpacity
               style={styles.hamburgerMenuTouchZone}
-              onPress={() => {
+              onPress={ () => {
                 this.openBackgroundImagePicker();
-              }}>
+              } }>
               <View style={styles.hamburgerMenu}>
                 <View style={styles.bar1} />
                 <View style={styles.bar2} />
@@ -84,7 +77,7 @@ export class TopMenu extends React.Component {
             </TouchableOpacity>
           )}
 
-          {this.showBackgroundImagePicker && (
+          {this.state.showBackgroundImagePicker && (
             <TouchableOpacity
               style={styles.hamburgerMenuTouchZone}
               onPress={() => {

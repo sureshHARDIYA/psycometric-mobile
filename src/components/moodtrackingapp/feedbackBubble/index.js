@@ -29,7 +29,7 @@ export class FeedbackBubble extends React.Component {
           }}
         >
           <Dialog.Title>
-            <Text> Mood was tracked successfully!</Text>
+            <Text> Mood was tracked successfully!  </Text>
             <FontAwesome5
               size={25}
               name={'check-circle'}

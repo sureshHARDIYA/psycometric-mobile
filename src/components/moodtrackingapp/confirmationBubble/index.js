@@ -21,10 +21,9 @@ export class ConfirmationBubble extends React.Component {
   confirmMoodTracking() {
     this.setShowConfirmationBubble(false);
 
-    //showFeedbackBubble
     this.props.setShowFeedbackBubble(true);
 
-    //send in data
+    //sends in mood tracking data
     this.props.onSubmit({
       emotion: this.props.emojiDescription,
       degree: this.props.sliderValue.toString(),

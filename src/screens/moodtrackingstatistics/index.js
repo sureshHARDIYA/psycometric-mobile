@@ -1,5 +1,4 @@
 import React from 'react';
-import { Calendar } from '../../containers/MoodTracking/index';
 import { TopMenu } from '../../components/moodtrackingapp/topmenu';
 import {
   StyleSheet,
@@ -10,7 +9,7 @@ import {
 import { Color } from '../../constants';
 import { Container } from '../../themes';
 import { MainMenu } from '../../components/moodtrackingapp/mainmenu';
-import { Calendar as QueryComponent } from '../../components/moodtrackingapp/calendar';
+import { CalendarStatistics } from '../../containers/MoodTracking/index';
 
 export class MoodTrackingStatistics extends React.Component {
   constructor(props) {
@@ -49,16 +48,16 @@ export class MoodTrackingStatistics extends React.Component {
           style={{ flex: 1 }}
           source={image}>
           <TopMenu navigation={this.props.navigation} setBackgroundImage={this.setBackgroundImage}
-                   currentBackgroundImage={this.state.backgroundImage}/>
+                   currentBackgroundImage={this.state.backgroundImage} />
           <ScrollView>
             <View style={styles.calendar}>
-              <Calendar
+              <CalendarStatistics
                 data={this.props.data}
                 loading={this.props.loading}
-                onRefresh={this.props.onRefresh}/>
+                onRefresh={this.props.onRefresh} />
             </View>
           </ScrollView>
-          <MainMenu page={'statistics'} navigation={this.props.navigation}/>
+          <MainMenu page={'statistics'} navigation={this.props.navigation} />
         </ImageBackground>
       </Container>
     );
@@ -73,12 +72,9 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   calendar: {
-    /*    padding: 10,*/
-    /*    bottom: 0,*/
     width: '100%',
     height: '100%',
-    /*    justifyContent: 'center',*/
-    top: 80,
+    top: 70,
     alignItems: 'center',
-  }
+  },
 });
