@@ -5,23 +5,6 @@ import { EMOTION_LIST } from './query';
 import { useAuth } from '../Auth';
 import { useState, useEffect } from 'react';
 
-
-/*
-export const useSearch = (id) => {
-  const { loading, error, data } =  (EMOTION_LIST, {
-    variables: { id },
-  });
-
-/!*  const emotionList = _get(data, 'list', []);*!/
-  const emotionList = _get(data, 'result.rows', []);
-
-  return {
-    loading,
-    emotionList,
-    error: error ? (Array.isArray(error) ? error : [error]).join(', ') : null,
-  }
-};
-*/
 export const useSearch = ({} = {}) => {
   const { currentUser } = useAuth();
   const defaultVariables = {
