@@ -10,6 +10,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Color } from '../../../constants';
 import { Routes } from '../../../navigation';
 import { MoodOverview } from '../moodoverview';
+import { moodEventStream } from '../../../utils/eventEmitter';
 
 export class MainMenu extends React.Component {
   constructor(props) {
@@ -18,6 +19,9 @@ export class MainMenu extends React.Component {
       showMoodOverview: false,
     };
     this.setShowMoodOverview = this.setShowMoodOverview.bind(this);
+    moodEventStream.on('moodTrackingFinished', ()=>{
+      setTimeout(()=>{ this.setShowMoodOverview(false)}, 4000);
+    })
   }
 
   setShowMoodOverview(boolean) {

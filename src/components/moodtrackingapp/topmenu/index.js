@@ -4,6 +4,7 @@ import { Color } from '../../../constants';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Header } from '../../../themes';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { moodEventStream } from '../../../utils/eventEmitter';
 
 export class TopMenu extends React.Component {
   constructor(props) {

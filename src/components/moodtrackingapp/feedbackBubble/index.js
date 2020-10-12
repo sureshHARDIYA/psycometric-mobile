@@ -1,51 +1,32 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import Dialog from 'react-native-dialog';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { moodEventStream } from '../../../utils/eventEmitter';
 
-export class FeedbackBubble extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  setShowFeedbackBubble() {
-    // Check to prevent null exception.
-    this.props.setShowFeedbackBubble?.(); // Same as this.props.onPress && this.props.onPress();
-  }
-
-  setMoodOverview() {
-    // Check to prevent null exception.
-    this.props.setMoodOverview?.(); // Same as this.props.onPress && this.props.onPress();
-  }
-
-  render() {
+export const FeedbackBubble = () => {
     return (
       <View>
         <Dialog.Container
-          visible={this.props.showFeedbackBubble}
+          visible={true}
           onBackdropPress={() => {
-            this.setShowFeedbackBubble(false);
-            this.setMoodOverview(false);
-          }}
-        >
-          <Dialog.Title>
-            <Text> Mood was tracked successfully!  </Text>
-            <FontAwesome5
-              size={25}
-              name={'check-circle'}
-              solid
-              color={'#3CBB75'}
-            />
+            moodEventStream.emit('closeFeedbackBubble');
+          }}>
+          <FontAwesome5
+            size={22}
+            name={'check-circle'}
+            solida
+            color={'#3CBB75'}
+            solid
+            style={{ position: 'absolute', right: 0, top: 9, padding: 20 }}
+          />
+          <Dialog.Title style={{ width: 280 }}>
+            Mood was tracked successfully!
           </Dialog.Title>
           <Dialog.Description>
-            <Text>
-              See your tracked moods in Statistics
-            </Text>
+            See your tracked moods in Statistics
           </Dialog.Description>
         </Dialog.Container>
       </View>
     );
-  }
 };
-
-const styles = StyleSheet.create({});

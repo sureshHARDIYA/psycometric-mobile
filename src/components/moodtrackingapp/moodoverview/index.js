@@ -1,11 +1,14 @@
 import React from 'react';
-import { StyleSheet, View, Text, Button, Slider } from 'react-native';
+import { StyleSheet, View, Text, Button, Slider, Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Color } from '../../../constants';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ConfirmationBubble } from '../../../containers/MoodTracking';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { FeedbackBubble } from '../feedbackBubble';
+import { SelectMoodInfo } from '../selectMoodInfo';
+import { moodEventStream } from '../../../utils/eventEmitter';
+
 
 const Emotions = [
   {
@@ -13,6 +16,7 @@ const Emotions = [
     description: 'Tense/Nervous',
     color: '#3CBB75',
     icon: 'frown-open',
+    size: 55,
     listElementStyle: {
       transform: [{ rotate: '135deg' }, { skewY: '0deg' }],
       left: 0,
@@ -21,6 +25,7 @@ const Emotions = [
       height: '50%',
     },
     iconStyle: {
+      fontSize: 55,
       transform: [{ rotate: '-45deg' }, { skewY: '0deg' }],
       zIndex: 1,
       width: 74,
@@ -38,6 +43,7 @@ const Emotions = [
     description: 'Irritated/Annoyed',
     color: '#DE6465',
     icon: 'angry',
+    size: 55,
     listElementStyle: {
       transform: [{ rotate: '90deg' }, { skewY: '0deg' }],
       left: 0,
@@ -63,6 +69,7 @@ const Emotions = [
     description: 'Excited/Lively',
     color: '#EB7955',
     icon: 'grin-stars',
+    size: 55,
     listElementStyle: {
       transform: [{ rotate: '180deg' }, { skewY: '0deg' }],
       left: 0,
@@ -89,6 +96,7 @@ const Emotions = [
     description: 'Cheerful/Happy',
     color: '#F7CB50',
     icon: 'laugh-beam',
+    size: 55,
     listElementStyle: {
       transform: [{ rotate: '225deg' }, { skewY: '0deg' }],
       left: 0,
@@ -114,6 +122,7 @@ const Emotions = [
     description: 'Bored/Weary',
     color: '#8B42CC',
     icon: 'meh',
+    size: 55,
     listElementStyle: {
       transform: [{ rotate: '45deg' }, { skewY: '0deg' }],
       left: 0,
@@ -139,6 +148,7 @@ const Emotions = [
     description: 'Gloomy/Sad',
     color: '#3D3D3D',
     icon: 'frown',
+    size: 55,
     listElementStyle: {
       transform: [{ rotate: '0deg' }, { skewY: '0deg' }],
       left: 0,
@@ -164,6 +174,7 @@ const Emotions = [
     description: 'Relaxed/Calm',
     color: '#425CCC',
     icon: 'smile-beam',
+    size: 55,
     listElementStyle: {
       transform: [{ rotate: '270deg' }, { skewY: '0deg' }],
       left: 0,
@@ -215,23 +226,51 @@ export class MoodOverview extends React.Component {
       selectedMood: 'No mood selected',
       showConfirmationBubble: false,
       showFeedbackBubble: false,
+      emojiFontSize: 55,
+      selectedEmojiFontSize: 70,
+      isSelected: false,
+      showMustSelectMoodText: false,
     };
-    this.setShowConfirmationBubble = this.setShowConfirmationBubble.bind(this);
-    this.setShowFeedbackBubble = this.setShowFeedbackBubble.bind(this);
     this.setSliderValue = this.setSliderValue.bind(this);
     this.setSelectedMood = this.setSelectedMood.bind(this);
+    moodEventStream.on('moodTrackingFinished', () => {
+      this.setState({
+        showConfirmationBubble: false,
+        showFeedbackBubble: true,
+      });
+    });
+
+    moodEventStream.on('closeFeedbackBubble', () => {
+      this.setState({
+        showFeedbackBubble: false,
+      });
+    });
+
+    moodEventStream.on('closeConfirmationBubble', () => {
+      this.setShowConfirmationBubble(false);
+    });
+
+    Emotions.map((emoji) => {
+      emoji.size = 55;
+    });
   }
+
 
   setShowConfirmationBubble(boolean) {
-    this.setState({
-      showConfirmationBubble: boolean,
-    });
-  }
-
-  setShowFeedbackBubble(boolean) {
-    this.setState({
-      showFeedbackBubble: boolean,
-    });
+    if (this.state.selectedMood !== 'No mood selected') {
+      this.setState({
+        showConfirmationBubble: boolean,
+      });
+    } else {
+      this.setState({
+        showMustSelectMoodText: true,
+      });
+    }
+    setTimeout(() => {
+      this.setState({
+        showMustSelectMoodText: false,
+      });
+    }, 4000);
   }
 
   setSliderValue(number) {
@@ -240,15 +279,16 @@ export class MoodOverview extends React.Component {
     });
   }
 
-  setSelectedMood(moodDescription) {
+  setSelectedMood(moodDescription, id) {
     this.setState({
       selectedMood: moodDescription,
+      showMustSelectMoodText: false,
     });
-// TODO: Set font size to 70 on icon when selected.
-// TODO: Set rest of the icons to 55.
-    /*    document.getElementById(`#${moodId}`).style.borderColor = '';
-          document.querySelector(`#${moodId}`).style.borderWidth = 2;*/
+    Emotions.map((emoji) => {
+      emoji.id === id ? (emoji.size = 70) : (emoji.size = 55);
+    });
   }
+
 
   render() {
     return (
@@ -276,9 +316,12 @@ export class MoodOverview extends React.Component {
                       <View style={val.listElementStyle}>
                         <View style={val.iconStyle}>
                           <TouchableOpacity
-                            onPress={() => this.setSelectedMood(val.description, val.id)}>
+                            onPress={() => {
+                              this.setSelectedMood(val.description, val.id);
+                            }
+                            }>
                             <FontAwesome5
-                              size={55}
+                              size={val.size}
                               name={val.icon}
                               solid
                               color={val.color}
@@ -295,6 +338,9 @@ export class MoodOverview extends React.Component {
             </View>
           </LinearGradient>
           <View style={styles.currentTrackingInfo}>
+            {this.state.showMustSelectMoodText && (
+              <SelectMoodInfo showMustSelectMoodText={this.state.showMustSelectMoodText} />
+            )}
             <Text style={styles.noMoodSelectedText}>{this.state.selectedMood}</Text>
             <Text style={styles.sliderValueText}>{this.state.sliderValue}</Text>
 
@@ -311,32 +357,28 @@ export class MoodOverview extends React.Component {
               minimumTrackTintColor={'#514A9D'}
               thumbTintColor={'#514A9D'}
             />
-
-
             <View style={styles.trackingButton}>
-              <Button title={'track'}
-                      color={Color.secondary}
-                      onPress={() => {
-                        this.setShowConfirmationBubble('true');
-                      }}
+              <Button
+                title={'track'}
+                color={Color.secondary}
+                onPress={() => {
+                  this.setShowConfirmationBubble(true);
+                }}
               />
             </View>
           </View>
         </View>
-        <ConfirmationBubble
-          setShowConfirmationBubble={this.setShowConfirmationBubble}
-          setSelectedMood={this.setSelectedMood}
-          setSliderValue={this.setSliderValue}
-          setShowFeedbackBubble={this.setShowFeedbackBubble}
-          showConfirmationBubble={this.state.showConfirmationBubble}
-          emojiDescription={this.state.selectedMood}
-          sliderValue={this.state.sliderValue}
-          setMoodOverview={this.props.setMoodOverview}
-          onSubmit={this.props.onSubmit}
-        />
-        <FeedbackBubble showFeedbackBubble={this.state.showFeedbackBubble}
-                        setShowFeedbackBubble={this.setShowFeedbackBubble}
-                        setMoodOverview={this.props.setMoodOverview} />
+        {this.state.showConfirmationBubble && (
+          <ConfirmationBubble
+            setShowConfirmationBubble={this.setShowConfirmationBubble}
+            emojiDescription={this.state.selectedMood}
+            sliderValue={this.state.sliderValue}
+            onSubmit={this.props.onSubmit}
+          />
+        )}
+        {this.state.showFeedbackBubble && (
+          <FeedbackBubble />
+        )}
       </View>
     );
   }

@@ -1,18 +1,14 @@
 import React from 'react';
-import { Alert, StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, ScrollView, Alert } from 'react-native';
 import { AntDesign, FontAwesome5 } from '@expo/vector-icons';
 import Dialog from 'react-native-dialog';
 import { DataTable } from 'react-native-paper';
+import { moodEventStream } from '../../../utils/eventEmitter';
+
 
 export class SelectedDateDialog extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      page: 1,
-      itemsPerPage: 5,
-      numberOfPages: 1,
-      pages: [],
-    };
   }
 
   cancelDialog() {
@@ -21,7 +17,7 @@ export class SelectedDateDialog extends React.Component {
 
   deleteMood(id) {
     this.props.onDestroy([`${id}`]);
-    // TODO: Make sure to update component/list
+    moodEventStream.emit('moodsUpdated');
   }
 
   render() {
@@ -31,6 +27,7 @@ export class SelectedDateDialog extends React.Component {
         onBackdropPress={() => {
           this.cancelDialog();
         }}
+        top={-25}
       >
         <AntDesign
           size={25}
@@ -42,65 +39,53 @@ export class SelectedDateDialog extends React.Component {
           }}
         />
         <Dialog.Title style={styles.tableTitle}>
-          <Text>
-            <Text>Tracked moods:{' '}</Text>
-            <Text style={{ color: '#514A9D' }}>
-              {this.props.selectedDay}.{this.props.selectedMonth}.
-              {this.props.selectedYear}{' '}
-            </Text>
-          </Text>
+          {'Tracked moods: ' + this.props.selectedDay + '.' + this.props.selectedMonth + '.' + this.props.selectedYear + ' '}
         </Dialog.Title>
-        {this.props.selectedDayMoods.length === 0 && (
-          <Text style={styles.noMoodsInfo}>
-            {' '}
-            There are no tracked mood on the day you have selected.
-          </Text>
-        )}
-        <DataTable style={styles.dataTable}>
+        <DataTable style={styles.dataTable} maxHeight={380} height={380} maxWidth={260}>
           <DataTable.Header>
             <DataTable.Title style={{ flex: 3 }}>Emotion</DataTable.Title>
             <DataTable.Title numeric style={{ flex: 1 }}>Degree</DataTable.Title>
             <DataTable.Title numeric style={{ flex: 1 }} />
           </DataTable.Header>
-          {this.props.selectedDayMoods.length > 0 &&
-          this.props.selectedDayMoods.map((mood, index) => {
-            return (
-              <DataTable.Row key={mood.id} style={{ height: 70 }}>
-                <DataTable.Cell style={{
-                  flex: 3,
-                  height: 70,
-                  maxWidth: 150,
-                  overflow: 'visible',
-                  width: 200,
-                  wordWrap: 'break-word',
-                  overflowWrap: 'break-word',
-                }}>
-                  <Text>{`${mood.emotion}`}{'\n'}</Text>
-                  <Text style={{ fontSize: 12 }}>{`\n ${mood.createdAt}`}</Text>
-                </DataTable.Cell>
-                <DataTable.Cell numeric style={{ flex: 1, height: 70 }}>{mood.degree}</DataTable.Cell>
-                <DataTable.Cell numeric style={{ flex: 1, height: 70 }}>
-                  <FontAwesome5
-                    solid
-                    size={16}
-                    name="trash-alt"
-                    color="#454444"
-                    onPress={() => {
-                      this.deleteMood(mood.id);
-                    }}
-                  />
-                </DataTable.Cell>
-              </DataTable.Row>
-            );
-          })}
-          <DataTable.Pagination
-            page={this.state.page}
-            numberOfPages={0}
-            onPageChange={(newPage) => {
-              this.setState({ page: newPage });
-            }}
-            label={`Page ${this.props.selectedDayMoods.length >= 1 ? this.state.page : 0} of ${this.props.selectedDayMoods.length >= 1 ? Math.ceil(this.props.selectedDayMoods.length / 5) : 0}`}
-          />
+          <ScrollView>
+            {this.props.selectedDayMoods.length > 0 &&
+            this.props.selectedDayMoods.map((mood) => {
+              return (
+                <DataTable.Row key={mood.id} style={{ height: 70 }}>
+                  <DataTable.Cell style={{
+                    flex: 3,
+                    height: 70,
+                    maxWidth: 150,
+                    overflow: 'visible',
+                    width: 200,
+                    wordWrap: 'break-word',
+                    overflowWrap: 'break-word',
+                  }}>
+                    {mood.emotion}
+                  </DataTable.Cell>
+                  <DataTable.Cell numeric style={{ flex: 1, height: 70 }}>{mood.degree}</DataTable.Cell>
+                  <DataTable.Cell numeric style={{ flex: 1, height: 70, alignItems: 'center' }}
+                                  onPress={() => {
+                                    this.deleteMood(mood.id);
+                                  }}>
+                    <FontAwesome5
+                      solid
+                      size={16}
+                      name="trash-alt"
+                      color="#454444"
+                      style={{padding: 10}}
+                    />
+                  </DataTable.Cell>
+                </DataTable.Row>
+
+              );
+            })}
+            {this.props.selectedDayMoods.length === 0 && (
+              <Text style={styles.noMoodsInfo}>
+                There are no tracked mood on the day you have selected.
+              </Text>
+            )}
+          </ScrollView>
         </DataTable>
       </Dialog.Container>
     );
@@ -115,8 +100,11 @@ const styles = StyleSheet.create({
   },
   noMoodsInfo: {
     textAlign: 'center',
+    /*    width: 260,*/
+    padding: 15,
   },
   dataTable: {
     width: 260,
+    marginBottom: 10,
   },
 });

@@ -10,7 +10,7 @@ export const useSearch = ({} = {}) => {
   const defaultVariables = {
     filter: {},
     orderBy: null,
-    limit: 100,
+    limit: 200,
     offset: 0,
   };
 
@@ -27,6 +27,7 @@ export const useSearch = ({} = {}) => {
 
   const { loading, error, data, fetchMore, refetch } = useQuery(EMOTION_LIST, {
     variables,
+    fetchPolicy: "cache-and-network"
   });
 
   const list = _get(data, 'result.rows', []);

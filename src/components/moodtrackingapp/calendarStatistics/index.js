@@ -1,11 +1,9 @@
-import { FontAwesome5 } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, View, Text, Alert } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { moodEventStream } from '../../../utils/eventEmitter';
-import { Color } from '../../../constants';
 import { StatisticsOverviewMonth } from '../statisticsOverviewMonth';
-import { SelectedDateDialog } from '../../../containers/MoodTracking';
+import { SelectedDateDialog } from '../../../containers/MoodTrackingStatistics/index';
 
 export class CalendarStatistics extends React.Component {
   constructor(props) {
@@ -18,8 +16,16 @@ export class CalendarStatistics extends React.Component {
       selectedDay: '',
       selectedMonth: '',
       selectedYear: '',
+      data: this.props.data
     };
     this.setShowDateDetails = this.setShowDateDetails.bind(this);
+    moodEventStream.on('moodsUpdated', () => {
+      // Get  updatedList and reload CalendarStatistics.
+      this.setState({
+        data: this.props.data
+      })
+      console.log("moodsUpdated CalendarStatistics component: ",  this.props.data.length);
+    });
   }
 
   setShowDateDetails(boolean) {
@@ -34,10 +40,11 @@ export class CalendarStatistics extends React.Component {
     });
   }
 
-  onChange = (selectedDate) => {
+  //
+  onDateChange = (selectedDate) => {
     this.setState({
       date: selectedDate,
-      selectedDayMoods: this.showDateInfo(selectedDate),
+      selectedDayMoods: this.makeSelectedDateList(selectedDate),
     });
   };
 
@@ -58,7 +65,23 @@ export class CalendarStatistics extends React.Component {
     this.showMode('time');
   };
 
-  showDateInfo = (selectedDate) => {
+  // Marks all dates that contain tracked mood with color.
+  findTrackedDates() {
+    const markedDatesObj = {};
+    for (const [key, value] of Object.entries(this.state.data)) {
+      const newKey = new Date(this.state.data[key].createdAt)
+        .toISOString()
+        .substring(0, 10);
+      markedDatesObj[newKey] = { marked: true };
+    }
+    const today = new Date().toISOString().substring(0, 10);
+    markedDatesObj[today] = { selected: true, selectedColor: '#514A9D' };
+
+    return markedDatesObj;
+  }
+
+  //Sets showDateDetails to true and returns a list of the mood info on a date the user selects in the calendar.
+  makeSelectedDateList = (selectedDate) => {
     this.setState({
       showDateDetails: true,
       selectedDayMoods: [],
@@ -81,22 +104,22 @@ export class CalendarStatistics extends React.Component {
       selectedYear,
     });
 
-    for (const [key, value] of Object.entries(this.props.data)) {
-      const dateFromDB = new Date(this.props.data[key].createdAt)
+    for (const [key, value] of Object.entries(this.state.data)) {
+      const dateFromDB = new Date(this.state.data[key].createdAt)
         .toISOString()
         .substring(0, 10)
         .split('-');
       const trackedDay = dateFromDB[2]; // Format: '02'
       const trackedMonth =
-        (new Date(this.props.data[key].createdAt).getMonth() + 1).toString()
+        (new Date(this.state.data[key].createdAt).getMonth() + 1).toString()
           .length === 1
           ? '0'.concat(
           (
-            new Date(this.props.data[key].createdAt).getMonth() + 1
+            new Date(this.state.data[key].createdAt).getMonth() + 1
           ).toString(),
           )
           : (
-            new Date(this.props.data[key].createdAt).getMonth() + 1
+            new Date(this.state.data[key].createdAt).getMonth() + 1
           ).toString();
       const trackedYear = dateFromDB[0];
       if (
@@ -104,26 +127,13 @@ export class CalendarStatistics extends React.Component {
         trackedMonth === selectedMonth &&
         trackedDay === selectedDay
       ) {
-        tempSelectedMoods.push(this.props.data[key]);
+        tempSelectedMoods.push(this.state.data[key]);
       }
     }
     return tempSelectedMoods;
   };
 
-  // Marks all dates that contain tracked mood with color.
-  findTrackedDates() {
-    const markedDatesObj = {};
-    for (const [key, value] of Object.entries(this.props.data)) {
-      const newKey = new Date(this.props.data[key].createdAt)
-        .toISOString()
-        .substring(0, 10);
-      markedDatesObj[newKey] = { marked: true };
-    }
-    const today = new Date().toISOString().substring(0, 10);
-    markedDatesObj[today] = { selected: true, selectedColor: '#514A9D' };
 
-    return markedDatesObj;
-  }
 
   updateMonthMoodOverview(month) {
     let selectedMonth;
@@ -140,34 +150,36 @@ export class CalendarStatistics extends React.Component {
     }
 
     const moodTrackingSelectedMonth = [];
-    for (const [key, value] of Object.entries(this.props.data)) {
-      const dateFromDB = new Date(this.props.data[key].createdAt)
+    for (const [key, value] of Object.entries(this.state.data)) {
+      const dateFromDB = new Date(this.state.data[key].createdAt)
         .toISOString()
         .substring(0, 10)
         .split('-');
       const trackedMonth =
-        (new Date(this.props.data[key].createdAt).getMonth() + 1).toString()
+        (new Date(this.state.data[key].createdAt).getMonth() + 1).toString()
           .length === 1
           ? '0'.concat(
           (
-            new Date(this.props.data[key].createdAt).getMonth() + 1
+            new Date(this.state.data[key].createdAt).getMonth() + 1
           ).toString(),
           )
           : (
-            new Date(this.props.data[key].createdAt).getMonth() + 1
+            new Date(this.state.data[key].createdAt).getMonth() + 1
           ).toString();
       const trackedYear = dateFromDB[0];
       if (trackedYear === selectedYear && trackedMonth === selectedMonth) {
-        moodTrackingSelectedMonth.push(this.props.data[key]);
+        moodTrackingSelectedMonth.push(this.state.data[key]);
       }
-/*          this.findMoodDegreesForMonth(moodTrackingSelectedMonth);*/
     }
     moodEventStream.emit('moodDegreesForMonthUpdated', moodTrackingSelectedMonth);
   }
 
   componentDidMount() {
+    console.log("Component did mount:  this.data in calendarStatistics ", this.state.data.length);
     this.updateMonthMoodOverview(new Date());
   }
+
+
 
   render() {
     const date = this.state.date;
@@ -235,7 +247,7 @@ export class CalendarStatistics extends React.Component {
           theme={CalendarThemes}
           onDayPress={(day) => {
             this.setState({ date: day });
-            this.onChange(day);
+            this.onDateChange(day);
           }}
           onMonthChange={(month) => {
             this.updateMonthMoodOverview(month);

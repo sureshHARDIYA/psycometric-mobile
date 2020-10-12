@@ -18,15 +18,12 @@ export class StatisticsOverviewMonth extends React.Component {
     }
     this.moodEventStream = moodEventStream;
   }
-  /*    this.incrementTenseNervousMonthDegree = this.incrementTenseNervousMonthDegree.bind(this);*/
 
   componentDidMount() {
+/*    this.moodEventStream.clear();*/
     this.moodEventStream.on('moodDegreesForMonthUpdated', this.findMoodDegreesForMonth.bind(this));
+/*    this.moodEventStream.on('moodsDidUpdate', this.findMoodDegreesForMonth.bind(this));*/
 
-  }
-
-  componentWillUnmount() {
-    this.moodEventStream.clear();
   }
 
   incrementTenseNervousMonthDegree() {
@@ -72,6 +69,7 @@ export class StatisticsOverviewMonth extends React.Component {
   }
 
   findMoodDegreesForMonth(moodTrackingList) {
+    // TODO: null in findMoodDegressForMonth, null in forEach.
     this.setState({
       tenseNervousMonthDegree: 0,
       irritatedAnnoyedMonthDegree: 0,
