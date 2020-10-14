@@ -1,10 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Image, Alert } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
 import { Color } from '../../../constants';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Header } from '../../../themes';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
-import { moodEventStream } from '../../../utils/eventEmitter';
 
 export class TopMenu extends React.Component {
   constructor(props) {
@@ -14,7 +12,7 @@ export class TopMenu extends React.Component {
     };
   }
 
-  selectBackground(selectedBackground){
+  selectBackground(selectedBackground) {
     this.props.setBackgroundImage(selectedBackground);
     this.setState({ showBackgroundImagePicker: false });
   }
@@ -37,14 +35,13 @@ export class TopMenu extends React.Component {
           start={{ x: 0, y: 0.5 }}
           end={{ x: 1, y: 0.5 }}
           style={{
-            position: 'absolute',
             left: 0,
             right: 0,
             top: 0,
             height: 60,
             flexDirection: 'row',
           }}>
-          <Header style={styles.header}>
+          <View style={styles.header}>
             <TouchableOpacity
               style={styles.goBack}
               onPress={() => this.props.navigation.goBack()}>
@@ -55,7 +52,7 @@ export class TopMenu extends React.Component {
                 style={styles.icon}
               />
             </TouchableOpacity>
-          </Header>
+          </View>
           {'MoodTracking' !== 'MoodTracking'
           && (
             <Text style={styles.statisticsTopMenuText}>Mood Tracking</Text>)}
@@ -67,9 +64,9 @@ export class TopMenu extends React.Component {
           {!this.state.showBackgroundImagePicker && (
             <TouchableOpacity
               style={styles.hamburgerMenuTouchZone}
-              onPress={ () => {
+              onPress={() => {
                 this.openBackgroundImagePicker();
-              } }>
+              }}>
               <View style={styles.hamburgerMenu}>
                 <View style={styles.bar1} />
                 <View style={styles.bar2} />
@@ -107,8 +104,8 @@ export class TopMenu extends React.Component {
                   onPress={() => {
                     this.selectBackground('pinkishBeach');
                   }}>
-                <Image style={styles.backgroundImage}
-                       source={require('../../../../assets/images/moodtrackingapp/pinkishBeach.jpg')} />
+                  <Image style={styles.backgroundImage}
+                         source={require('../../../../assets/images/moodtrackingapp/pinkishBeach.jpg')} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -118,8 +115,8 @@ export class TopMenu extends React.Component {
                   onPress={() => {
                     this.selectBackground('water');
                   }}>
-                <Image style={styles.backgroundImage}
-                       source={require('../../../../assets/images/moodtrackingapp/water.jpg')} />
+                  <Image style={styles.backgroundImage}
+                         source={require('../../../../assets/images/moodtrackingapp/water.jpg')} />
                 </TouchableOpacity>
               </View>
               <View>
@@ -127,8 +124,8 @@ export class TopMenu extends React.Component {
                   onPress={() => {
                     this.selectBackground('ocean');
                   }}>
-                <Image style={styles.backgroundImage}
-                       source={require('../../../../assets/images/moodtrackingapp/ocean.jpg')} />
+                  <Image style={styles.backgroundImage}
+                         source={require('../../../../assets/images/moodtrackingapp/ocean.jpg')} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -144,6 +141,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     shadowOpacity: 0.0,
     shadowColor: 'transparent',
+    justifyContent: 'center',
+    padding: 10,
+    paddingTop: 10,
   },
   goBack: {
     zIndex: 2,
@@ -199,7 +199,6 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
     width: '100%',
     height: '100%',
-    top: 60,
     zIndex: 99,
     position: 'relative',
   },

@@ -1,5 +1,5 @@
 import React, { forwardRef, useRef, useImperativeHandle } from 'react';
-import { moodEventStream } from '../../../utils/eventEmitter'
+import Emitter from '../../../utils/eventEmitter'
 import { StyleSheet, Text, View } from 'react-native';
 import { Color } from '../../../constants';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -16,14 +16,12 @@ export class StatisticsOverviewMonth extends React.Component {
       gloomySadMonthDegree: 0,
       relaxedCalmMonthDegree: 0,
     }
-    this.moodEventStream = moodEventStream;
   }
 
   componentDidMount() {
-/*    this.moodEventStream.clear();*/
-    this.moodEventStream.on('moodDegreesForMonthUpdated', this.findMoodDegreesForMonth.bind(this));
-/*    this.moodEventStream.on('moodsDidUpdate', this.findMoodDegreesForMonth.bind(this));*/
-
+    this.findMoodDegreesForMonth(this.props.moodTrackingSelectedMonth);
+    Emitter.off('moodDegreesForMonthUpdated');
+    Emitter.on('moodDegreesForMonthUpdated', this.findMoodDegreesForMonth.bind(this));
   }
 
   incrementTenseNervousMonthDegree() {
@@ -69,44 +67,44 @@ export class StatisticsOverviewMonth extends React.Component {
   }
 
   findMoodDegreesForMonth(moodTrackingList) {
-    // TODO: null in findMoodDegressForMonth, null in forEach.
-    this.setState({
-      tenseNervousMonthDegree: 0,
-      irritatedAnnoyedMonthDegree: 0,
-      excitedLivelyMonthDegree: 0,
-      cheerfulHappyMonthDegree: 0,
-      boredWearyMonthDegree: 0,
-      gloomySadMonthDegree: 0,
-      relaxedCalmMonthDegree: 0,
-    });
+    if(moodTrackingList){
+      this.setState({
+        tenseNervousMonthDegree: 0,
+        irritatedAnnoyedMonthDegree: 0,
+        excitedLivelyMonthDegree: 0,
+        cheerfulHappyMonthDegree: 0,
+        boredWearyMonthDegree: 0,
+        gloomySadMonthDegree: 0,
+        relaxedCalmMonthDegree: 0,
+      });
 
-    moodTrackingList.forEach((moodTrackingThisMonth) => {
-      switch (moodTrackingThisMonth.emotion) {
-        case 'Tense/Nervous':
-          this.incrementTenseNervousMonthDegree();
-          break;
-        case 'Irritated/Annoyed':
-          this.incrementIrritatedAnnoyedMonthDegree();
-          break;
-        case 'Excited/Lively':
-          this.incrementExcitedLivelyMonthDegree();
-          break;
-        case 'Cheerful/Happy':
-          this.incrementCheerfulHappyMonthDegree();
-          break;
-        case 'Bored/Weary':
-          this.incrementBoredWearyMonthDegree();
-          break;
-        case 'Gloomy/Sad':
-          this.incrementGloomySadMonthDegree();
-          break;
-        case 'Relaxed/Calm':
-          this.incrementRelaxedCalmMonthDegree();
-          break;
-      }
-    });
+      moodTrackingList.forEach((moodTrackingThisMonth) => {
+        switch (moodTrackingThisMonth.emotion) {
+          case 'Tense/Nervous':
+            this.incrementTenseNervousMonthDegree();
+            break;
+          case 'Irritated/Annoyed':
+            this.incrementIrritatedAnnoyedMonthDegree();
+            break;
+          case 'Excited/Lively':
+            this.incrementExcitedLivelyMonthDegree();
+            break;
+          case 'Cheerful/Happy':
+            this.incrementCheerfulHappyMonthDegree();
+            break;
+          case 'Bored/Weary':
+            this.incrementBoredWearyMonthDegree();
+            break;
+          case 'Gloomy/Sad':
+            this.incrementGloomySadMonthDegree();
+            break;
+          case 'Relaxed/Calm':
+            this.incrementRelaxedCalmMonthDegree();
+            break;
+        }
+      });
+    }
   }
-
 
   render(){
     return(
@@ -236,7 +234,7 @@ export class StatisticsOverviewMonth extends React.Component {
 const styles = StyleSheet.create({
   monthlyMoodOverview: {
     width: 300,
-    height: 155,
+    height: 100,
     marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'space-around',

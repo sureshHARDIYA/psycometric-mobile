@@ -11,11 +11,9 @@ export const submitMood = () => {
     if (!submiting) {
       try {
         submiting = true;
-        const { data } = await submit({ variables: { data: form } });
-        setTimeout(() => {
-          submiting = false;
-        }, 5000);
-        return data;
+        await submit({ variables: { data: form } }).then((data) => {
+          return data;
+        });
       } catch (e) {
         throw e;
       } finally {

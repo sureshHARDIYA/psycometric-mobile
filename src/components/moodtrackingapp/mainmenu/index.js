@@ -10,7 +10,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Color } from '../../../constants';
 import { Routes } from '../../../navigation';
 import { MoodOverview } from '../moodoverview';
-import { moodEventStream } from '../../../utils/eventEmitter';
+import Emitter from '../../../utils/eventEmitter';
 
 export class MainMenu extends React.Component {
   constructor(props) {
@@ -19,9 +19,13 @@ export class MainMenu extends React.Component {
       showMoodOverview: false,
     };
     this.setShowMoodOverview = this.setShowMoodOverview.bind(this);
-    moodEventStream.on('moodTrackingFinished', ()=>{
-      setTimeout(()=>{ this.setShowMoodOverview(false)}, 4000);
-    })
+
+    Emitter.off('closeMoodOverview');
+    if (!Emitter.listenersNumber('closeMoodOverview')) {
+      Emitter.on('closeMoodOverview', () => {
+        this.setShowMoodOverview(false);
+      });
+    }
   }
 
   setShowMoodOverview(boolean) {
@@ -42,7 +46,9 @@ export class MainMenu extends React.Component {
     return (
       <View>
         {this.state.showMoodOverview && (
-          <MoodOverview navigation={this.props.navigation} setMoodOverview={this.setShowMoodOverview} />
+          <MoodOverview
+            navigation={this.props.navigation}
+          />
         )}
         <View style={styles.mainMenu}>
           <LinearGradient

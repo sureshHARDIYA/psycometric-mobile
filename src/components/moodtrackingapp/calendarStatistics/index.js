@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, Alert } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
-import { moodEventStream } from '../../../utils/eventEmitter';
+import Emitter from '../../../utils/eventEmitter';
 import { StatisticsOverviewMonth } from '../statisticsOverviewMonth';
 import { SelectedDateDialog } from '../../../containers/MoodTrackingStatistics/index';
 
@@ -16,16 +16,9 @@ export class CalendarStatistics extends React.Component {
       selectedDay: '',
       selectedMonth: '',
       selectedYear: '',
-      data: this.props.data
+      moodTrackingForSelectedMonth: [],
     };
     this.setShowDateDetails = this.setShowDateDetails.bind(this);
-    moodEventStream.on('moodsUpdated', () => {
-      // Get  updatedList and reload CalendarStatistics.
-      this.setState({
-        data: this.props.data
-      })
-      console.log("moodsUpdated CalendarStatistics component: ",  this.props.data.length);
-    });
   }
 
   setShowDateDetails(boolean) {
@@ -68,8 +61,8 @@ export class CalendarStatistics extends React.Component {
   // Marks all dates that contain tracked mood with color.
   findTrackedDates() {
     const markedDatesObj = {};
-    for (const [key, value] of Object.entries(this.state.data)) {
-      const newKey = new Date(this.state.data[key].createdAt)
+    for (const [key, value] of Object.entries(this.props.data)) {
+      const newKey = new Date(this.props.data[key].createdAt)
         .toISOString()
         .substring(0, 10);
       markedDatesObj[newKey] = { marked: true };
@@ -104,22 +97,22 @@ export class CalendarStatistics extends React.Component {
       selectedYear,
     });
 
-    for (const [key, value] of Object.entries(this.state.data)) {
-      const dateFromDB = new Date(this.state.data[key].createdAt)
+    for (const [key, value] of Object.entries(this.props.data)) {
+      const dateFromDB = new Date(this.props[key].createdAt)
         .toISOString()
         .substring(0, 10)
         .split('-');
       const trackedDay = dateFromDB[2]; // Format: '02'
       const trackedMonth =
-        (new Date(this.state.data[key].createdAt).getMonth() + 1).toString()
+        (new Date(this.props[key].createdAt).getMonth() + 1).toString()
           .length === 1
           ? '0'.concat(
           (
-            new Date(this.state.data[key].createdAt).getMonth() + 1
+            new Date(this.props.data[key].createdAt).getMonth() + 1
           ).toString(),
           )
           : (
-            new Date(this.state.data[key].createdAt).getMonth() + 1
+            new Date(this.props.data[key].createdAt).getMonth() + 1
           ).toString();
       const trackedYear = dateFromDB[0];
       if (
@@ -127,12 +120,11 @@ export class CalendarStatistics extends React.Component {
         trackedMonth === selectedMonth &&
         trackedDay === selectedDay
       ) {
-        tempSelectedMoods.push(this.state.data[key]);
+        tempSelectedMoods.push(this.props.data[key]);
       }
     }
     return tempSelectedMoods;
   };
-
 
 
   updateMonthMoodOverview(month) {
@@ -150,36 +142,30 @@ export class CalendarStatistics extends React.Component {
     }
 
     const moodTrackingSelectedMonth = [];
-    for (const [key, value] of Object.entries(this.state.data)) {
-      const dateFromDB = new Date(this.state.data[key].createdAt)
+    for (const [key, value] of Object.entries(this.props.data)) {
+      const dateFromDB = new Date(this.props.data[key].createdAt)
         .toISOString()
         .substring(0, 10)
         .split('-');
       const trackedMonth =
-        (new Date(this.state.data[key].createdAt).getMonth() + 1).toString()
+        (new Date(this.props.data[key].createdAt).getMonth() + 1).toString()
           .length === 1
           ? '0'.concat(
           (
-            new Date(this.state.data[key].createdAt).getMonth() + 1
+            new Date(this.props.data[key].createdAt).getMonth() + 1
           ).toString(),
           )
           : (
-            new Date(this.state.data[key].createdAt).getMonth() + 1
+            new Date(this.props.data[key].createdAt).getMonth() + 1
           ).toString();
       const trackedYear = dateFromDB[0];
       if (trackedYear === selectedYear && trackedMonth === selectedMonth) {
-        moodTrackingSelectedMonth.push(this.state.data[key]);
+        moodTrackingSelectedMonth.push(this.props.data[key]);
       }
     }
-    moodEventStream.emit('moodDegreesForMonthUpdated', moodTrackingSelectedMonth);
+    this.setState({moodTrackingSelectedMonth: moodTrackingSelectedMonth})
+    Emitter.emit('moodDegreesForMonthUpdated', moodTrackingSelectedMonth);
   }
-
-  componentDidMount() {
-    console.log("Component did mount:  this.data in calendarStatistics ", this.state.data.length);
-    this.updateMonthMoodOverview(new Date());
-  }
-
-
 
   render() {
     const date = this.state.date;
@@ -253,7 +239,8 @@ export class CalendarStatistics extends React.Component {
             this.updateMonthMoodOverview(month);
           }}
         />
-        <StatisticsOverviewMonth/>
+        <StatisticsOverviewMonth moodTrackingForSelectedMonth={this.state.moodTrackingSelectedMonth}/>
+
         <SelectedDateDialog
           loading={this.props.loading}
           selectedDayMoods={this.state.selectedDayMoods}
@@ -264,6 +251,7 @@ export class CalendarStatistics extends React.Component {
           setShowDateDetails={this.setShowDateDetails}
           onDestroy={this.props.onDestroy}
           onRefresh={this.props.onRefresh}
+          handleMoodListChange={this.props.handleMoodListChange}
         />
       </View>
     );

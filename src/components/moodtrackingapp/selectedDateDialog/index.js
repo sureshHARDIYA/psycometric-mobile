@@ -3,7 +3,7 @@ import { StyleSheet, Text, ScrollView, Alert } from 'react-native';
 import { AntDesign, FontAwesome5 } from '@expo/vector-icons';
 import Dialog from 'react-native-dialog';
 import { DataTable } from 'react-native-paper';
-import { moodEventStream } from '../../../utils/eventEmitter';
+import Emitter from '../../../utils/eventEmitter';
 
 
 export class SelectedDateDialog extends React.Component {
@@ -17,7 +17,8 @@ export class SelectedDateDialog extends React.Component {
 
   deleteMood(id) {
     this.props.onDestroy([`${id}`]);
-    moodEventStream.emit('moodsUpdated');
+    this.props.handleMoodListChange();
+    Emitter.emit('moodsUpdated');
   }
 
   render() {
@@ -100,7 +101,6 @@ const styles = StyleSheet.create({
   },
   noMoodsInfo: {
     textAlign: 'center',
-    /*    width: 260,*/
     padding: 15,
   },
   dataTable: {
