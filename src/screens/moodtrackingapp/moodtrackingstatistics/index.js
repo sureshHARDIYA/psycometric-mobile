@@ -1,63 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import { TopMenu } from '../../../components/moodtrackingapp/topmenu';
-import {
-  StyleSheet, View, ScrollView, ImageBackground, Alert,
-} from 'react-native';
-import { Color } from '../../../constants';
-import { Container } from '../../../themes';
-import { MainMenu } from '../../../components/moodtrackingapp/mainmenu';
-import { CalendarStatistics } from '../../../components/moodtrackingapp/calendarStatistics';
-import { EmotionQuery } from '../../../containers/MoodTrackingStatistics';
+import React, { useEffect, useState, useCallback } from 'react';
+import { FlatList, ImageBackground, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+
 import { BackgroundImage } from '../../../components/moodtrackingapp/backgroundImage';
+import { CalendarStatistics } from '../../../components/moodtrackingapp/calendarStatistics';
+import { MainMenu } from '../../../components/moodtrackingapp/mainmenu';
+import { TopMenu } from '../../../components/moodtrackingapp/topmenu';
+import { Color } from '../../../constants';
+import { EmotionQuery } from '../../../containers/MoodTrackingStatistics';
+import { Container } from '../../../themes';
+import Emitter from '../../../utils/eventEmitter';
+import _get from 'lodash/get';
 
-export  const MoodTrackingStatistics = (props) => {
-    const { setBackgroundImage, backgroundImage, image } = BackgroundImage();
-    const { list, loading, onRefresh } = EmotionQuery({ search: true });
+export const MoodTrackingStatistics = (props) => {
+  const { setBackgroundImage, backgroundImage, image } = BackgroundImage();
+  let { list, loading, refetch } = EmotionQuery({ search: true });
+  const [emotionList, setEmotionList] = useState([]);
+  console.log('PARENT EMOTIONLIST', emotionList.length, 'LIST', list.length);
 
-    const [emotionList, setEmotionList] = useState(() => {
-      const initialState = list;
-      return initialState;
+
+  Emitter.off('MoodDeleted');
+  Emitter.on('MoodDeleted', () => {
+    refetch().then(({ data, loading }) => {
+      list = _get(data, 'result.rows', []);
     });
+  });
 
-    const handleMoodListChange = () => {
-      setEmotionList(EmotionQuery({ search: true }).list);
-    };
 
-  /*useEffect(() => {
-    setEmotionList(EmotionQuery({ search: true }).list);
-    console.log('moodtrackignstatistics  List: ', 'EmotionList: ', emotionList.length);
-  }, [list]);*/
-
-  /*  moodEventStream.on('moodsUpdated', () => {
-     // Get  updatedList and reload CalendarStatistics.
+  useEffect(() => {
+    if (!loading && list) {
       setEmotionList(list);
-      Alert.alert(`moods updates have been triggered,  new emotion list set to:  ${emotionList.length}`, '');
-    });*/
+    }
+  }, [loading, list, emotionList]);
 
-    return (
-      <Container style={styles.container}>
-        <ImageBackground
-          style={{ flex: 1 }}
-          source={image}>
-          <TopMenu navigation={props.navigation} setBackgroundImage={setBackgroundImage}
-                   currentBackgroundImage={backgroundImage} />
-          <ScrollView>
-            <View style={styles.calendar}>
-              {/*            {emotionList.length !== 0 && (*/}
-              <CalendarStatistics
-                data={list}
-                handleMoodListChange={handleMoodListChange}
-              />
-              {/*       )
-            }*/}
-            </View>
-          </ScrollView>
-          <MainMenu page={'statistics'} navigation={props.navigation} />
-        </ImageBackground>
-      </Container>
-    );
-}
-;
+  return (
+    <Container style={styles.container}>
+      <ImageBackground style={{ flex: 1 }} source={image}>
+        <TopMenu
+          navigation={props.navigation}
+          setBackgroundImage={setBackgroundImage}
+          currentBackgroundImage={backgroundImage}
+        />
+        <ScrollView>
+          <View style={styles.calendar}>
+            <CalendarStatistics
+              data={emotionList}
+              refetch={refetch}
+              loading={loading}
+            />
+
+          </View>
+        </ScrollView>
+        <MainMenu page="statistics" navigation={props.navigation} />
+      </ImageBackground>
+    </Container>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

@@ -6,11 +6,12 @@ import { useAuth } from '../Auth';
 import { useState, useEffect } from 'react';
 
 export const useSearch = ({} = {}) => {
+
   const { currentUser } = useAuth();
   const defaultVariables = {
     filter: {},
     orderBy: null,
-    limit: 200,
+    limit: 500,
     offset: 0,
   };
 
@@ -27,7 +28,7 @@ export const useSearch = ({} = {}) => {
 
   const { loading, error, data, fetchMore, refetch } = useQuery(EMOTION_LIST, {
     variables,
-    fetchPolicy: "cache-and-network"
+    fetchPolicy: 'cache-and-network',
   });
 
   const list = _get(data, 'result.rows', []);
@@ -71,7 +72,7 @@ export const useSearch = ({} = {}) => {
     loading,
     onSearchName,
     handleLoadMore,
-    onRefresh: refetch,
+    refetch,
     error: error ? (Array.isArray(error) ? error : [error]).join(', ') : null,
   };
 };

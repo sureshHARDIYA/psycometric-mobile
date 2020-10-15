@@ -1,139 +1,130 @@
-import React from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { Color } from '../../../constants';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 
-export class TopMenu extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showBackgroundImagePicker: false,
-    };
-  }
+export const TopMenu = (props) => {
+  const [showBackgroundImagePicker, setShowBackgroundImagePicker] = useState(false);
 
-  selectBackground(selectedBackground) {
-    this.props.setBackgroundImage(selectedBackground);
-    this.setState({ showBackgroundImagePicker: false });
-  }
+  const selectBackground = (selectedBackground) => {
+    props.setBackgroundImage(selectedBackground);
+    setShowBackgroundImagePicker(false);
+  };
 
-  openBackgroundImagePicker() {
-    this.setState({ showBackgroundImagePicker: true });
-  }
+  const openBackgroundImagePicker = () => {
+    setShowBackgroundImagePicker(true);
+  };
 
-  closeBackgroundImagePicker() {
-    this.setState({
-      showBackgroundImagePicker: false,
-    });
-  }
+  const closeBackgroundImagePicker = () => {
+    setShowBackgroundImagePicker(false);
+  };
 
-  render() {
-    return (
-      <View>
-        <LinearGradient
-          colors={['#24c6dc', '#514A9D']}
-          start={{ x: 0, y: 0.5 }}
-          end={{ x: 1, y: 0.5 }}
-          style={{
-            left: 0,
-            right: 0,
-            top: 0,
-            height: 60,
-            flexDirection: 'row',
-          }}>
-          <View style={styles.header}>
-            <TouchableOpacity
-              style={styles.goBack}
-              onPress={() => this.props.navigation.goBack()}>
-              <Ionicons
-                size={30}
-                name="ios-arrow-dropleft"
-                color={Color.white}
-                style={styles.icon}
-              />
-            </TouchableOpacity>
-          </View>
-          {'MoodTracking' !== 'MoodTracking'
-          && (
-            <Text style={styles.statisticsTopMenuText}>Mood Tracking</Text>)}
+  return (
+    <View>
+      <LinearGradient
+        colors={['#24c6dc', '#514A9D']}
+        start={{ x: 0, y: 0.5 }}
+        end={{ x: 1, y: 0.5 }}
+        style={{
+          left: 0,
+          right: 0,
+          top: 0,
+          height: 60,
+          flexDirection: 'row',
+        }}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.goBack}
+            onPress={() => props.navigation.goBack()}>
+            <Ionicons
+              size={30}
+              name="ios-arrow-dropleft"
+              color={Color.white}
+              style={styles.icon}
+            />
+          </TouchableOpacity>
+        </View>
+        {'MoodTracking' !== 'MoodTracking'
+        && (
+          <Text style={styles.statisticsTopMenuText}>Mood Tracking</Text>)}
 
-          {'MoodTrackingStatistics' !== 'MoodTrackingStatistics'
-          && (
-            <Text style={styles.statisticsTopMenuText}>Statistics</Text>)}
+        {'MoodTrackingStatistics' !== 'MoodTrackingStatistics'
+        && (
+          <Text style={styles.statisticsTopMenuText}>Statistics</Text>)}
 
-          {!this.state.showBackgroundImagePicker && (
-            <TouchableOpacity
-              style={styles.hamburgerMenuTouchZone}
-              onPress={() => {
-                this.openBackgroundImagePicker();
-              }}>
-              <View style={styles.hamburgerMenu}>
-                <View style={styles.bar1} />
-                <View style={styles.bar2} />
-                <View style={styles.bar3} />
-              </View>
-            </TouchableOpacity>
-          )}
-
-          {this.state.showBackgroundImagePicker && (
-            <TouchableOpacity
-              style={styles.hamburgerMenuTouchZone}
-              onPress={() => {
-                this.closeBackgroundImagePicker();
-              }}>
-              <AntDesign style={styles.exitMenuIcon} size={40} name="close" color="#3f3f41" />
-            </TouchableOpacity>
-          )}
-
-        </LinearGradient>
-        {this.state.showBackgroundImagePicker && (
-          <ScrollView style={styles.backgroundImagePicker}>
-            <View style={styles.backgroundImagePickerRow}>
-              <View>
-                <TouchableOpacity
-                  onPress={() => {
-                    this.selectBackground('bali');
-                  }}>
-                  <Image
-                    style={styles.backgroundImage}
-                    source={require('../../../../assets/images/moodtrackingapp/bali.jpg')} />
-                </TouchableOpacity>
-              </View>
-              <View>
-                <TouchableOpacity
-                  onPress={() => {
-                    this.selectBackground('pinkishBeach');
-                  }}>
-                  <Image style={styles.backgroundImage}
-                         source={require('../../../../assets/images/moodtrackingapp/pinkishBeach.jpg')} />
-                </TouchableOpacity>
-              </View>
+        {!showBackgroundImagePicker && (
+          <TouchableOpacity
+            style={styles.hamburgerMenuTouchZone}
+            onPress={() => {
+              openBackgroundImagePicker();
+            }}>
+            <View style={styles.hamburgerMenu}>
+              <View style={styles.bar1} />
+              <View style={styles.bar2} />
+              <View style={styles.bar3} />
             </View>
-            <View style={styles.backgroundImagePickerRow}>
-              <View>
-                <TouchableOpacity
-                  onPress={() => {
-                    this.selectBackground('water');
-                  }}>
-                  <Image style={styles.backgroundImage}
-                         source={require('../../../../assets/images/moodtrackingapp/water.jpg')} />
-                </TouchableOpacity>
-              </View>
-              <View>
-                <TouchableOpacity
-                  onPress={() => {
-                    this.selectBackground('ocean');
-                  }}>
-                  <Image style={styles.backgroundImage}
-                         source={require('../../../../assets/images/moodtrackingapp/ocean.jpg')} />
-                </TouchableOpacity>
-              </View>
-            </View>
-          </ScrollView>
+          </TouchableOpacity>
         )}
-      </View>
-    );
-  }
+
+        {showBackgroundImagePicker && (
+          <TouchableOpacity
+            style={styles.hamburgerMenuTouchZone}
+            onPress={() => {
+              closeBackgroundImagePicker();
+            }}>
+            <AntDesign style={styles.exitMenuIcon} size={40} name="close" color="#3f3f41" />
+          </TouchableOpacity>
+        )}
+
+      </LinearGradient>
+      {showBackgroundImagePicker && (
+        <ScrollView style={styles.backgroundImagePicker}>
+          <View style={styles.backgroundImagePickerRow}>
+            <View>
+              <TouchableOpacity
+                onPress={() => {
+                  selectBackground('bali');
+                }}>
+                <Image
+                  style={styles.backgroundImage}
+                  source={require('../../../../assets/images/moodtrackingapp/bali.jpg')} />
+              </TouchableOpacity>
+            </View>
+            <View>
+              <TouchableOpacity
+                onPress={() => {
+                  selectBackground('pinkishBeach');
+                }}>
+                <Image style={styles.backgroundImage}
+                       source={require('../../../../assets/images/moodtrackingapp/pinkishBeach.jpg')} />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.backgroundImagePickerRow}>
+            <View>
+              <TouchableOpacity
+                onPress={() => {
+                  selectBackground('water');
+                }}>
+                <Image style={styles.backgroundImage}
+                       source={require('../../../../assets/images/moodtrackingapp/water.jpg')} />
+              </TouchableOpacity>
+            </View>
+            <View>
+              <TouchableOpacity
+                onPress={() => {
+                  selectBackground('ocean');
+                }}>
+                <Image style={styles.backgroundImage}
+                       source={require('../../../../assets/images/moodtrackingapp/ocean.jpg')} />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      )}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -217,5 +208,4 @@ const styles = StyleSheet.create({
     marginRight: 12,
     padding: 10,
   },
-
 });

@@ -1,84 +1,62 @@
-import React from 'react';
-import { StyleSheet, View, Text, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
-import Emitter from '../../../utils/eventEmitter';
-import { StatisticsOverviewMonth } from '../statisticsOverviewMonth';
+
 import { SelectedDateDialog } from '../../../containers/MoodTrackingStatistics/index';
+import { StatisticsOverviewMonth } from '../statisticsOverviewMonth';
 
-export class CalendarStatistics extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      date: new Date(),
-      mode: 'date',
-      showDateDetails: false,
-      selectedDayMoods: [],
-      selectedDay: '',
-      selectedMonth: '',
-      selectedYear: '',
-      moodTrackingForSelectedMonth: [],
-    };
-    this.setShowDateDetails = this.setShowDateDetails.bind(this);
-  }
+export const CalendarStatistics = (props) => {
+  const [showDateDetails, setShowDateDetails] = useState(false);
+  const [selectedDayMoods, setSelectedDayMoods] = useState([]);
+  const [selectedDay, setSelectedDay] = useState('');
+  const [selectedMonth, setSelectedMonth] = useState('');
+  const [selectedYear, setSelectedYear] = useState('');
+  const [selectedDate, setSelectedDate] = useState({});
+  const [data, setData] = useState(props.data);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
 
-  setShowDateDetails(boolean) {
-    this.setState({
-      showDateDetails: boolean,
-    });
-  }
 
-  setSelectedDayMoods(newSelectedMoodArray) {
-    this.setState({
-      selectedDayMoods: newSelectedMoodArray,
-    });
-  }
 
-  //
-  onDateChange = (selectedDate) => {
-    this.setState({
-      date: selectedDate,
-      selectedDayMoods: this.makeSelectedDateList(selectedDate),
-    });
-  };
+  useEffect(() => {
+    console.log('calendarStatisticsdata', props.data.length);
+    setData(props.data);
+    onDateChange(selectedDate);
+  }, [props.data]);
 
-  showMode = (currentMode) => {
-    this.setState({
-      show: true,
-      mode: currentMode,
-    });
-  };
+  // set selectedDate to date user select and stores a list of mood tracking for
+  // that date in selectedDayMoods.
+  const onDateChange = (selectedDate) => {
+    console.log('OnDateChangeStart: ', Object.keys(selectedDate).length !== 0);
+    if (Object.keys(selectedDate).length !== 0) {
+      console.log('MakeSelectedDateList');
+      let x = makeSelectedDateList(selectedDate);
+      setSelectedDayMoods(x);
+      console.log("CALENDARSTATS ONDATECHANGE", x.length);
+      setSelectedDate(selectedDate);
+    }
 
-  showDatepicker = () => {
-    this.setState({
-      show: this.date,
-    });
-  };
-
-  showTimepicker = () => {
-    this.showMode('time');
+    console.log('onDateChangeEnd');
   };
 
   // Marks all dates that contain tracked mood with color.
-  findTrackedDates() {
+  const findTrackedDates = () => {
     const markedDatesObj = {};
-    for (const [key, value] of Object.entries(this.props.data)) {
-      const newKey = new Date(this.props.data[key].createdAt)
+    for (const [key, value] of Object.entries(props.data)) {
+      const newKey = new Date(props.data[key].createdAt)
         .toISOString()
         .substring(0, 10);
       markedDatesObj[newKey] = { marked: true };
     }
     const today = new Date().toISOString().substring(0, 10);
-    markedDatesObj[today] = { selected: true, selectedColor: '#514A9D' };
+    markedDatesObj[today] = { selected: true, selectedColor: '#4d4699DE' };
 
     return markedDatesObj;
-  }
+  };
 
   //Sets showDateDetails to true and returns a list of the mood info on a date the user selects in the calendar.
-  makeSelectedDateList = (selectedDate) => {
-    this.setState({
-      showDateDetails: true,
-      selectedDayMoods: [],
-    });
+  const makeSelectedDateList = (selectedDate) => {
+    setShowDateDetails(true);
+    setSelectedDayMoods([]);
     const tempSelectedMoods = [];
     const selectedYear = selectedDate['year'].toString();
     const selectedMonth =
@@ -90,173 +68,122 @@ export class CalendarStatistics extends React.Component {
       selectedDate['day'].toString().length === 1
         ? '0'.concat(selectedDate['day']).toString()
         : selectedDate['day'].toString();
+    setSelectedDay(selectedDay);
+    setSelectedMonth(selectedMonth);
+    setSelectedYear(selectedYear);
 
-    this.setState({
-      selectedDay,
-      selectedMonth,
-      selectedYear,
-    });
-
-    for (const [key, value] of Object.entries(this.props.data)) {
-      const dateFromDB = new Date(this.props[key].createdAt)
+    for (const [key, value] of Object.entries(props.data)) {
+      const dateFromDB = new Date(props.data[key].createdAt)
         .toISOString()
         .substring(0, 10)
         .split('-');
       const trackedDay = dateFromDB[2]; // Format: '02'
       const trackedMonth =
-        (new Date(this.props[key].createdAt).getMonth() + 1).toString()
-          .length === 1
+        (new Date(props.data[key].createdAt).getMonth() + 1).toString().length === 1
           ? '0'.concat(
-          (
-            new Date(this.props.data[key].createdAt).getMonth() + 1
-          ).toString(),
-          )
-          : (
-            new Date(this.props.data[key].createdAt).getMonth() + 1
-          ).toString();
+              (new Date(props.data[key].createdAt).getMonth() + 1).toString()
+            )
+          : (new Date(props.data[key].createdAt).getMonth() + 1).toString();
       const trackedYear = dateFromDB[0];
       if (
         trackedYear === selectedYear &&
         trackedMonth === selectedMonth &&
         trackedDay === selectedDay
       ) {
-        tempSelectedMoods.push(this.props.data[key]);
+        tempSelectedMoods.push(props.data[key]);
       }
     }
     return tempSelectedMoods;
   };
 
+  const DATE = new Date();
+  LocaleConfig.locales['en'] = {
+    monthNames: [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ],
+    monthNamesShort: [
+      'Jan',
+      'Feb',
+      'Mar',
+      'April',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sept',
+      'Oct',
+      'Nov',
+      'Dec',
+    ],
+    dayNames: [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+    ],
+    dayNamesShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  };
+  LocaleConfig.defaultLocale = 'en';
 
-  updateMonthMoodOverview(month) {
-    let selectedMonth;
-    let selectedYear;
-    if (month.month) {
-      selectedMonth =
-        month.month.toString().length === 1
-          ? '0'.concat(month.month).toString()
-          : month.month.toString();
-      selectedYear = month.year.toString();
-    } else {
-      selectedMonth = new Date().toISOString().substring(0, 10).split('-')[1];
-      selectedYear = new Date().toISOString().substring(0, 10).split('-')[0];
-    }
-
-    const moodTrackingSelectedMonth = [];
-    for (const [key, value] of Object.entries(this.props.data)) {
-      const dateFromDB = new Date(this.props.data[key].createdAt)
-        .toISOString()
-        .substring(0, 10)
-        .split('-');
-      const trackedMonth =
-        (new Date(this.props.data[key].createdAt).getMonth() + 1).toString()
-          .length === 1
-          ? '0'.concat(
-          (
-            new Date(this.props.data[key].createdAt).getMonth() + 1
-          ).toString(),
-          )
-          : (
-            new Date(this.props.data[key].createdAt).getMonth() + 1
-          ).toString();
-      const trackedYear = dateFromDB[0];
-      if (trackedYear === selectedYear && trackedMonth === selectedMonth) {
-        moodTrackingSelectedMonth.push(this.props.data[key]);
-      }
-    }
-    this.setState({moodTrackingSelectedMonth: moodTrackingSelectedMonth})
-    Emitter.emit('moodDegreesForMonthUpdated', moodTrackingSelectedMonth);
-  }
-
-  render() {
-    const date = this.state.date;
-    LocaleConfig.locales['en'] = {
-      monthNames: [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
-      ],
-      monthNamesShort: [
-        'Jan',
-        'Feb',
-        'Mar',
-        'April',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sept',
-        'Oct',
-        'Nov',
-        'Dec',
-      ],
-      dayNames: [
-        'Sunday',
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-      ],
-      dayNamesShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-    };
-    LocaleConfig.defaultLocale = 'en';
-
-    return (
-      <View style={styles.calendar}>
-        <Calendar
-          enableSwipeMonths
-          current={date}
-          markedDates={this.findTrackedDates()}
-          hideExtraDays={false}
-          style={{
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: 12,
-            },
-            shadowOpacity: 0.58,
-            shadowRadius: 16.0,
-            elevation: 24,
-            height: 365,
-            width: 300,
-          }}
-          theme={CalendarThemes}
-          onDayPress={(day) => {
-            this.setState({ date: day });
-            this.onDateChange(day);
-          }}
-          onMonthChange={(month) => {
-            this.updateMonthMoodOverview(month);
-          }}
-        />
-        <StatisticsOverviewMonth moodTrackingForSelectedMonth={this.state.moodTrackingSelectedMonth}/>
-
+  return (
+    <View style={styles.calendar}>
+      <Calendar
+        enableSwipeMonths
+        current={DATE}
+        markedDates={findTrackedDates()}
+        hideExtraDays={false}
+        style={{
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 12,
+          },
+          shadowOpacity: 0.58,
+          shadowRadius: 16.0,
+          elevation: 24,
+          height: 365,
+          width: 300,
+        }}
+        theme={CalendarThemes}
+        onDayPress={(day) => {
+          onDateChange(day);
+        }}
+        onMonthChange={(month) => {
+          setCurrentMonth(month);
+        }}
+      />
+      <StatisticsOverviewMonth
+        loading={props.loading}
+        currentMonth={currentMonth}
+        data={data}
+      />
         <SelectedDateDialog
-          loading={this.props.loading}
-          selectedDayMoods={this.state.selectedDayMoods}
-          selectedDay={this.state.selectedDay}
-          selectedMonth={this.state.selectedMonth}
-          selectedYear={this.state.selectedYear}
-          showDateDetails={this.state.showDateDetails}
-          setShowDateDetails={this.setShowDateDetails}
-          onDestroy={this.props.onDestroy}
-          onRefresh={this.props.onRefresh}
-          handleMoodListChange={this.props.handleMoodListChange}
+          selectedDayMoods={selectedDayMoods}
+          selectedDay={selectedDay}
+          selectedMonth={selectedMonth}
+          selectedYear={selectedYear}
+          date={props.date}
+          showDateDetails={showDateDetails}
+          setShowDateDetails={setShowDateDetails}
+          data={data}
         />
-      </View>
-    );
-  }
-}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   calendar: {

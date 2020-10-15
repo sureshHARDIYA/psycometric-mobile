@@ -1,233 +1,225 @@
-import React, { forwardRef, useRef, useImperativeHandle } from 'react';
-import Emitter from '../../../utils/eventEmitter'
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Color } from '../../../constants';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-export class StatisticsOverviewMonth extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state={
-      tenseNervousMonthDegree: 0,
-      irritatedAnnoyedMonthDegree: 0,
-      excitedLivelyMonthDegree: 0,
-      cheerfulHappyMonthDegree: 0,
-      boredWearyMonthDegree: 0,
-      gloomySadMonthDegree: 0,
-      relaxedCalmMonthDegree: 0,
+export const StatisticsOverviewMonth = (props) =>  {
+  const [tenseNervousMonthDegree, incrementTenseNervous] = useState(0);
+  const [irritatedAnnoyedMonthDegree, incrementIrritatedAnnoyed] = useState(0);
+  const [excitedLivelyMonthDegree, incrementExcitedLively] = useState(0);
+  const [cheerfulHappyMonthDegree, incrementCheerfulHappy] = useState(0);
+  const [boredWearyMonthDegree, incrementBoredWeary] = useState(0);
+  const [gloomySadMonthDegree, incrementGloomySad] = useState(0);
+  const [relaxedCalmMonthDegree, incrementRelaxedCalm] = useState(0);
+
+
+  useEffect(()=>{
+    updateMonthMoodOverview(props.currentMonth)
+  }, [props.currentMonth, props.data]);
+
+  // Makes a list over number of mood trackings for different emotion the month the user has navigated to.
+  const updateMonthMoodOverview = (month) => {
+    let selectedMonth;
+    let selectedYear;
+    if (month.month) {
+      selectedMonth =
+        month.month.toString().length === 1
+          ? '0'.concat(month.month).toString()
+          : month.month.toString();
+      selectedYear = month.year.toString();
+    } else {
+      selectedMonth = new Date().toISOString().substring(0, 10).split('-')[1];
+      selectedYear = new Date().toISOString().substring(0, 10).split('-')[0];
     }
+
+
+    const moodTrackingSelectedMonth = [];
+    for (const [key, value] of Object.entries(props.data)) {
+      const dateFromDB = new Date(props.data[key].createdAt)
+        .toISOString()
+        .substring(0, 10)
+        .split('-');
+      const trackedMonth =
+        (new Date(props.data[key].createdAt).getMonth() + 1).toString()
+          .length === 1
+          ? '0'.concat(
+          (
+            new Date(props.data[key].createdAt).getMonth() + 1
+          ).toString(),
+          )
+          : (
+            new Date(props.data[key].createdAt).getMonth() + 1
+          ).toString();
+      const trackedYear = dateFromDB[0];
+      if (trackedYear === selectedYear && trackedMonth === selectedMonth) {
+        moodTrackingSelectedMonth.push(props.data[key]);
+      }
+    }
+    findMoodDegreesForMonth(moodTrackingSelectedMonth);
   }
 
-  componentDidMount() {
-    this.findMoodDegreesForMonth(this.props.moodTrackingSelectedMonth);
-    Emitter.off('moodDegreesForMonthUpdated');
-    Emitter.on('moodDegreesForMonthUpdated', this.findMoodDegreesForMonth.bind(this));
-  }
-
-  incrementTenseNervousMonthDegree() {
-    this.setState((prevState) => ({
-      tenseNervousMonthDegree: prevState.tenseNervousMonthDegree + 1,
-    }));
-  }
-
-  incrementIrritatedAnnoyedMonthDegree() {
-    this.setState((prevState) => ({
-      irritatedAnnoyedMonthDegree: prevState.irritatedAnnoyedMonthDegree + 1,
-    }));
-  }
-
-  incrementExcitedLivelyMonthDegree() {
-    this.setState((prevState) => ({
-      excitedLivelyMonthDegree: prevState.excitedLivelyMonthDegree + 1,
-    }));
-  }
-
-  incrementCheerfulHappyMonthDegree() {
-    this.setState((prevState) => ({
-      cheerfulHappyMonthDegree: prevState.cheerfulHappyMonthDegree + 1,
-    }));
-  }
-
-  incrementBoredWearyMonthDegree() {
-    this.setState((prevState) => ({
-      boredWearyMonthDegree: prevState.boredWearyMonthDegree + 1,
-    }));
-  }
-
-  incrementGloomySadMonthDegree() {
-    this.setState((prevState) => ({
-      gloomySadMonthDegree: prevState.gloomySadMonthDegree + 1,
-    }));
-  }
-
-  incrementRelaxedCalmMonthDegree() {
-    this.setState((prevState) => ({
-      relaxedCalmMonthDegree: prevState.relaxedCalmMonthDegree + 1,
-    }));
-  }
-
-  findMoodDegreesForMonth(moodTrackingList) {
+ const findMoodDegreesForMonth = (moodTrackingList) => {
     if(moodTrackingList){
-      this.setState({
-        tenseNervousMonthDegree: 0,
-        irritatedAnnoyedMonthDegree: 0,
-        excitedLivelyMonthDegree: 0,
-        cheerfulHappyMonthDegree: 0,
-        boredWearyMonthDegree: 0,
-        gloomySadMonthDegree: 0,
-        relaxedCalmMonthDegree: 0,
-      });
+      incrementTenseNervous(0);
+      incrementIrritatedAnnoyed(0);
+      incrementExcitedLively(0);
+      incrementCheerfulHappy(0);
+      incrementBoredWeary(0);
+      incrementGloomySad(0);
+      incrementRelaxedCalm( 0);
 
       moodTrackingList.forEach((moodTrackingThisMonth) => {
         switch (moodTrackingThisMonth.emotion) {
           case 'Tense/Nervous':
-            this.incrementTenseNervousMonthDegree();
+           incrementTenseNervous(prevState => prevState + 1);
             break;
           case 'Irritated/Annoyed':
-            this.incrementIrritatedAnnoyedMonthDegree();
+            incrementIrritatedAnnoyed(prevState => prevState + 1);
             break;
           case 'Excited/Lively':
-            this.incrementExcitedLivelyMonthDegree();
+            incrementExcitedLively(prevState => prevState + 1);
             break;
           case 'Cheerful/Happy':
-            this.incrementCheerfulHappyMonthDegree();
+            incrementCheerfulHappy(prevState => prevState + 1);
             break;
           case 'Bored/Weary':
-            this.incrementBoredWearyMonthDegree();
+            incrementBoredWeary(prevState => prevState + 1);
             break;
           case 'Gloomy/Sad':
-            this.incrementGloomySadMonthDegree();
+            incrementGloomySad(prevState => prevState + 1);
             break;
           case 'Relaxed/Calm':
-            this.incrementRelaxedCalmMonthDegree();
+            incrementRelaxedCalm(prevState => prevState + 1);
             break;
         }
       });
     }
   }
 
-  render(){
     return(
       <View style={styles.monthlyMoodOverview}>
-        {this.state.gloomySadMonthDegree === 0 &&
-        this.state.boredWearyMonthDegree === 0 &&
-        this.state.irritatedAnnoyedMonthDegree === 0 &&
-        this.state.tenseNervousMonthDegree === 0 &&
-        this.state.excitedLivelyMonthDegree === 0 &&
-        this.state.cheerfulHappyMonthDegree === 0 &&
-        this.state.relaxedCalmMonthDegree === 0 && (
+        {!props.loading && gloomySadMonthDegree === 0 &&
+        boredWearyMonthDegree === 0 &&
+        irritatedAnnoyedMonthDegree === 0 &&
+        tenseNervousMonthDegree === 0 &&
+        excitedLivelyMonthDegree === 0 &&
+        cheerfulHappyMonthDegree === 0 &&
+        relaxedCalmMonthDegree === 0 && (
           <Text style={styles.noTrackedMoodThisMonthText}>
             You have no mood trackings for this month yet.
           </Text>
         )}
-        {this.state.gloomySadMonthDegree !== 0 && (
+        {props.loading &&(
+          <Text style={styles.noTrackedMoodThisMonthText}>
+          </Text>
+        )}
+        {!props.loading && gloomySadMonthDegree !== 0 && (
           <View>
             <FontAwesome5
               solid
               size={30}
               name="frown"
               color="#3D3D3D"
-              ref="gloomySadEmoji"
+/*              ref="gloomySadEmoji"*/
               style={styles.emojiIcon}
             />
             <Text style={styles.monthDegreeNumber}>
-              {this.state.gloomySadMonthDegree}
+              {gloomySadMonthDegree}
             </Text>
           </View>
         )}
-        {this.state.boredWearyMonthDegree !== 0 && (
+        {!props.loading && boredWearyMonthDegree !== 0 && (
           <View>
             <FontAwesome5
               solid
               size={30}
               name="meh"
               color="#8B42CC"
-              ref="boredWearyEmoji"
+/*              ref="boredWearyEmoji"*/
               style={styles.emojiIcon}
             />
             <Text style={styles.monthDegreeNumber}>
-              {this.state.boredWearyMonthDegree}
+              {boredWearyMonthDegree}
             </Text>
           </View>
         )}
-        {this.state.irritatedAnnoyedMonthDegree !== 0 && (
+        {!props.loading && irritatedAnnoyedMonthDegree !== 0 && (
           <View>
             <FontAwesome5
               solid
               size={30}
               name="angry"
               color="#DE6465"
-              ref="irritatedAnnoyedEmoji"
+/*              ref="irritatedAnnoyedEmoji"*/
               style={styles.emojiIcon}
             />
             <Text style={styles.monthDegreeNumber}>
-              {this.state.irritatedAnnoyedMonthDegree}
+              {irritatedAnnoyedMonthDegree}
             </Text>
           </View>
         )}
-        {this.state.tenseNervousMonthDegree !== 0 && (
+        {!props.loading && tenseNervousMonthDegree !== 0 && (
           <View>
             <FontAwesome5
               solid
               size={30}
               name="frown-open"
               color="#3CBB75"
-              ref="tenseNervousEmoji"
+/*              ref="tenseNervousEmoji"*/
               style={styles.emojiIcon}
             />
             <Text style={styles.monthDegreeNumber}>
-              {this.state.tenseNervousMonthDegree}
+              {tenseNervousMonthDegree}
             </Text>
           </View>
         )}
-        {this.state.excitedLivelyMonthDegree !== 0 && (
+        {!props.loading && excitedLivelyMonthDegree !== 0 && (
           <View>
             <FontAwesome5
               solid
               size={30}
               name="grin-stars"
               color="#EB7955"
-              ref="excitedLivelyEmoji"
+/*              ref="excitedLivelyEmoji"*/
               style={styles.emojiIcon}
             />
             <Text style={styles.monthDegreeNumber}>
-              {this.state.excitedLivelyMonthDegree}
+              {excitedLivelyMonthDegree}
             </Text>
           </View>
         )}
-        {this.state.cheerfulHappyMonthDegree !== 0 && (
+        {!props.loading && cheerfulHappyMonthDegree !== 0 && (
           <View>
             <FontAwesome5
               solid
               size={30}
               name="laugh-beam"
               color="#F7CB50"
-              ref="cheerfulHappyEmoji"
+/*              ref="cheerfulHappyEmoji"*/
               style={styles.emojiIcon}
             />
             <Text style={styles.monthDegreeNumber}>
-              {this.state.cheerfulHappyMonthDegree}
+              {cheerfulHappyMonthDegree}
             </Text>
           </View>
         )}
-        {this.state.relaxedCalmMonthDegree !== 0 && (
+        {!props.loading && relaxedCalmMonthDegree !== 0 && (
           <View>
             <FontAwesome5
               solid
               size={30}
               name="smile-beam"
               color="#425CCC"
-              ref="relaxedCalmEmoji"
+/*              ref="relaxedCalmEmoji"*/
               style={styles.emojiIcon}
             />
             <Text style={styles.monthDegreeNumber}>
-              {this.state.relaxedCalmMonthDegree}
+              {relaxedCalmMonthDegree}
             </Text>
           </View>
         )}
       </View>
     );
-  }
 }
 
 

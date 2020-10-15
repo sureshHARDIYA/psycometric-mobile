@@ -1,6 +1,6 @@
 import { FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import React from 'react';
+import React, { useState, forwardRef } from 'react';
 import { StyleSheet, View, Text, Button, Slider, Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Color } from '../../../constants';
@@ -217,186 +217,155 @@ const Emotions = [
 
 let feedbackTimeout = null;
 
-export class MoodOverview extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      sliderValue: 4,
-      selectedMood: 'No mood selected',
-      showConfirmationBubble: false,
-      showFeedbackBubble: false,
-      emojiFontSize: 55,
-      selectedEmojiFontSize: 70,
-      isSelected: false,
-      showMustSelectMoodText: false,
-    };
-    this.setSliderValue = this.setSliderValue.bind(this);
-    this.setSelectedMood = this.setSelectedMood.bind(this);
+export const MoodOverview = (props) => {
+  const [sliderValue, setSliderValue] = useState(4);
+  const [selectedMood, setSelectedMood] = useState('No mood selected');
+  const [showConfirmationBubble, setShowConfirmationBubble] = useState(false);
+  const [showFeedbackBubble, setShowFeedbackBubble] = useState(false);
+  const [emojiFontSize, setEmojiFontSize] = useState(55);
+  const [selectedEmojiFontSize, setSelectedEmojiFontSize] = useState(70);
+  const [isSelected, setIsSelected] = useState(false);
+  const [showMustSelectMoodText, setShowMustSelectMoodText] = useState(false);
 
-    Emitter.off('moodTrackingFinished');
-    if (!Emitter.listenersNumber('moodTrackingFinished')) {
-      Emitter.on('moodTrackingFinished', () => {
-        this.setState({
-          showConfirmationBubble: false,
-          showFeedbackBubble: true,
-        });
-        feedbackTimeout = setTimeout(() => {
-          Emitter.emit('closeFeedbackBubble');
-          clearInterval(feedbackTimeout);
-        }, 3000);
-      });
-    }
+  Emitter.off('moodTrackingFinished');
+  Emitter.on('moodTrackingFinished', () => {
+    setShowConfirmationBubble(false);
+    setShowFeedbackBubble(true);
+    feedbackTimeout = setTimeout(() => {
+      Emitter.emit('closeFeedbackBubble');
+      clearInterval(feedbackTimeout);
+    }, 3000);
+  });
 
-    Emitter.off('closeFeedbackBubble');
-    if (!Emitter.listenersNumber('closeFeedbackBubble')) {
-      Emitter.on('closeFeedbackBubble', () => {
-        this.setState({
-          showFeedbackBubble: false,
-        });
-        clearTimeout(feedbackTimeout);
-        Emitter.emit('closeMoodOverview');
-      });
-    }
+  Emitter.off('closeFeedbackBubble');
+  Emitter.on('closeFeedbackBubble', () => {
+    setShowFeedbackBubble(false);
+    clearTimeout(feedbackTimeout);
+    Emitter.emit('closeMoodOverview');
+  });
 
-    Emitter.off('closeConfirmationBubble');
-    if (!Emitter.listenersNumber('closeConfirmationBubble')) {
-      Emitter.on('closeConfirmationBubble', () => {
-        this.setShowConfirmationBubble(false);
-      });
-    }
 
-    Emotions.map((emoji) => {
-      emoji.size = 55;
-    });
-  }
+  Emitter.off('closeConfirmationBubble');
+  Emitter.on('closeConfirmationBubble', () => {
+    setShowConfirmationBubble(false);
+  });
 
-  setShowConfirmationBubble(boolean) {
-    if (this.state.selectedMood !== 'No mood selected') {
-      this.setState({
-        showConfirmationBubble: boolean,
-      });
+  Emotions.map((emoji) => {
+    emoji.size = 55;
+  });
+
+  const confirmationBubble = (boolean) => {
+    if (selectedMood !== 'No mood selected') {
+      setShowConfirmationBubble(boolean);
     } else {
-      this.setState({
-        showMustSelectMoodText: true,
-      });
-      const thisInState = this;
+      setShowMustSelectMoodText(true);
+
       const timeout = setTimeout(() => {
-        thisInState.setState({
-          showMustSelectMoodText: false,
-        });
+        setShowMustSelectMoodText(false);
         clearInterval(timeout);
       }, 4000);
     }
-  }
+  };
 
-  setSliderValue(number) {
-    this.setState({
-      sliderValue: number,
-    });
-  }
+  const selectMood = (moodDescription, id) => {
+    setSelectedMood(moodDescription);
+    setShowMustSelectMoodText(false);
 
-  setSelectedMood(moodDescription, id) {
-    this.setState({
-      selectedMood: moodDescription,
-      showMustSelectMoodText: false,
-    });
     Emotions.map((emoji) => {
       emoji.id === id ? (emoji.size = 70) : (emoji.size = 55);
     });
-  }
+  };
 
-  render() {
-    return (
-      <View style={styles.container} backgroundColor={Color.transparent}>
-        <View style={styles.selectEmotionOverview}>
-          <LinearGradient
-            colors={['#24c6dc', '#514A9D']}
-            start={{ x: 0, y: 0.5 }}
-            end={{ x: 1, y: 0.5 }}
-            style={styles.gradient}>
-            <View style={styles.emotionList}>
-              {Emotions.map((val, index, arr) => {
-                if (val.id === 'emptyIcon') {
-                  return (
-                    <View style={styles.circlePart} key={val.id}>
-                      <View style={val.listElementStyle}>
-                        <View style={val.iconStyle} />
+  return (
+    <View style={styles.container} backgroundColor={Color.transparent}>
+      <View style={styles.selectEmotionOverview}>
+        <LinearGradient
+          colors={['#24c6dc', '#514A9D']}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={styles.gradient}>
+          <View style={styles.emotionList}>
+            {Emotions.map((val, index, arr) => {
+              if (val.id === 'emptyIcon') {
+                return (
+                  <View style={styles.circlePart} key={val.id}>
+                    <View style={val.listElementStyle}>
+                      <View style={val.iconStyle} />
+                    </View>
+                  </View>
+                );
+              } else {
+                return (
+                  <View style={styles.circlePart} key={val.id}>
+                    <View style={val.listElementStyle}>
+                      <View style={val.iconStyle}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            selectMood(val.description, val.id);
+                          }}>
+                          <FontAwesome5
+                            solid
+                            size={val.size}
+                            name={val.icon}
+                            color={val.color}
+                            id={val.id}
+                          />
+                        </TouchableOpacity>
                       </View>
                     </View>
-                  );
-                } else {
-                  return (
-                    <View style={styles.circlePart} key={val.id}>
-                      <View style={val.listElementStyle}>
-                        <View style={val.iconStyle}>
-                          <TouchableOpacity
-                            onPress={() => {
-                              this.setSelectedMood(val.description, val.id);
-                            }}>
-                            <FontAwesome5
-                              solid
-                              size={val.size}
-                              name={val.icon}
-                              color={val.color}
-                              ref={val.id}
-                            />
-                          </TouchableOpacity>
-                        </View>
-                      </View>
-                    </View>
-                  );
-                }
-              })}
-            </View>
-          </LinearGradient>
-          <View style={styles.currentTrackingInfo}>
-            {this.state.showMustSelectMoodText && (
-              <SelectMoodInfo
-                showMustSelectMoodText={this.state.showMustSelectMoodText}
-              />
-            )}
-            <Text style={styles.noMoodSelectedText}>
-              {this.state.selectedMood}
-            </Text>
-            <Text style={styles.sliderValueText}>{this.state.sliderValue}</Text>
+                  </View>
+                );
+              }
+            })}
+          </View>
+        </LinearGradient>
+        <View style={styles.currentTrackingInfo}>
+          {showMustSelectMoodText && (
+            <SelectMoodInfo
+              showMustSelectMoodText={showMustSelectMoodText}
+            />
+          )}
+          <Text style={styles.noMoodSelectedText}>
+            {selectedMood}
+          </Text>
+          <Text style={styles.sliderValueText}>{sliderValue}</Text>
 
-            <Slider
-              style={{ width: 100, height: 30, borderRadius: 50, top: 10 }}
-              minimumValue={0}
-              maximumValue={7}
-              value={this.state.sliderValue}
-              step={1}
-              maximumTrackTintColor={Color.white}
-              minimumTrackTintColor="#514A9D"
-              thumbTintColor="#514A9D"
-              onValueChange={(value) => {
-                this.setSliderValue(value);
+          <Slider
+            style={{ width: 100, height: 30, borderRadius: 50, top: 10 }}
+            minimumValue={0}
+            maximumValue={7}
+            value={sliderValue}
+            step={1}
+            maximumTrackTintColor={Color.white}
+            minimumTrackTintColor="#514A9D"
+            thumbTintColor="#514A9D"
+            onValueChange={(value) => {
+              setSliderValue(value);
+            }}
+          />
+          <View style={styles.trackingButton}>
+            <Button
+              title="track"
+              color={Color.secondary}
+              onPress={() => {
+                confirmationBubble(true);
               }}
             />
-            <View style={styles.trackingButton}>
-              <Button
-                title="track"
-                color={Color.secondary}
-                onPress={() => {
-                  this.setShowConfirmationBubble(true);
-                }}
-              />
-            </View>
           </View>
         </View>
-        {this.state.showConfirmationBubble && (
-          <ConfirmationBubble
-            setShowConfirmationBubble={this.setShowConfirmationBubble}
-            emojiDescription={this.state.selectedMood}
-            sliderValue={this.state.sliderValue}
-            onSubmit={this.props.onSubmit}
-          />
-        )}
-        {this.state.showFeedbackBubble && <FeedbackBubble />}
       </View>
-    );
-  }
-}
+      {showConfirmationBubble && (
+        <ConfirmationBubble
+          setShowConfirmationBubble={confirmationBubble}
+          emojiDescription={selectedMood}
+          sliderValue={sliderValue}
+          onSubmit={props.onSubmit}
+        />
+      )}
+      {showFeedbackBubble && <FeedbackBubble />}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
