@@ -1,8 +1,9 @@
 import { FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState, forwardRef } from 'react';
-import { StyleSheet, View, Text, Button, Slider, Alert } from 'react-native';
+import { StyleSheet, View, Text, Slider } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+
 import { Color } from '../../../constants';
 import { ConfirmationBubble } from '../../../containers/MoodTracking';
 import Emitter from '../../../utils/eventEmitter';
@@ -218,13 +219,11 @@ const Emotions = [
 let feedbackTimeout = null;
 
 export const MoodOverview = (props) => {
-  const [sliderValue, setSliderValue] = useState(4);
+  const [sliderValue, setSliderValue] = useState(1);
   const [selectedMood, setSelectedMood] = useState('No mood selected');
   const [showConfirmationBubble, setShowConfirmationBubble] = useState(false);
   const [showFeedbackBubble, setShowFeedbackBubble] = useState(false);
-  const [emojiFontSize, setEmojiFontSize] = useState(55);
-  const [selectedEmojiFontSize, setSelectedEmojiFontSize] = useState(70);
-  const [isSelected, setIsSelected] = useState(false);
+
   const [showMustSelectMoodText, setShowMustSelectMoodText] = useState(false);
 
   Emitter.off('moodTrackingFinished');
@@ -243,7 +242,6 @@ export const MoodOverview = (props) => {
     clearTimeout(feedbackTimeout);
     Emitter.emit('closeMoodOverview');
   });
-
 
   Emitter.off('closeConfirmationBubble');
   Emitter.on('closeConfirmationBubble', () => {
@@ -274,6 +272,22 @@ export const MoodOverview = (props) => {
     Emotions.map((emoji) => {
       emoji.id === id ? (emoji.size = 70) : (emoji.size = 55);
     });
+  };
+
+  const findDegreeText = () => {
+    let sliderDegreeText;
+    switch (sliderValue) {
+      case 1:
+        sliderDegreeText = 'A little';
+        break;
+      case 2:
+        sliderDegreeText = 'Some';
+        break;
+      case 3:
+        sliderDegreeText = 'Very much';
+        break;
+    }
+    return sliderDegreeText;
   };
 
   return (
@@ -321,19 +335,14 @@ export const MoodOverview = (props) => {
         </LinearGradient>
         <View style={styles.currentTrackingInfo}>
           {showMustSelectMoodText && (
-            <SelectMoodInfo
-              showMustSelectMoodText={showMustSelectMoodText}
-            />
+            <SelectMoodInfo showMustSelectMoodText={showMustSelectMoodText} />
           )}
-          <Text style={styles.noMoodSelectedText}>
-            {selectedMood}
-          </Text>
-          <Text style={styles.sliderValueText}>{sliderValue}</Text>
-
+          <Text style={styles.iFeelText}>I feel...</Text>
+          <Text style={styles.sliderValueText}>{findDegreeText()}</Text>
           <Slider
-            style={{ width: 100, height: 30, borderRadius: 50, top: 10 }}
-            minimumValue={0}
-            maximumValue={7}
+            style={{ width: 120, height: 30, borderRadius: 50, top: -10 }}
+            minimumValue={1}
+            maximumValue={3}
             value={sliderValue}
             step={1}
             maximumTrackTintColor={Color.white}
@@ -343,14 +352,14 @@ export const MoodOverview = (props) => {
               setSliderValue(value);
             }}
           />
-          <View style={styles.trackingButton}>
-            <Button
-              title="track"
-              color={Color.secondary}
+          <Text style={styles.noMoodSelectedText}>{selectedMood}</Text>
+          <View style={styles.trackingButtonContainer}>
+            <TouchableOpacity
               onPress={() => {
                 confirmationBubble(true);
-              }}
-            />
+              }}>
+              <Text style={styles.trackingButton}>TRACK</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -412,21 +421,41 @@ const styles = StyleSheet.create({
     transform: [{ skewY: '0deg' }, { rotate: '105deg' }],
     alignItems: 'center',
   },
+  iFeelText: {
+    textAlign: 'center',
+    color: Color.white,
+    padding: 15,
+    fontSize: 18,
+    top: -8,
+  },
   noMoodSelectedText: {
     textAlign: 'center',
     color: Color.white,
-    padding: 20,
+    padding: 7,
     fontSize: 16,
-    top: 10,
+    top: -15,
+    height: 35,
   },
   sliderValueText: {
     textAlign: 'center',
-    width: 20,
-    height: 20,
-  },
-  trackingButton: {
+    color: '#101153',
+    fontWeight: '600',
     width: 100,
     height: 20,
-    top: 20,
+    top: -15,
+  },
+  trackingButtonContainer: {
+    top: -5,
+  },
+  trackingButton: {
+    width: 90,
+    fontSize: 16,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 8,
+    paddingBottom: 8,
+    backgroundColor: Color.white,
+    borderRadius: 20,
+    textAlign: 'center',
   },
 });

@@ -23,8 +23,10 @@ export const ConfirmationBubble = (props) => {
         <Dialog.Title>Would you like to track</Dialog.Title>
         <Dialog.Description>
           {'Emotion:' +
+            ' ' +
             props.emojiDescription +
             '\nDegree/intensity:' +
+            ' ' +
             props.sliderValue}
         </Dialog.Description>
         <Dialog.Button
