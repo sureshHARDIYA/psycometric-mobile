@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 export function BackgroundImage() {
 
@@ -6,16 +6,16 @@ export function BackgroundImage() {
 
   let image;
   switch (backgroundImage) {
-    case('pinkishBeach'):
+    case 'pinkishBeach':
       image = require('../../../../assets/images/moodtrackingapp/pinkishBeach.jpg');
       break;
-    case('bali'):
+    case 'bali':
       image = require('../../../../assets/images/moodtrackingapp/bali.jpg');
       break;
-    case('water'):
+    case 'water':
       image = require('../../../../assets/images/moodtrackingapp/water.jpg');
       break;
-    case('ocean'):
+    case 'ocean':
       image = require('../../../../assets/images/moodtrackingapp/ocean.jpg');
       break;
   }

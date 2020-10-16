@@ -2,17 +2,17 @@ import { AntDesign, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-ic
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+
 import { Color } from '../../../constants';
 import { Routes } from '../../../navigation';
-import { MoodOverview } from '../moodoverview';
 import Emitter from '../../../utils/eventEmitter';
+import { MoodOverview } from '../moodoverview';
 
 export const MainMenu = (props) => {
   const [showMoodOverview, setShowMoodOverview] = useState(false);
 
   Emitter.off('closeMoodOverview');
   Emitter.on('closeMoodOverview', () => {
-    console.log('Close mood overview listener created');
     closeMoodOverview();
   });
 

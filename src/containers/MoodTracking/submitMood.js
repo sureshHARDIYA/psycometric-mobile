@@ -1,6 +1,5 @@
-import _get from 'lodash/get';
-import _set from 'lodash/fp/set';
 import { useMutation } from '@apollo/react-hooks';
+
 import { RECORD_MUTATION } from './mutation';
 
 export const submitMood = () => {

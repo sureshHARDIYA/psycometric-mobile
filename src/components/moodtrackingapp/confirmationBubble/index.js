@@ -1,10 +1,10 @@
 import React from 'react';
 import { View } from 'react-native';
 import Dialog from 'react-native-dialog';
+
 import Emitter from '../../../utils/eventEmitter';
 
 export const ConfirmationBubble = (props) => {
-
   const confirmMoodTracking = () => {
     //sends in mood tracking data
     props.onSubmit({
@@ -16,20 +16,31 @@ export const ConfirmationBubble = (props) => {
   return (
     <View>
       <Dialog.Container
-        visible={true}
+        visible
         onBackdropPress={() => {
           Emitter.emit('closeConfirmationBubble');
         }}>
         <Dialog.Title>Would you like to track</Dialog.Title>
         <Dialog.Description>
-          {'Emotion:' + props.emojiDescription + '\nDegree/intensity:' + props.sliderValue}
+          {'Emotion:' +
+            props.emojiDescription +
+            '\nDegree/intensity:' +
+            props.sliderValue}
         </Dialog.Description>
-        <Dialog.Button label="Cancel" onPress={() => {
+        <Dialog.Button
+          label="Cancel"
+          color="#DE6465"
+          onPress={() => {
             Emitter.emit('closeConfirmationBubble');
-        }} color={'#DE6465'} />
-        <Dialog.Button label="Confirm" onPress={() => {
-          confirmMoodTracking();
-        }} color={'#3CBB75'} />
+          }}
+        />
+        <Dialog.Button
+          label="Confirm"
+          color="#3CBB75"
+          onPress={() => {
+            confirmMoodTracking();
+          }}
+        />
       </Dialog.Container>
     </View>
   );

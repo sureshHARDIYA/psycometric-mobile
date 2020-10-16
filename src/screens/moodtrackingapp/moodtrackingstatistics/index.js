@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { FlatList, ImageBackground, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import _get from 'lodash/get';
+import React, { useEffect, useState } from 'react';
+import { ImageBackground, ScrollView, StyleSheet, View } from 'react-native';
 
 import { BackgroundImage } from '../../../components/moodtrackingapp/backgroundImage';
 import { CalendarStatistics } from '../../../components/moodtrackingapp/calendarStatistics';
@@ -9,14 +10,11 @@ import { Color } from '../../../constants';
 import { EmotionQuery } from '../../../containers/MoodTrackingStatistics';
 import { Container } from '../../../themes';
 import Emitter from '../../../utils/eventEmitter';
-import _get from 'lodash/get';
 
 export const MoodTrackingStatistics = (props) => {
   const { setBackgroundImage, backgroundImage, image } = BackgroundImage();
   let { list, loading, refetch } = EmotionQuery({ search: true });
   const [emotionList, setEmotionList] = useState([]);
-  console.log('PARENT EMOTIONLIST', emotionList.length, 'LIST', list.length);
-
 
   Emitter.off('MoodDeleted');
   Emitter.on('MoodDeleted', () => {
@@ -24,7 +22,6 @@ export const MoodTrackingStatistics = (props) => {
       list = _get(data, 'result.rows', []);
     });
   });
-
 
   useEffect(() => {
     if (!loading && list) {
@@ -47,7 +44,6 @@ export const MoodTrackingStatistics = (props) => {
               refetch={refetch}
               loading={loading}
             />
-
           </View>
         </ScrollView>
         <MainMenu page="statistics" navigation={props.navigation} />

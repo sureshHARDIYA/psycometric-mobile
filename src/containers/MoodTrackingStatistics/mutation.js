@@ -1,6 +1,6 @@
-import gql from "graphql-tag";
+import gql from 'graphql-tag';
 
-export const DESTROY_MUTATION = gql `
+export const DESTROY_MUTATION = gql`
   mutation DESTROY_MUTATION($ids: [String!]!) {
     emotionDestroy(ids: $ids)
   }

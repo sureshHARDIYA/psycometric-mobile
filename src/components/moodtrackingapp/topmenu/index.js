@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
-import { Color } from '../../../constants';
-import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import React, { useState } from 'react';
+import { StyleSheet, View, ScrollView, TouchableOpacity, Image } from 'react-native';
+
+import { Color } from '../../../constants';
 
 export const TopMenu = (props) => {
   const [showBackgroundImagePicker, setShowBackgroundImagePicker] = useState(false);
@@ -45,13 +46,6 @@ export const TopMenu = (props) => {
             />
           </TouchableOpacity>
         </View>
-        {'MoodTracking' !== 'MoodTracking'
-        && (
-          <Text style={styles.statisticsTopMenuText}>Mood Tracking</Text>)}
-
-        {'MoodTrackingStatistics' !== 'MoodTrackingStatistics'
-        && (
-          <Text style={styles.statisticsTopMenuText}>Statistics</Text>)}
 
         {!showBackgroundImagePicker && (
           <TouchableOpacity
@@ -73,7 +67,12 @@ export const TopMenu = (props) => {
             onPress={() => {
               closeBackgroundImagePicker();
             }}>
-            <AntDesign style={styles.exitMenuIcon} size={40} name="close" color="#3f3f41" />
+            <AntDesign
+              style={styles.exitMenuIcon}
+              size={40}
+              name="close"
+              color="#3f3f41"
+            />
           </TouchableOpacity>
         )}
 
@@ -88,7 +87,8 @@ export const TopMenu = (props) => {
                 }}>
                 <Image
                   style={styles.backgroundImage}
-                  source={require('../../../../assets/images/moodtrackingapp/bali.jpg')} />
+                  source={require('../../../../assets/images/moodtrackingapp/bali.jpg')}
+                />
               </TouchableOpacity>
             </View>
             <View>
@@ -96,8 +96,10 @@ export const TopMenu = (props) => {
                 onPress={() => {
                   selectBackground('pinkishBeach');
                 }}>
-                <Image style={styles.backgroundImage}
-                       source={require('../../../../assets/images/moodtrackingapp/pinkishBeach.jpg')} />
+                <Image
+                  style={styles.backgroundImage}
+                  source={require('../../../../assets/images/moodtrackingapp/pinkishBeach.jpg')}
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -107,8 +109,10 @@ export const TopMenu = (props) => {
                 onPress={() => {
                   selectBackground('water');
                 }}>
-                <Image style={styles.backgroundImage}
-                       source={require('../../../../assets/images/moodtrackingapp/water.jpg')} />
+                <Image
+                  style={styles.backgroundImage}
+                  source={require('../../../../assets/images/moodtrackingapp/water.jpg')}
+                />
               </TouchableOpacity>
             </View>
             <View>
@@ -116,8 +120,10 @@ export const TopMenu = (props) => {
                 onPress={() => {
                   selectBackground('ocean');
                 }}>
-                <Image style={styles.backgroundImage}
-                       source={require('../../../../assets/images/moodtrackingapp/ocean.jpg')} />
+                <Image
+                  style={styles.backgroundImage}
+                  source={require('../../../../assets/images/moodtrackingapp/ocean.jpg')}
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -140,13 +146,6 @@ const styles = StyleSheet.create({
     zIndex: 2,
     marginLeft: 10,
     width: 35,
-  },
-  statisticsTopMenuText: {
-    fontSize: 18,
-    color: Color.white,
-    textAlign: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   hamburgerMenuTouchZone: {
     right: 10,

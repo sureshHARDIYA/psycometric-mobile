@@ -16,26 +16,19 @@ export const CalendarStatistics = (props) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
 
-
   useEffect(() => {
-    console.log('calendarStatisticsdata', props.data.length);
     setData(props.data);
     onDateChange(selectedDate);
   }, [props.data]);
 
-  // set selectedDate to date user select and stores a list of mood tracking for
-  // that date in selectedDayMoods.
+  // set selectedDate to the date the user select and stores a list
+  // of mood tracking on that date in selectedDayMoods.
   const onDateChange = (selectedDate) => {
-    console.log('OnDateChangeStart: ', Object.keys(selectedDate).length !== 0);
     if (Object.keys(selectedDate).length !== 0) {
-      console.log('MakeSelectedDateList');
       let x = makeSelectedDateList(selectedDate);
       setSelectedDayMoods(x);
-      console.log("CALENDARSTATS ONDATECHANGE", x.length);
       setSelectedDate(selectedDate);
     }
-
-    console.log('onDateChangeEnd');
   };
 
   // Marks all dates that contain tracked mood with color.
@@ -77,7 +70,7 @@ export const CalendarStatistics = (props) => {
         .toISOString()
         .substring(0, 10)
         .split('-');
-      const trackedDay = dateFromDB[2]; // Format: '02'
+      const trackedDay = dateFromDB[2];
       const trackedMonth =
         (new Date(props.data[key].createdAt).getMonth() + 1).toString().length === 1
           ? '0'.concat(
@@ -171,16 +164,16 @@ export const CalendarStatistics = (props) => {
         currentMonth={currentMonth}
         data={data}
       />
-        <SelectedDateDialog
-          selectedDayMoods={selectedDayMoods}
-          selectedDay={selectedDay}
-          selectedMonth={selectedMonth}
-          selectedYear={selectedYear}
-          date={props.date}
-          showDateDetails={showDateDetails}
-          setShowDateDetails={setShowDateDetails}
-          data={data}
-        />
+      <SelectedDateDialog
+        selectedDayMoods={selectedDayMoods}
+        selectedDay={selectedDay}
+        selectedMonth={selectedMonth}
+        selectedYear={selectedYear}
+        date={props.date}
+        showDateDetails={showDateDetails}
+        setShowDateDetails={setShowDateDetails}
+        data={data}
+      />
     </View>
   );
 };

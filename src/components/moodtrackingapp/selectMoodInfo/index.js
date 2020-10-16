@@ -1,23 +1,18 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
+
 import { Color } from '../../../constants';
 
-export class SelectMoodInfo extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-        <Text
-          onBackdropPress={() => {
-            this.props.showMustSelectMoodText(false);
-          }}
-          style={styles.selectMoodText}>
-          Select the mood you want to track first
-        </Text>
-    );
-  }
+export const SelectMoodInfo = (props) => {
+  return (
+    <Text
+      style={styles.selectMoodText}
+      onBackdropPress={() => {
+        props.showMustSelectMoodText(false);
+      }}>
+      Select the mood you want to track first
+    </Text>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -30,6 +25,6 @@ const styles = StyleSheet.create({
     padding: 15,
     top: 30,
     zIndex: 2,
-    borderRadius: 15
+    borderRadius: 15,
   },
 });

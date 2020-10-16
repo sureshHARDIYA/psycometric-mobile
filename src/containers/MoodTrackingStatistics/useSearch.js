@@ -1,12 +1,12 @@
 import { useQuery } from '@apollo/react-hooks';
-import _get from 'lodash/get';
 import _set from 'lodash/fp/set';
-import { EMOTION_LIST } from './query';
-import { useAuth } from '../Auth';
+import _get from 'lodash/get';
 import { useState, useEffect } from 'react';
 
-export const useSearch = ({} = {}) => {
+import { useAuth } from '../Auth';
+import { EMOTION_LIST } from './query';
 
+export const useSearch = ({} = {}) => {
   const { currentUser } = useAuth();
   const defaultVariables = {
     filter: {},
@@ -36,12 +36,12 @@ export const useSearch = ({} = {}) => {
   const current = _get(data, 'result.currentPage', 0);
 
   const onSearchName = (name) => setOption((pre) => ({
-    ...pre,
-    filter: {
-      ...pre.filter,
-      name,
-    },
-  }));
+      ...pre,
+      filter: {
+        ...pre.filter,
+        name,
+      },
+    }));
 
   const handleLoadMore = async () => {
     console.log('handleLoadMore EMOTION_LIST:', list.length);
@@ -76,4 +76,3 @@ export const useSearch = ({} = {}) => {
     error: error ? (Array.isArray(error) ? error : [error]).join(', ') : null,
   };
 };
-

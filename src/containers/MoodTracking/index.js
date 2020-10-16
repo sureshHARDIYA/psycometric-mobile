@@ -1,33 +1,11 @@
-import React, { useMemo } from 'react';
-import { submitMood } from './submitMood';
+import React from 'react';
+
 import { ConfirmationBubble as SubmitComponent } from '../../components/moodtrackingapp/confirmationBubble';
+import { submitMood } from './submitMood';
 
-
-
-export const ConfirmationBubble = (props, {
-  moods: _moods = [],
-  id,
-}) => {
-
+export const ConfirmationBubble = (props, { moods: _moods = [], id }) => {
   // To submit moods
   const { onSubmit } = submitMood();
 
-/*  const moods = useMemo(() => _moods.map((mood) => {
-    return ({
-        ...mood,
-        id: mood.id,
-        emotion: mood.emotion,
-        degree: mood.degree,
-      }
-    );
-  }), [_moods]);*/
-
-  return (
-    <SubmitComponent
-      {...props}
-      onSubmit={onSubmit}
-    />
-  );
+  return <SubmitComponent {...props} onSubmit={onSubmit} />;
 };
-
-
