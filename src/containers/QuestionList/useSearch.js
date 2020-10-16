@@ -4,7 +4,7 @@ import _set from 'lodash/fp/set';
 import { QUESTIONNAIRE_DETAIL } from "./query";
 
 export const useSearch = (id) => {
-  const { loading, error, data } = useQuery(QUESTIONNAIRE_DETAIL, {
+  const { loading, error, data } =  (QUESTIONNAIRE_DETAIL, {
     variables: { id },
   });
 

@@ -13,6 +13,9 @@ web-report/
 # macOS
 .DS_Store
 
+# Intellij
+.idea
+
 .env
 .env.development
 .env.production

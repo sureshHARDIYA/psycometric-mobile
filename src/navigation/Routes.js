@@ -17,4 +17,6 @@ export const Routes = {
   QuizPractice: 'QuizPractice',
   Questionnaire: 'Questionnaire',
   QuestionnaireLevel: 'QuestionnaireLevel',
+  MoodTracking: 'MoodTracking',
+  MoodTrackingStatistics: 'MoodTrackingStatistics',
 };
