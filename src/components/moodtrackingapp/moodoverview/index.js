@@ -220,10 +220,10 @@ let feedbackTimeout = null;
 
 export const MoodOverview = (props) => {
   const [sliderValue, setSliderValue] = useState(1);
+  const [selectedDegreeText, setSelectedDegreeText] = useState('');
   const [selectedMood, setSelectedMood] = useState('No mood selected');
   const [showConfirmationBubble, setShowConfirmationBubble] = useState(false);
   const [showFeedbackBubble, setShowFeedbackBubble] = useState(false);
-
   const [showMustSelectMoodText, setShowMustSelectMoodText] = useState(false);
 
   Emitter.off('moodTrackingFinished');
@@ -281,10 +281,10 @@ export const MoodOverview = (props) => {
         sliderDegreeText = 'A little';
         break;
       case 2:
-        sliderDegreeText = 'Some';
+        sliderDegreeText = 'Somewhat';
         break;
       case 3:
-        sliderDegreeText = 'Very much';
+        sliderDegreeText = 'Very';
         break;
     }
     return sliderDegreeText;
@@ -356,7 +356,9 @@ export const MoodOverview = (props) => {
           <View style={styles.trackingButtonContainer}>
             <TouchableOpacity
               onPress={() => {
+                setSelectedDegreeText(findDegreeText);
                 confirmationBubble(true);
+
               }}>
               <Text style={styles.trackingButton}>TRACK</Text>
             </TouchableOpacity>
@@ -367,7 +369,7 @@ export const MoodOverview = (props) => {
         <ConfirmationBubble
           setShowConfirmationBubble={confirmationBubble}
           emojiDescription={selectedMood}
-          sliderValue={sliderValue}
+          selectedDegreeText={selectedDegreeText}
           onSubmit={props.onSubmit}
         />
       )}
@@ -438,7 +440,7 @@ const styles = StyleSheet.create({
   },
   sliderValueText: {
     textAlign: 'center',
-    color: '#101153',
+    color: Color.white,
     fontWeight: '600',
     width: 100,
     height: 20,
