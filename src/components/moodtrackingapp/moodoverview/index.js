@@ -18,7 +18,7 @@ const Emotions = [
     icon: 'frown-open',
     emojiStyling: {
       fontSize: 55,
-      opacity: 0.6,
+      opacity: 1.0,
     },
     listElementStyle: {
       transform: [{ rotate: '135deg' }, { skewY: '0deg' }],
@@ -48,7 +48,7 @@ const Emotions = [
     icon: 'angry',
     emojiStyling: {
       fontSize: 55,
-      opacity: 0.6,
+      opacity: 1.0,
     },
     listElementStyle: {
       transform: [{ rotate: '90deg' }, { skewY: '0deg' }],
@@ -77,7 +77,7 @@ const Emotions = [
     icon: 'grin-stars',
     emojiStyling: {
       fontSize: 55,
-      opacity: 0.6,
+      opacity: 1.0,
     },
     listElementStyle: {
       transform: [{ rotate: '180deg' }, { skewY: '0deg' }],
@@ -106,7 +106,7 @@ const Emotions = [
     icon: 'laugh-beam',
     emojiStyling: {
       fontSize: 55,
-      opacity: 0.6,
+      opacity: 1.0,
     },
     listElementStyle: {
       transform: [{ rotate: '225deg' }, { skewY: '0deg' }],
@@ -135,7 +135,7 @@ const Emotions = [
     icon: 'meh',
     emojiStyling: {
       fontSize: 55,
-      opacity: 0.6,
+      opacity: 1.0,
     },
     listElementStyle: {
       transform: [{ rotate: '45deg' }, { skewY: '0deg' }],
@@ -164,7 +164,7 @@ const Emotions = [
     icon: 'frown',
     emojiStyling: {
       fontSize: 55,
-      opacity: 0.6,
+      opacity: 1.0,
     },
     listElementStyle: {
       transform: [{ rotate: '0deg' }, { skewY: '0deg' }],
@@ -193,7 +193,7 @@ const Emotions = [
     icon: 'smile-beam',
     emojiStyling: {
       fontSize: 55,
-      opacity: 0.6,
+      opacity: 1.0,
     },
     listElementStyle: {
       transform: [{ rotate: '270deg' }, { skewY: '0deg' }],
@@ -305,7 +305,6 @@ export const MoodOverview = (props) => {
       });
     };
   }, []);
-
 
   const selectMood = (moodDescription, selectedIndex) => {
     Emotions.map((value, index, arr) => {
