@@ -1,13 +1,15 @@
 import { AntDesign, FontAwesome5 } from '@expo/vector-icons';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, ScrollView } from 'react-native';
+import { StyleSheet, Text, ScrollView, View, TouchableOpacity } from 'react-native';
 import Dialog from 'react-native-dialog';
-import { DataTable } from 'react-native-paper';
 
 import Emitter from '../../../utils/eventEmitter';
+import { DeleteConfirmationBubble } from '../deleteConfirmationBubble';
 
 export const SelectedDateDialog = (props) => {
   const [selectedDayMoods, setSelectedDayMoods] = useState([]);
+  const [showDeleteConfirmationBubble, setShowDeleteConfirmationBubble] = useState(false);
+  const [moodId, setMoodId] = useState('');
 
   useEffect(() => {
     setSelectedDayMoods(props.selectedDayMoods);
@@ -22,83 +24,149 @@ export const SelectedDateDialog = (props) => {
     Emitter.emit('MoodDeleted');
   };
 
+  const findEmojiIcon = (selectedDateMood) => {
+    let emojiIconObj = {};
+    switch (selectedDateMood) {
+      case 'Tense/Nervous':
+        emojiIconObj.icon = 'frown-open';
+        emojiIconObj.color = '#3CBB75';
+        break;
+      case 'Irritated/Annoyed':
+        emojiIconObj.icon = 'angry';
+        emojiIconObj.color = '#DE6465';
+        break;
+      case 'Excited/Lively':
+        emojiIconObj.icon = 'grin-stars';
+        emojiIconObj.color = '#EB7955';
+        break;
+      case 'Cheerful/Happy':
+        emojiIconObj.icon = 'laugh-beam';
+        emojiIconObj.color = '#F7CB50';
+        break;
+      case 'Bored/Weary':
+        emojiIconObj.icon = 'meh';
+        emojiIconObj.color = '#8B42CC';
+        break;
+      case 'Gloomy/Sad':
+        emojiIconObj.icon = 'frown';
+        emojiIconObj.color = '#3D3D3D';
+        break;
+      case 'Relaxed/Calm':
+        emojiIconObj.icon = 'smile-beam';
+        emojiIconObj.color = '#425CCC';
+        break;
+    }
+    return emojiIconObj;
+  };
 
   return (
-    <Dialog.Container
-      visible={props.showDateDetails}
-      top={-25}
-      onBackdropPress={() => {
-        cancelDialog();
-      }}>
-      <AntDesign
-        size={25}
-        name="close"
-        color="grey"
-        style={{ position: 'absolute', right: 0, top: 0, padding: 10 }}
-        onPress={() => {
+    <>
+      <Dialog.Container
+        visible={props.showDateDetails}
+        style={{ top: 30 }}
+        maxHeight={500}
+        onBackdropPress={() => {
           cancelDialog();
         }}
-      />
-      <Dialog.Title style={styles.tableTitle}>
-        {'Tracked moods: ' + props.selectedDay + '.' + props.selectedMonth + '.' + props.selectedYear + ' '}
-      </Dialog.Title>
-      <DataTable
-        style={styles.dataTable}
-        maxHeight={380}
-        height={380}
-        maxWidth={260}>
-        <DataTable.Header>
-          <DataTable.Title style={{ flex: 3 }}>Emotion</DataTable.Title>
-          <DataTable.Title numeric style={{ flex: 1 }}>
-            Degree
-          </DataTable.Title>
-          <DataTable.Title numeric style={{ flex: 1 }} />
-        </DataTable.Header>
+      >
+        <AntDesign
+          size={25}
+          name="close"
+          color="grey"
+          style={{ position: 'absolute', right: 0, top: 0, padding: 10 }}
+          onPress={() => {
+            cancelDialog();
+          }}
+        />
+        <Dialog.Title style={styles.tableTitle}>
+          {'How you felt on: ' + props.selectedDay + '.' + props.selectedMonth + '.' + props.selectedYear + ' '}
+        </Dialog.Title>
         <ScrollView>
           {selectedDayMoods.length > 0 &&
-            selectedDayMoods.map((mood) => {
-              return (
-                <DataTable.Row key={mood.id} style={{ height: 70 }}>
-                  <DataTable.Cell
+          selectedDayMoods.map((mood) => {
+            return (
+              <View key={mood.id}
                     style={{
-                      flex: 3,
                       height: 70,
-                      maxWidth: 150,
-                      overflow: 'visible',
-                      width: 200,
-                      wordWrap: 'break-word',
-                      overflowWrap: 'break-word',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      top: 10,
+                      marginBottom: 20,
+                      paddingBottom: 15,
+                      borderBottomWidth: 1,
+                      borderColor: '#d3d3d3',
                     }}>
-                    {mood.emotion}
-                  </DataTable.Cell>
-                  <DataTable.Cell numeric style={{ flex: 1, height: 70 }}>
-                    {mood.degree}
-                  </DataTable.Cell>
-                  <DataTable.Cell
-                    numeric
-                    style={{ flex: 1, height: 70, alignItems: 'center' }}
-                    onPress={() => {
-                      deleteMood(mood.id);
-                    }}>
-                    <FontAwesome5
-                      solid
-                      size={16}
-                      name="trash-alt"
-                      color="#454444"
-                    />
-                  </DataTable.Cell>
-                </DataTable.Row>
-              );
-            })}
+                <View numeric style={{
+                  flex: 1,
+                  height: 100,
+                  top: 22,
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                  <FontAwesome5
+                    solid
+                    size={22}
+                    name={findEmojiIcon(mood.emotion).icon}
+                    color={findEmojiIcon(mood.emotion).color}
+                    style={{ paddingBottom: 5 }}
+                  />
+                  <Text style={{ fontSize: 12, marginBottom: 10 }}>
+                    {`${new Date(mood.createdAt).getHours().toString().length === 1
+                      ? '0'.concat(new Date(mood.createdAt).getHours().toString())
+                      : new Date(mood.createdAt).getHours()}:${new Date(mood.createdAt).getMinutes().toString().length == 1
+                      ? '0'.concat(new Date(mood.createdAt).getMinutes().toString())
+                      : new Date(mood.createdAt).getMinutes()}\n`}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flex: 4,
+                    height: 70,
+                    maxWidth: 200,
+                    marginLeft: 20,
+                    marginRight: 0,
+                    justifyContent: 'center',
+                  }}>
+                  <Text>{mood.degree + ' ' + mood.emotion}</Text>
+                </View>
+                <TouchableOpacity
+                  numeric
+                  style={{ flex: 1, height: 70, alignItems: 'center', justifyContent: 'center' }}
+                  onPress={() => {
+                    setShowDeleteConfirmationBubble(true);
+                    setMoodId(mood.id);
+                  }}>
+                  <FontAwesome5
+                    solid
+                    size={16}
+                    name="trash-alt"
+                    color="#454444"
+                  />
+                </TouchableOpacity>
+              </View>
+            );
+          })}
           {selectedDayMoods.length === 0 && (
             <Text style={styles.noMoodsInfo}>
               There are no tracked mood on the day you have selected.
             </Text>
           )}
         </ScrollView>
-      </DataTable>
-    </Dialog.Container>
-  );
+      </Dialog.Container>
+      {
+        showDeleteConfirmationBubble && (
+          <DeleteConfirmationBubble
+            showDeleteConfirmationBubble={showDeleteConfirmationBubble}
+            setShowDeleteConfirmationBubble={setShowDeleteConfirmationBubble}
+            deleteMood={deleteMood}
+            moodId={moodId}
+          />
+        )
+      }
+    </>
+  )
+    ;
 };
 
 const styles = StyleSheet.create({
@@ -109,9 +177,6 @@ const styles = StyleSheet.create({
   noMoodsInfo: {
     textAlign: 'center',
     padding: 15,
-  },
-  dataTable: {
     width: 260,
-    marginBottom: 10,
   },
 });

@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
   backgroundImagePicker: {
     backgroundColor: Color.white,
     width: '100%',
-    height: '100%',
+    height: '120%',
     zIndex: 99,
     position: 'relative',
   },

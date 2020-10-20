@@ -6,6 +6,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Color } from '../../../constants';
 import { Routes } from '../../../navigation';
 import Emitter from '../../../utils/eventEmitter';
+import { MoodTrackingButton } from '../moodTrackingButton';
 import { MoodOverview } from '../moodoverview';
 
 export const MainMenu = (props) => {
@@ -24,11 +25,11 @@ export const MainMenu = (props) => {
     setShowMoodOverview(false);
   };
 
-
   return (
     <View>
       {showMoodOverview && (
         <MoodOverview
+          showMoodOverview={showMoodOverview}
           navigation={props.navigation}
         />
       )}
@@ -68,78 +69,14 @@ export const MainMenu = (props) => {
               )}
             </TouchableOpacity>
           </View>
-
-          {props.page === 'moodtracking' &&
-          !showMoodOverview && (
-            <View style={styles.moodTracker}>
-              <View style={styles.outerCircle}>
-                <View style={styles.innerCircle}>
-                  <LinearGradient
-                    colors={['#24c6dc', '#514A9D']}
-                    start={{ x: 0, y: 0.5 }}
-                    end={{ x: 1, y: 0.5 }}
-                    style={{
-                      position: 'absolute',
-                      left: 0,
-                      right: 0,
-                      top: -1,
-                      height: 125,
-                      flexDirection: 'row',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      borderRadius: 125 / 2,
-                    }}>
-                    <TouchableOpacity
-                      style={styles.moodTrackerTouchZone}
-                      hitSlop={{ top: 34, bottom: 34, left: 34, right: 34 }}
-                      onPress={() => openMoodOverview()}>
-                      <FontAwesome5
-                        solid
-                        size={50}
-                        name="laugh-beam"
-                        color={Color.white}
-                      />
-                      <Text style={styles.selectMoodText}>
-                        Track Mood
-                      </Text>
-                    </TouchableOpacity>
-                  </LinearGradient>
-                </View>
-              </View>
-            </View>
+          {props.page === 'moodtracking' && (
+            <MoodTrackingButton
+              page={'moodtracking'}
+              showMoodOverview={showMoodOverview}
+              closeMoodOverview={closeMoodOverview}
+              openMoodOverview={openMoodOverview}
+            />
           )}
-
-          {props.page === 'moodtracking' && showMoodOverview && (
-            <View style={styles.moodTracker}>
-              <View style={styles.outerCircle}>
-                <View style={styles.innerCircle}>
-                  <LinearGradient
-                    colors={['#24c6dc', '#514A9D']}
-                    start={{ x: 0, y: 0.5 }}
-                    end={{ x: 1, y: 0.5 }}
-                    style={{
-                      position: 'absolute',
-                      left: 0,
-                      right: 0,
-                      top: 0,
-                      height: 125,
-                      flexDirection: 'row',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      borderRadius: 125 / 2,
-                    }}>
-                    <TouchableOpacity
-                      style={styles.moodTrackerTouchZone}
-                      hitSlop={{ top: 34, bottom: 34, left: 34, right: 34 }}
-                      onPress={() => closeMoodOverview()}>
-                      <AntDesign size={45} name="close" color={Color.white} />
-                    </TouchableOpacity>
-                  </LinearGradient>
-                </View>
-              </View>
-            </View>
-          )}
-
           {props.page === 'statistics' && (
             <View style={styles.moodTrackerStatistics}>
               <TouchableOpacity
@@ -155,7 +92,6 @@ export const MainMenu = (props) => {
               </TouchableOpacity>
             </View>
           )}
-
           <View style={styles.contact}>
             <TouchableOpacity
               style={styles.moodTrackerTouchZone}
@@ -229,6 +165,9 @@ const styles = StyleSheet.create({
   statisticsTouchZone: {
     alignItems: 'center',
   },
+  moodTrackerTouchZone: {
+    alignItems: 'center',
+  },
   moodTrackerStatistics: {
     flex: 0.4,
     justifyContent: 'center',
@@ -238,9 +177,6 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     height: 80,
     top: 15,
-  },
-  moodTrackerTouchZone: {
-    alignItems: 'center',
   },
   contact: {
     flex: 0.3,

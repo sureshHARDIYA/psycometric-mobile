@@ -9,7 +9,7 @@ export const ConfirmationBubble = (props) => {
     //sends in mood tracking data
     props.onSubmit({
       emotion: props.emojiDescription,
-      degree: props.sliderValue.toString(),
+      degree: props.selectedDegreeText,
     });
     Emitter.emit('moodTrackingFinished');
   };
@@ -22,12 +22,12 @@ export const ConfirmationBubble = (props) => {
         }}>
         <Dialog.Title>Would you like to track</Dialog.Title>
         <Dialog.Description>
-          {'Emotion:' +
+          {'Degree/intensity:' +
             ' ' +
-            props.emojiDescription +
-            '\nDegree/intensity:' +
+            props.selectedDegreeText +
+            '\nEmotion:' +
             ' ' +
-            props.sliderValue}
+            props.emojiDescription }
         </Dialog.Description>
         <Dialog.Button
           label="Cancel"
