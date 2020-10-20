@@ -1,6 +1,6 @@
 import { FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useState, forwardRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Slider } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
@@ -16,7 +16,10 @@ const Emotions = [
     description: 'Tense/Nervous',
     color: '#3CBB75',
     icon: 'frown-open',
-    size: 55,
+    emojiStyling: {
+      fontSize: 55,
+      opacity: 0.6,
+    },
     listElementStyle: {
       transform: [{ rotate: '135deg' }, { skewY: '0deg' }],
       left: 0,
@@ -43,7 +46,10 @@ const Emotions = [
     description: 'Irritated/Annoyed',
     color: '#DE6465',
     icon: 'angry',
-    size: 55,
+    emojiStyling: {
+      fontSize: 55,
+      opacity: 0.6,
+    },
     listElementStyle: {
       transform: [{ rotate: '90deg' }, { skewY: '0deg' }],
       left: 0,
@@ -69,7 +75,10 @@ const Emotions = [
     description: 'Excited/Lively',
     color: '#EB7955',
     icon: 'grin-stars',
-    size: 55,
+    emojiStyling: {
+      fontSize: 55,
+      opacity: 0.6,
+    },
     listElementStyle: {
       transform: [{ rotate: '180deg' }, { skewY: '0deg' }],
       left: 0,
@@ -95,7 +104,10 @@ const Emotions = [
     description: 'Cheerful/Happy',
     color: '#F7CB50',
     icon: 'laugh-beam',
-    size: 55,
+    emojiStyling: {
+      fontSize: 55,
+      opacity: 0.6,
+    },
     listElementStyle: {
       transform: [{ rotate: '225deg' }, { skewY: '0deg' }],
       left: 0,
@@ -121,7 +133,10 @@ const Emotions = [
     description: 'Bored/Weary',
     color: '#8B42CC',
     icon: 'meh',
-    size: 55,
+    emojiStyling: {
+      fontSize: 55,
+      opacity: 0.6,
+    },
     listElementStyle: {
       transform: [{ rotate: '45deg' }, { skewY: '0deg' }],
       left: 0,
@@ -147,7 +162,10 @@ const Emotions = [
     description: 'Gloomy/Sad',
     color: '#3D3D3D',
     icon: 'frown',
-    size: 55,
+    emojiStyling: {
+      fontSize: 55,
+      opacity: 0.6,
+    },
     listElementStyle: {
       transform: [{ rotate: '0deg' }, { skewY: '0deg' }],
       left: 0,
@@ -173,7 +191,10 @@ const Emotions = [
     description: 'Relaxed/Calm',
     color: '#425CCC',
     icon: 'smile-beam',
-    size: 55,
+    emojiStyling: {
+      fontSize: 55,
+      opacity: 0.6,
+    },
     listElementStyle: {
       transform: [{ rotate: '270deg' }, { skewY: '0deg' }],
       left: 0,
@@ -265,13 +286,39 @@ export const MoodOverview = (props) => {
     }
   };
 
-  const selectMood = (moodDescription, id) => {
+  useEffect(() => {
+    /*    if(!props.showMoodOverview){*/
+    Emotions.map((value, index, arr) => {
+      if (Emotions[index].emojiStyling) {
+        Emotions[index].emojiStyling = { opacity: 1.0, fontSize: 55 };
+      }
+    });
+    /*    }*/
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      Emotions.map((value, index, arr) => {
+        if (Emotions[index].emojiStyling) {
+          Emotions[index].emojiStyling = { opacity: 1.0, fontSize: 55 };
+        }
+      });
+    };
+  }, []);
+
+
+  const selectMood = (moodDescription, selectedIndex) => {
+    Emotions.map((value, index, arr) => {
+      if (Emotions[index].emojiStyling) {
+        if (index === selectedIndex) {
+          Emotions[index].emojiStyling = { opacity: 1.0, fontSize: 70 };
+        } else {
+          Emotions[index].emojiStyling = { opacity: 0.8, fontSize: 55 };
+        }
+      }
+    });
     setSelectedMood(moodDescription);
     setShowMustSelectMoodText(false);
-
-    Emotions.map((emoji) => {
-      emoji.id === id ? (emoji.size = 70) : (emoji.size = 55);
-    });
   };
 
   const findDegreeText = () => {
@@ -289,6 +336,7 @@ export const MoodOverview = (props) => {
     }
     return sliderDegreeText;
   };
+
 
   return (
     <View style={styles.container} backgroundColor={Color.transparent}>
@@ -315,14 +363,13 @@ export const MoodOverview = (props) => {
                       <View style={val.iconStyle}>
                         <TouchableOpacity
                           onPress={() => {
-                            selectMood(val.description, val.id);
+                            selectMood(val.description, index);
                           }}>
                           <FontAwesome5
                             solid
-                            size={val.size}
                             name={val.icon}
                             color={val.color}
-                            id={val.id}
+                            style={val.emojiStyling}
                           />
                         </TouchableOpacity>
                       </View>
@@ -440,6 +487,7 @@ const styles = StyleSheet.create({
   },
   sliderValueText: {
     textAlign: 'center',
+    fontSize: 16,
     color: Color.white,
     fontWeight: '600',
     width: 100,

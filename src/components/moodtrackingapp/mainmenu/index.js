@@ -6,8 +6,8 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Color } from '../../../constants';
 import { Routes } from '../../../navigation';
 import Emitter from '../../../utils/eventEmitter';
-import { MoodOverview } from '../moodoverview';
 import { MoodTrackingButton } from '../moodTrackingButton';
+import { MoodOverview } from '../moodoverview';
 
 export const MainMenu = (props) => {
   const [showMoodOverview, setShowMoodOverview] = useState(false);
@@ -25,11 +25,11 @@ export const MainMenu = (props) => {
     setShowMoodOverview(false);
   };
 
-
   return (
     <View>
       {showMoodOverview && (
         <MoodOverview
+          showMoodOverview={showMoodOverview}
           navigation={props.navigation}
         />
       )}
@@ -69,7 +69,7 @@ export const MainMenu = (props) => {
               )}
             </TouchableOpacity>
           </View>
-          {props.page === 'moodtracking' &&(
+          {props.page === 'moodtracking' && (
             <MoodTrackingButton
               page={'moodtracking'}
               showMoodOverview={showMoodOverview}
@@ -77,7 +77,6 @@ export const MainMenu = (props) => {
               openMoodOverview={openMoodOverview}
             />
           )}
-
           {props.page === 'statistics' && (
             <View style={styles.moodTrackerStatistics}>
               <TouchableOpacity
@@ -93,7 +92,6 @@ export const MainMenu = (props) => {
               </TouchableOpacity>
             </View>
           )}
-
           <View style={styles.contact}>
             <TouchableOpacity
               style={styles.moodTrackerTouchZone}
