@@ -312,7 +312,7 @@ export const MoodOverview = (props) => {
         if (index === selectedIndex) {
           Emotions[index].emojiStyling = { opacity: 1.0, fontSize: 70 };
         } else {
-          Emotions[index].emojiStyling = { opacity: 0.8, fontSize: 55 };
+          Emotions[index].emojiStyling = { opacity: 0.6, fontSize: 55 };
         }
       }
     });
