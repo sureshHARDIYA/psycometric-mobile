@@ -254,7 +254,7 @@ export const MoodOverview = (props) => {
     feedbackTimeout = setTimeout(() => {
       Emitter.emit('closeFeedbackBubble');
       clearInterval(feedbackTimeout);
-    }, 3000);
+    }, 4000);
   });
 
   Emitter.off('closeFeedbackBubble');

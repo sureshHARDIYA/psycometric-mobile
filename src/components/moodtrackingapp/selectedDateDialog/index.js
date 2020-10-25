@@ -1,6 +1,12 @@
 import { AntDesign, FontAwesome5 } from '@expo/vector-icons';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, ScrollView, View, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  ScrollView,
+  View,
+  TouchableOpacity,
+} from 'react-native';
 import Dialog from 'react-native-dialog';
 
 import Emitter from '../../../utils/eventEmitter';
@@ -8,7 +14,10 @@ import { DeleteConfirmationBubble } from '../deleteConfirmationBubble';
 
 export const SelectedDateDialog = (props) => {
   const [selectedDayMoods, setSelectedDayMoods] = useState([]);
-  const [showDeleteConfirmationBubble, setShowDeleteConfirmationBubble] = useState(false);
+  const [
+    showDeleteConfirmationBubble,
+    setShowDeleteConfirmationBubble,
+  ] = useState(false);
   const [moodId, setMoodId] = useState('');
 
   useEffect(() => {
@@ -25,7 +34,7 @@ export const SelectedDateDialog = (props) => {
   };
 
   const findEmojiIcon = (selectedDateMood) => {
-    let emojiIconObj = {};
+    const emojiIconObj = {};
     switch (selectedDateMood) {
       case 'Tense/Nervous':
         emojiIconObj.icon = 'frown-open';
@@ -67,8 +76,7 @@ export const SelectedDateDialog = (props) => {
         maxHeight={500}
         onBackdropPress={() => {
           cancelDialog();
-        }}
-      >
+        }}>
         <AntDesign
           size={25}
           name="close"
@@ -79,13 +87,23 @@ export const SelectedDateDialog = (props) => {
           }}
         />
         <Dialog.Title style={styles.tableTitle}>
-          {'How you felt on: ' + props.selectedDay + '.' + props.selectedMonth + '.' + props.selectedYear + ' '}
+          {'How you felt on: ' +
+            props.selectedDay +
+            '.' +
+            props.selectedMonth +
+            '.' +
+            props.selectedYear +
+            ' '}
         </Dialog.Title>
         <ScrollView>
           {selectedDayMoods.length > 0 &&
-          selectedDayMoods.map((mood) => {
-            return (
-              <View key={mood.id}
+            selectedDayMoods
+              .slice(0)
+              .reverse()
+              .map((mood) => {
+                return (
+                  <View
+                    key={mood.id}
                     style={{
                       height: 70,
                       flexDirection: 'row',
@@ -96,57 +114,74 @@ export const SelectedDateDialog = (props) => {
                       borderBottomWidth: 1,
                       borderColor: '#d3d3d3',
                     }}>
-                <View numeric style={{
-                  flex: 1,
-                  height: 100,
-                  top: 22,
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                  <FontAwesome5
-                    solid
-                    size={22}
-                    name={findEmojiIcon(mood.emotion).icon}
-                    color={findEmojiIcon(mood.emotion).color}
-                    style={{ paddingBottom: 5 }}
-                  />
-                  <Text style={{ fontSize: 12, marginBottom: 10 }}>
-                    {`${new Date(mood.createdAt).getHours().toString().length === 1
-                      ? '0'.concat(new Date(mood.createdAt).getHours().toString())
-                      : new Date(mood.createdAt).getHours()}:${new Date(mood.createdAt).getMinutes().toString().length == 1
-                      ? '0'.concat(new Date(mood.createdAt).getMinutes().toString())
-                      : new Date(mood.createdAt).getMinutes()}\n`}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    flex: 4,
-                    height: 70,
-                    maxWidth: 200,
-                    marginLeft: 20,
-                    marginRight: 0,
-                    justifyContent: 'center',
-                  }}>
-                  <Text>{mood.degree + ' ' + mood.emotion}</Text>
-                </View>
-                <TouchableOpacity
-                  numeric
-                  style={{ flex: 1, height: 70, alignItems: 'center', justifyContent: 'center' }}
-                  onPress={() => {
-                    setShowDeleteConfirmationBubble(true);
-                    setMoodId(mood.id);
-                  }}>
-                  <FontAwesome5
-                    solid
-                    size={16}
-                    name="trash-alt"
-                    color="#454444"
-                  />
-                </TouchableOpacity>
-              </View>
-            );
-          })}
+                    <View
+                      numeric
+                      style={{
+                        flex: 1,
+                        height: 100,
+                        top: 22,
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <FontAwesome5
+                        solid
+                        size={22}
+                        name={findEmojiIcon(mood.emotion).icon}
+                        color={findEmojiIcon(mood.emotion).color}
+                        style={{ paddingBottom: 5 }}
+                      />
+                      <Text style={{ fontSize: 12, marginBottom: 10 }}>
+                        {`${
+                          new Date(mood.createdAt).getHours().toString()
+                            .length === 1
+                            ? '0'.concat(
+                                new Date(mood.createdAt).getHours().toString()
+                              )
+                            : new Date(mood.createdAt).getHours()
+                        }:${
+                          new Date(mood.createdAt).getMinutes().toString()
+                            .length === 1
+                            ? '0'.concat(
+                                new Date(mood.createdAt).getMinutes().toString()
+                              )
+                            : new Date(mood.createdAt).getMinutes()
+                        }\n`}
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        flex: 4,
+                        height: 70,
+                        maxWidth: 200,
+                        marginLeft: 20,
+                        marginRight: 0,
+                        justifyContent: 'center',
+                      }}>
+                      <Text>{mood.degree + ' ' + mood.emotion}</Text>
+                    </View>
+                    <TouchableOpacity
+                      numeric
+                      style={{
+                        flex: 1,
+                        height: 70,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                      onPress={() => {
+                        setShowDeleteConfirmationBubble(true);
+                        setMoodId(mood.id);
+                      }}>
+                      <FontAwesome5
+                        solid
+                        size={16}
+                        name="trash-alt"
+                        color="#454444"
+                      />
+                    </TouchableOpacity>
+                  </View>
+                );
+              })}
           {selectedDayMoods.length === 0 && (
             <Text style={styles.noMoodsInfo}>
               There are no tracked mood on the day you have selected.
@@ -154,19 +189,16 @@ export const SelectedDateDialog = (props) => {
           )}
         </ScrollView>
       </Dialog.Container>
-      {
-        showDeleteConfirmationBubble && (
-          <DeleteConfirmationBubble
-            showDeleteConfirmationBubble={showDeleteConfirmationBubble}
-            setShowDeleteConfirmationBubble={setShowDeleteConfirmationBubble}
-            deleteMood={deleteMood}
-            moodId={moodId}
-          />
-        )
-      }
+      {showDeleteConfirmationBubble && (
+        <DeleteConfirmationBubble
+          showDeleteConfirmationBubble={showDeleteConfirmationBubble}
+          setShowDeleteConfirmationBubble={setShowDeleteConfirmationBubble}
+          deleteMood={deleteMood}
+          moodId={moodId}
+        />
+      )}
     </>
-  )
-    ;
+  );
 };
 
 const styles = StyleSheet.create({
