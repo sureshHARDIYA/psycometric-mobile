@@ -74,8 +74,8 @@ export const CalendarStatistics = (props) => {
       const trackedMonth =
         (new Date(props.data[key].createdAt).getMonth() + 1).toString().length === 1
           ? '0'.concat(
-              (new Date(props.data[key].createdAt).getMonth() + 1).toString()
-            )
+          (new Date(props.data[key].createdAt).getMonth() + 1).toString()
+          )
           : (new Date(props.data[key].createdAt).getMonth() + 1).toString();
       const trackedYear = dateFromDB[0];
       if (
@@ -199,9 +199,6 @@ const CalendarThemes = {
   disabledArrowColor: '#d9e1e8',
   monthTextColor: '#514A9D',
   indicatorColor: 'blue',
-  textDayFontFamily: 'sans-serif',
-  textMonthFontFamily: 'sans-serif',
-  textDayHeaderFontFamily: 'sans-serif',
   textDayFontWeight: '300',
   textDayHeaderFontWeight: '300',
   textDayFontSize: 16,

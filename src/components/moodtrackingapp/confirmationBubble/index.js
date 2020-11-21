@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 import Dialog from 'react-native-dialog';
 
 import Emitter from '../../../utils/eventEmitter';
@@ -14,36 +14,59 @@ export const ConfirmationBubble = (props) => {
     Emitter.emit('moodTrackingFinished');
   };
   return (
-    <View>
+    <>
       <Dialog.Container
         visible
+        style={{ alignSelf: 'center' }}
         onBackdropPress={() => {
           Emitter.emit('closeConfirmationBubble');
         }}>
-        <Dialog.Title>Would you like to track</Dialog.Title>
-        <Dialog.Description>
-          {'Degree/intensity:' +
+        {Platform.OS === 'ios' && (
+          <Dialog.Description
+            style={{
+              padding: 15,
+              minWidth: 270,
+              fontSize: 16,
+              alignSelf: 'center',
+            }}>
+            {'You are feeling ' +
+            props.selectedDegreeText.toLowerCase() +
             ' ' +
-            props.selectedDegreeText +
-            '\nEmotion:' +
+            '\n' +
+            props.emojiDescription}
+          </Dialog.Description>
+        )}
+
+        {Platform.OS === 'android' && (
+          <Dialog.Description
+            style={{
+              padding: 0,
+              fontSize: 16,
+              alignSelf: 'center',
+            }}>
+            {'You are feeling ' +
+            props.selectedDegreeText.toLowerCase() +
             ' ' +
-            props.emojiDescription }
-        </Dialog.Description>
+            '\n' +
+            props.emojiDescription}
+          </Dialog.Description>
+        )}
+
         <Dialog.Button
-          label="Cancel"
+          label="No, Mistake"
           color="#DE6465"
           onPress={() => {
             Emitter.emit('closeConfirmationBubble');
           }}
         />
         <Dialog.Button
-          label="Confirm"
+          label="Yes"
           color="#3CBB75"
           onPress={() => {
             confirmMoodTracking();
           }}
         />
       </Dialog.Container>
-    </View>
+    </>
   );
 };

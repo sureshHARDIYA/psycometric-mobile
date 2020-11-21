@@ -1,6 +1,6 @@
 import React from 'react';
-import { View } from 'react-native';
 import Dialog from 'react-native-dialog';
+import { Platform, View } from 'react-native';
 
 
 export const DeleteConfirmationBubble = (props) => {
@@ -8,23 +8,35 @@ export const DeleteConfirmationBubble = (props) => {
     <View>
       <Dialog.Container
         visible
+        style={{alignSelf: "center"}}
         onBackdropPress={() => {
           props.setShowDeleteConfirmationBubble(false);
         }}>
         <Dialog.Description
-          style={{width: 240}}
+          style={{width: 270, fontSize: 16,
+            ...Platform.select({
+              android: {
+                padding: 10,
+              },
+              ios: {
+                padding: 15,
+              },
+            }),
+            minWidth: 270,
+            alignSelf: "center"
+          }}
         >
           Are you sure you want to delete the tracked mood?
         </Dialog.Description>
         <Dialog.Button
-          label="Cancel"
+          label="No, Mistake"
           color="#DE6465"
           onPress={() => {
-           props.setShowDeleteConfirmationBubble(false);
+            props.setShowDeleteConfirmationBubble(false);
           }}
         />
         <Dialog.Button
-          label="Confirm"
+          label="Yes"
           color="#3CBB75"
           onPress={() => {
             props.deleteMood(props.moodId);
