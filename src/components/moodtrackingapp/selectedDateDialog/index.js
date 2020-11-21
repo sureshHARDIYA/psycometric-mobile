@@ -72,8 +72,13 @@ export const SelectedDateDialog = (props) => {
     <>
       <Dialog.Container
         visible={props.showDateDetails}
-        style={{ top: 30 }}
-        maxHeight={500}
+        style={{
+          position: 'absolute',
+          height: 400,
+          marginTop: 120,
+          alignSelf: 'center',
+        }}
+        maxHeight={540}
         onBackdropPress={() => {
           cancelDialog();
         }}>
@@ -95,7 +100,11 @@ export const SelectedDateDialog = (props) => {
             props.selectedYear +
             ' '}
         </Dialog.Title>
-        <ScrollView>
+        <ScrollView
+          style={{ paddingLeft: 15, paddingRight: 15 }}
+          minHeight={380}
+          maxHeight={380}
+          minWidth={270}>
           {selectedDayMoods.length > 0 &&
             selectedDayMoods
               .slice(0)
@@ -183,20 +192,22 @@ export const SelectedDateDialog = (props) => {
                 );
               })}
           {selectedDayMoods.length === 0 && (
-            <Text style={styles.noMoodsInfo}>
-              There are no tracked mood on the day you have selected.
-            </Text>
+            <View style={styles.noMoodsInfo}>
+              <Text style={styles.noMoodsInfoText}>
+                There are no tracked mood on the day you have selected.
+              </Text>
+            </View>
           )}
         </ScrollView>
+        {showDeleteConfirmationBubble && (
+          <DeleteConfirmationBubble
+            showDeleteConfirmationBubble={showDeleteConfirmationBubble}
+            setShowDeleteConfirmationBubble={setShowDeleteConfirmationBubble}
+            deleteMood={deleteMood}
+            moodId={moodId}
+          />
+        )}
       </Dialog.Container>
-      {showDeleteConfirmationBubble && (
-        <DeleteConfirmationBubble
-          showDeleteConfirmationBubble={showDeleteConfirmationBubble}
-          setShowDeleteConfirmationBubble={setShowDeleteConfirmationBubble}
-          deleteMood={deleteMood}
-          moodId={moodId}
-        />
-      )}
     </>
   );
 };
@@ -204,11 +215,19 @@ export const SelectedDateDialog = (props) => {
 const styles = StyleSheet.create({
   tableTitle: {
     textAlign: 'center',
-    marginTop: 10,
+    marginTop: 20,
+    fontWeight: 'normal',
   },
   noMoodsInfo: {
     textAlign: 'center',
-    padding: 15,
     width: 260,
+    alignSelf: 'center',
+    padding: 10,
+    maxWidth: 240,
+  },
+  noMoodsInfoText: {
+    textAlign: 'center',
+    paddingLeft: 15,
+    paddingRight: 15,
   },
 });

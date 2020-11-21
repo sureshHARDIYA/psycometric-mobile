@@ -44,63 +44,65 @@ export const MainMenu = (props) => {
             right: 0,
             top: 0,
             height: 110,
-            flexDirection: 'row',
           }}>
-          <View style={styles.statistics}>
-            <TouchableOpacity
-              style={styles.statisticsTouchZone}
-              onPress={() => {
-                props.navigation.navigate(Routes.MoodTrackingStatistics);
-                setShowMoodOverview(false);
-              }}>
-              <FontAwesome5
-                size={40}
-                name="heartbeat"
-                color={Color.white}
-                style={styles.icon}
-              />
-              {props.page === 'statistics' && (
-                <Text style={[styles.iconCaptions, styles.statisticsBorder]}>
+        </LinearGradient>
+        <View style={styles.statistics}>
+          <TouchableOpacity
+            style={styles.statisticsTouchZone}
+            onPress={() => {
+              props.navigation.navigate(Routes.MoodTrackingStatistics);
+              setShowMoodOverview(false);
+            }}>
+
+            <FontAwesome5
+              size={40}
+              name="heartbeat"
+              color={Color.white}
+              style={styles.icon}
+            />
+            {props.page === 'statistics' && (
+              <View style={styles.statisticsBorder}>
+                <Text style={styles.iconCaptions}>
                   Statistics
                 </Text>
-              )}
-              {props.page === 'moodtracking' && (
-                <Text style={styles.iconCaptions}>Statistics</Text>
-              )}
-            </TouchableOpacity>
-          </View>
-          {props.page === 'moodtracking' && (
-            <MoodTrackingButton
-              page={'moodtracking'}
-              showMoodOverview={showMoodOverview}
-              closeMoodOverview={closeMoodOverview}
-              openMoodOverview={openMoodOverview}
-            />
-          )}
-          {props.page === 'statistics' && (
-            <View style={styles.moodTrackerStatistics}>
-              <TouchableOpacity
-                style={styles.moodTrackerTouchZone}
-                onPress={() => props.navigation.goBack()}>
-                <FontAwesome5
-                  solid
-                  size={40}
-                  name="laugh-beam"
-                  color={Color.white}
-                />
-                <Text style={styles.iconCaptions}>Mood Tracking</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-          <View style={styles.contact}>
+              </View>
+            )}
+            {props.page === 'moodtracking' && (
+              <Text style={styles.iconCaptions}>Statistics</Text>
+            )}
+          </TouchableOpacity>
+        </View>
+        {props.page === 'moodtracking' && (
+          <MoodTrackingButton
+            page={'moodtracking'}
+            showMoodOverview={showMoodOverview}
+            closeMoodOverview={closeMoodOverview}
+            openMoodOverview={openMoodOverview}
+          />
+        )}
+        {props.page === 'statistics' && (
+          <View style={styles.moodTrackerStatistics}>
             <TouchableOpacity
               style={styles.moodTrackerTouchZone}
-              onPress={() => props.navigation.navigate(Routes.About)}>
-              <AntDesign name="infocirlce" size={40} color={Color.white} style={styles.icon} />
-              <Text style={styles.iconCaptions}>Info</Text>
+              onPress={() => props.navigation.goBack()}>
+              <FontAwesome5
+                solid
+                size={40}
+                name="laugh-beam"
+                color={Color.white}
+              />
+              <Text style={styles.iconCaptions}>Mood Tracking</Text>
             </TouchableOpacity>
           </View>
-        </LinearGradient>
+        )}
+        <View style={styles.contact}>
+          <TouchableOpacity
+            style={styles.moodTrackerTouchZone}
+            onPress={() => props.navigation.navigate(Routes.About)}>
+            <AntDesign name="infocirlce" size={40} color={Color.white} style={styles.icon} />
+            <Text style={styles.iconCaptions}>Info</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -109,12 +111,14 @@ export const MainMenu = (props) => {
 const styles = StyleSheet.create({
   mainMenu: {
     height: 110,
+    flexDirection: 'row',
   },
   moodTracker: {
     flex: 0.4,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
+
   },
   outerCircle: {
     width: 140,

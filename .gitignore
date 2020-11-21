@@ -16,6 +16,6 @@ web-report/
 # Intellij
 .idea
 
-.env
+*.env
 .env.development
 .env.production

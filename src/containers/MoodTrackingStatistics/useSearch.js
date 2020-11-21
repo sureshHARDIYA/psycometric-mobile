@@ -25,7 +25,7 @@ export const useSearch = ({} = {}) => {
 
   const { loading, error, data, refetch } = useQuery(EMOTION_LIST, {
     variables,
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'network-only',
   });
 
   const list = _get(data, 'iamFind.emotion.rows', []);
